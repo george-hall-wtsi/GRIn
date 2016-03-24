@@ -7,3 +7,6 @@ than those with a higher one.
 The k-mers counted for this statistic need to be reasonably large (>= 31bp) for this
 metric to be meaningful, as we have found that shorter k-mer words can lead to
 inaccuracies in the k-mer spectra produced.
+
+
+Requires Numpy and Scipy. Tested with Numpy 1.9.2 and Scipy 0.16.0.
