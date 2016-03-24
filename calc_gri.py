@@ -79,22 +79,24 @@ def print_usage(argv):
 
 if __name__ == "__main__":
 
-	if not (2 <= len(sys.argv) <= 3):
+	argv = sys.argv
+
+	if not (2 <= len(argv) <= 3):
 		print "ERROR: Incorrect number of options"
-		print_usage(sys.argv)
+		print_usage(argv)
 		sys.exit()
 
-	if len(sys.argv) == 3:
-		if "-v" == sys.argv[1]:
+	if len(argv) == 3:
+		if "-v" == argv[1]:
 			verbosity = 1
 		else:
-			print "ERROR: Unrecognised option: %s" %(sys.argv[1])
-			print_usage(sys.argv)
+			print "ERROR: Unrecognised option: %s" %(argv[1])
+			print_usage(argv)
 			sys.exit()
 	else:
 		verbosity = 0
 
-	with open(sys.argv[-1], 'r') as f:
+	with open(argv[-1], 'r') as f:
 		hist_dict = create_hist_dict(f)
 		gri = calculate_gri(hist_dict, verbosity)
 		print "GRI =" , gri
