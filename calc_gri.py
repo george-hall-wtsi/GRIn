@@ -49,18 +49,29 @@ def calculate_gri(hist_dict, verbosity):
 
 	return ((1.0 * number_repetitive_kmers) / total_number_kmers)
 
+
+def print_usage(argv):
+	print "usage: %s [-v] <file>" %(argv[0])
+
+
 if __name__ == "__main__":
 
-	if len(sys.argv) < 2 or len(sys.argv) > 3:
-		print "usage: %s <file>" %(sys.argv[0])
+	if not (2 <= len(sys.argv) <= 3):
+		print "ERROR: Incorrect number of options"
+		print_usage(sys.argv)
 		sys.exit()
 
-	if len(sys.argv) == 3 and "-v" in sys.argv:
-		verbosity = 1
+	if len(sys.argv) == 3:
+		if "-v" == sys.argv[1]:
+			verbosity = 1
+		else:
+			print "ERROR: Unrecognised option: %s" %(sys.argv[1])
+			print_usage(sys.argv)
+			sys.exit()
 	else:
 		verbosity = 0
 
-	with open(sys.argv[1], 'r') as f:
+	with open(sys.argv[-1], 'r') as f:
 		hist_dict = create_hist_dict(f)
 		gri = calculate_gri(hist_dict, verbosity)
-		print gri
+		print "GRI =" , gri
