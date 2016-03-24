@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 ################################################################################
 # Copyright (c) 2016 Genome Research Ltd. 
 # 
@@ -75,7 +77,6 @@ def calculate_gri(hist_dict, verbosity):
 
 def print_usage(argv):
 	print "usage: %s [-v] <file>" %(argv[0])
-
 
 if __name__ == "__main__":
 
