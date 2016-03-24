@@ -1,6 +1,8 @@
 import unittest
 import sys
+import os
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import calc_gri as calc_gri_main
 
 # Test Files: celegans_61mers.hgram fake1_61mers.hgram yeast_51mers.hgram fake2_61mers.hgram
