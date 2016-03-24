@@ -1,6 +1,27 @@
+################################################################################
+# Copyright (c) 2016 Genome Research Ltd. 
+# 
+# Author: George Hall <gh10@sanger.ac.uk> 
+# 
+# This program is free software: you can redistribute it and/or modify it under 
+# the terms of the GNU General Public License as published by the Free Software 
+# Foundation; either version 3 of the License, or (at your option) any later 
+# version. 
+# 
+# This program is distributed in the hope that it will be useful, but WITHOUT 
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
+# details. 
+# 
+# You should have received a copy of the GNU General Public License along with 
+# this program. If not, see <http://www.gnu.org/licenses/>. 
+################################################################################
+
+
 import sys
 import scipy.signal
 import numpy as np
+
 
 def find_start_repeat_kmers(hist_dict):
 
@@ -22,6 +43,7 @@ def find_start_repeat_kmers(hist_dict):
 	# between the first minimum and x
 	return ((2 * first_peak) - min_list_minimum)
 
+
 def create_hist_dict(in_file):
 	hist_dict = {}
 	for line in in_file.readlines():
@@ -29,6 +51,7 @@ def create_hist_dict(in_file):
 		hist_dict[splat[0]] = splat[1]
 
 	return hist_dict
+
 
 def calculate_gri(hist_dict, verbosity):
 	start_repetitive_kmers = find_start_repeat_kmers(hist_dict)
