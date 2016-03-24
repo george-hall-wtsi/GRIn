@@ -13,11 +13,13 @@ def find_start_repeat_kmers(hist_dict):
 
 	min_list_minimum = min(min_list)
 
-	for x in sorted(max_list):
-		if x > min_list_minimum and x > 10:
-			first_peak = x
+	for maximum in sorted(max_list):
+		if (maximum > min_list_minimum) and (maximum > 10):
+			first_peak = maximum
 			break
 
+	# Return the point 'x' such that the first peak is equidistant 
+	# between the first minimum and x
 	return ((2 * first_peak) - min_list_minimum)
 
 def create_hist_dict(in_file):
@@ -50,3 +52,4 @@ if __name__ == "__main__":
 				number_repetitive_kmers += (a * b)
 
 		print "Number of repetitive k-mers" , number_repetitive_kmers
+
