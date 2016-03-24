@@ -4,22 +4,21 @@ import numpy as np
 
 def find_start_repeat_kmers(hist_dict):
 
-	window_size = 5
-	window = np.ones(int(window_size))/float(window_size)
-	moving_average = np.convolve(hist_dict.values(), window, 'same')
-	smoothed_data = dict(zip(hist_dict.keys(), [int(x) for x in moving_average]))
+	order_num = 1
 
-	order_num = 2
-
-	min_list = scipy.signal.argrelextrema(np.array(smoothed_data.values()), np.less_equal, 
+	min_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), np.less_equal, 
 		order = order_num)[0].tolist()
-	max_list = scipy.signal.argrelextrema(np.array(smoothed_data.values()), np.greater_equal, 
+	max_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), np.greater_equal, 
 		order = order_num)[0].tolist()
 
-	#print "min_list:" , min_list
-	#print "max_list:" , max_list
+	min_list_minimum = min(min_list)
 
-	return (2 * max_list[1]) - min_list[1]
+	for x in sorted(max_list):
+		if x > min_list_minimum and x > 10:
+			first_peak = x
+			break
+
+	return ((2 * first_peak) - min_list_minimum)
 
 def create_hist_dict(in_file):
 	hist_dict = {}
@@ -38,16 +37,16 @@ if __name__ == "__main__":
 
 	with open(sys.argv[1], 'r') as f:
 		hist_dict = create_hist_dict(f)
-		start = find_start_repeat_kmers(hist_dict)[2]
+		start_repetitive_kmers = find_start_repeat_kmers(hist_dict)
 
-		print start
+		print "Start of repetitive k-mers" , start_repetitive_kmers
 
 		total_number_kmers = sum((a * b) for (a, b) in hist_dict.items())
-		print total_number_kmers
+		print "Total number of k-mers" , total_number_kmers
 
 		number_repetitive_kmers = 0
 		for (a, b) in hist_dict.items():
-			if (a >= start):
+			if (a >= start_repetitive_kmers):
 				number_repetitive_kmers += (a * b)
 
-		print number_repetitive_kmers
+		print "Number of repetitive k-mers" , number_repetitive_kmers
