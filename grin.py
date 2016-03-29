@@ -21,6 +21,8 @@
 
 
 import sys
+import argparse
+
 import scipy.signal
 import numpy as np
 
@@ -55,13 +57,13 @@ def create_hist_dict(in_file):
 	return hist_dict
 
 
-def calculate_gri(hist_dict, verbosity):
+def calculate_gri(hist_dict, verbose):
 	start_repetitive_kmers = find_start_repeat_kmers(hist_dict)
-	if verbosity != 0:
+	if verbose:
 		print "Start of repetitive k-mers" , start_repetitive_kmers
 
 	total_number_kmers = sum((a * b) for (a, b) in hist_dict.items())
-	if verbosity != 0:
+	if verbose:
 		print "Total number of k-mers" , total_number_kmers
 
 	number_repetitive_kmers = 0
@@ -69,35 +71,29 @@ def calculate_gri(hist_dict, verbosity):
 		if (a >= start_repetitive_kmers):
 			number_repetitive_kmers += (a * b)
 
-	if verbosity != 0:
+	if verbose:
 		print "Number of repetitive k-mers" , number_repetitive_kmers
 
 	return ((1.0 * number_repetitive_kmers) / total_number_kmers)
 
 
-def print_usage(argv):
-	print "usage: %s [-v] <file>" %(argv[0])
+def create_parser():
+	parser = argparse.ArgumentParser(description = "Calculate the Genome Repeat Index")
+	parser.add_argument("-v", "--verbose", action = "store_true", help = "print more output")
+	parser.add_argument("file", type = str, nargs = '+', help = "input file(s)")
+
+	return parser
+
 
 if __name__ == "__main__":
 
-	argv = sys.argv
+	parser = create_parser()
+	args = parser.parse_args()
+	file_paths = args.file
+	verbose = args.verbose
 
-	if not (2 <= len(argv) <= 3):
-		print "ERROR: Incorrect number of options"
-		print_usage(argv)
-		sys.exit()
-
-	if len(argv) == 3:
-		if "-v" == argv[1]:
-			verbosity = 1
-		else:
-			print "ERROR: Unrecognised option: %s" %(argv[1])
-			print_usage(argv)
-			sys.exit()
-	else:
-		verbosity = 0
-
-	with open(argv[-1], 'r') as f:
-		hist_dict = create_hist_dict(f)
-		gri = calculate_gri(hist_dict, verbosity)
-		print "GRI =" , gri
+	for file_name in file_paths:
+		with open(file_name, 'r') as f:
+			hist_dict = create_hist_dict(f)
+			gri = calculate_gri(hist_dict, verbose)
+			print "GRI =" , gri
