@@ -94,6 +94,8 @@ if __name__ == "__main__":
 
 	for file_name in file_paths:
 		with open(file_name, 'r') as f:
+			print "Started processing" , file_name
 			hist_dict = create_hist_dict(f)
 			gri = calculate_gri(hist_dict, verbose)
 			print "GRI =" , gri
+			print "Finished processing" , file_name
