@@ -21,10 +21,11 @@
 
 
 import sys
-import argparse
 
 import scipy.signal
 import numpy as np
+
+import custom_argument_parsing
 
 
 def find_start_repeat_kmers(hist_dict):
@@ -77,18 +78,11 @@ def calculate_gri(hist_dict, verbose):
 	return ((1.0 * number_repetitive_kmers) / total_number_kmers)
 
 
-def create_parser():
-	parser = argparse.ArgumentParser(description = "Calculate the Genome Repeat Index")
-	parser.add_argument("-v", "--verbose", action = "store_true", help = "print more output")
-	parser.add_argument("file", type = str, nargs = '+', help = "input file(s)")
-
-	return parser
-
-
 if __name__ == "__main__":
 
-	parser = create_parser()
-	args = parser.parse_args()
+	args = custom_argument_parsing.parser_main()
+
+	manual_cutoffs = args.cutoffs
 	file_paths = args.file
 	verbose = args.verbose
 
