@@ -85,9 +85,32 @@ def calculate_gri(hist_dict, verbose, start_repetitive_kmers = 0):
 	return ((1.0 * number_repetitive_kmers) / total_number_kmers)
 
 
+def create_parser():
+	parser = custom_argument_parsing.CustomParser()
+	parser.add_argument("-v", "--verbose", action = "store_true")
+	parser.add_argument("-c", "--cutoffs", type = int, nargs = '+')
+	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True)
+
+	return parser
+
+
+def parser_main():
+	parser = create_parser()
+	args = parser.parse_args()
+
+	if args.cutoffs:
+		if len(args.file) != len(args.cutoffs):
+			print "ERROR: Need to have the same number of manual cutoffs as files"
+			sys.exit(1)
+	else:
+		args.cutoffs = [0 for x in args.file]
+
+	return args
+
+
 if __name__ == "__main__":
 
-	args = custom_argument_parsing.parser_main()
+	args = parser_main()
 
 	manual_cutoffs = args.cutoffs
 	file_paths = args.file
@@ -100,3 +123,4 @@ if __name__ == "__main__":
 			gri = calculate_gri(hist_dict, verbose, cutoff)
 			print "GRI =" , gri
 			print "Finished processing" , file_name
+

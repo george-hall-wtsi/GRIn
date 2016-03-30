@@ -2,15 +2,6 @@ import sys
 import argparse
 
 
-def create_parser():
-	parser = CustomParser()
-	parser.add_argument("-v", "--verbose", action = "store_true")
-	parser.add_argument("-c", "--cutoffs", type = int, nargs = '+')
-	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True)
-
-	return parser
-
-
 class CustomParser(argparse.ArgumentParser):
 
 	def generate_usage_message(self):
@@ -41,18 +32,3 @@ class CustomParser(argparse.ArgumentParser):
 		if file is None:
 			file = sys.stdout
 		self._print_message(self.generate_help_message(), file)
-
-
-def parser_main():
-	parser = create_parser()
-	args = parser.parse_args()
-
-	if args.cutoffs:
-		if len(args.file) != len(args.cutoffs):
-			print "ERROR: Need to have the same number of manual cutoffs as files"
-			sys.exit(1)
-	else:
-		args.cutoffs = [0 for x in args.file]
-
-	return args
-
