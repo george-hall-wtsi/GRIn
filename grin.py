@@ -121,6 +121,6 @@ if __name__ == "__main__":
 			print "Started processing" , file_name
 			hist_dict = create_hist_dict(f)
 			gri = calculate_gri(hist_dict, verbose, cutoff)
-			print "GRI =" , gri
+			print "GRI = %0.4f" %(gri)
 			print "Finished processing" , file_name
 
