@@ -58,8 +58,15 @@ def create_hist_dict(in_file):
 	return hist_dict
 
 
-def calculate_gri(hist_dict, verbose):
-	start_repetitive_kmers = find_start_repeat_kmers(hist_dict)
+def calculate_gri(hist_dict, verbose, start_repetitive_kmers = 0):
+	if not start_repetitive_kmers:
+		if verbose:
+			print "Estimating start of repetitive k-mers"
+		start_repetitive_kmers = find_start_repeat_kmers(hist_dict)
+	else:
+		if verbose:
+			print "User specified start of reptitive k-mers =" , start_repetitive_kmers
+
 	if verbose:
 		print "Start of repetitive k-mers" , start_repetitive_kmers
 
@@ -86,10 +93,10 @@ if __name__ == "__main__":
 	file_paths = args.file
 	verbose = args.verbose
 
-	for file_name in file_paths:
+	for (file_name, cutoff) in zip(file_paths, manual_cutoffs):
 		with open(file_name, 'r') as f:
 			print "Started processing" , file_name
 			hist_dict = create_hist_dict(f)
-			gri = calculate_gri(hist_dict, verbose)
+			gri = calculate_gri(hist_dict, verbose, cutoff)
 			print "GRI =" , gri
 			print "Finished processing" , file_name

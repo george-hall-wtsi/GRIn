@@ -6,7 +6,7 @@ def create_parser():
 	parser = CustomParser(description = "Calculate the Genome Repeat Index")
 	parser.add_argument("-v", "--verbose", action = "store_true", 
 			help = "print more output")
-	parser.add_argument("-c", "--cutoffs", nargs = '+', 
+	parser.add_argument("-c", "--cutoffs", type = int, nargs = '+', 
 			help = "set manual cutoff (if specified, number of manual cutoffs must be the same\
 			as the number of files)")
 	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True, 
@@ -55,6 +55,8 @@ def parser_main():
 		if len(args.file) != len(args.cutoffs):
 			print "ERROR: Need to have the same number of manual cutoffs as files"
 			sys.exit(1)
+	else:
+		args.cutoffs = [0 for x in args.file]
 
 	return args
 
