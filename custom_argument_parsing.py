@@ -3,14 +3,10 @@ import argparse
 
 
 def create_parser():
-	parser = CustomParser(description = "Calculate the Genome Repeat Index")
-	parser.add_argument("-v", "--verbose", action = "store_true", 
-			help = "print more output")
-	parser.add_argument("-c", "--cutoffs", type = int, nargs = '+', 
-			help = "set manual cutoff (if specified, number of manual cutoffs must be the same\
-			as the number of files)")
-	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True, 
-			help = "input file(s)")
+	parser = CustomParser()
+	parser.add_argument("-v", "--verbose", action = "store_true")
+	parser.add_argument("-c", "--cutoffs", type = int, nargs = '+')
+	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True)
 
 	return parser
 
