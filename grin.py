@@ -25,7 +25,7 @@ import sys
 import scipy.signal
 import numpy as np
 
-import custom_argument_parsing
+import custom_argument_parser
 
 
 def find_start_repeat_kmers(hist_dict):
@@ -86,7 +86,7 @@ def calculate_gri(hist_dict, verbose, start_repetitive_kmers = 0):
 
 
 def create_parser():
-	parser = custom_argument_parsing.CustomParser()
+	parser = custom_argument_parser.CustomParser()
 	parser.add_argument("-v", "--verbose", action = "store_true")
 	parser.add_argument("-c", "--cutoffs", type = int, nargs = '+')
 	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True)
