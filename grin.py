@@ -108,8 +108,7 @@ def parser_main():
 	return args
 
 
-if __name__ == "__main__":
-
+def main():
 	args = parser_main()
 
 	manual_cutoffs = args.cutoffs
@@ -123,4 +122,8 @@ if __name__ == "__main__":
 			gri = calculate_gri(hist_dict, verbose, cutoff)
 			print "GRI = %0.4f" %(gri)
 			print "Finished processing" , file_name
+
+
+if __name__ == "__main__":
+	main()
 
