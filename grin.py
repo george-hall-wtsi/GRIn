@@ -21,6 +21,7 @@
 
 
 import sys
+import subprocess
 
 import scipy.signal
 import numpy as np
@@ -50,9 +51,11 @@ def find_start_repeat_kmers(hist_dict):
 
 
 def create_hist_dict(in_file):
+
 	hist_dict = {}
+
 	for line in in_file.readlines():
-		splat = [int(x) for x in line.strip().split()]
+		splat = [float(x) for x in line.strip().split()]
 		hist_dict[splat[0]] = splat[1]
 
 	return hist_dict
@@ -89,6 +92,7 @@ def create_parser():
 	parser = custom_argument_parser.CustomParser()
 	parser.add_argument("-v", "--verbose", action = "store_true")
 	parser.add_argument("-c", "--cutoffs", type = int, nargs = '+')
+	parser.add_argument("-a", "--analyzer", action = "store_true")
 	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True)
 
 	return parser
@@ -114,8 +118,20 @@ def main():
 	manual_cutoffs = args.cutoffs
 	file_paths = args.file
 	verbose = args.verbose
+	analyzer = args.analyzer
 
 	for (file_name, cutoff) in zip(file_paths, manual_cutoffs):
+
+		if analyzer:
+			subprocess.call(["kmerspectrumanalyzer", file_name])
+			with open(file_name + ".fit.detail.csv", 'r') as f, \
+			open(file_name + ".fit.detail.csv.hist", 'w') as g:
+					for line in f.readlines():
+						splat = line.strip().split()
+						g.write(splat[0] + " " + splat[2] + "\n")
+				
+			file_name += ".fit.detail.csv.hist"
+
 		with open(file_name, 'r') as f:
 			print "Started processing" , file_name
 			hist_dict = create_hist_dict(f)
