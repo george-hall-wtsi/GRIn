@@ -29,25 +29,64 @@ import numpy as np
 import custom_argument_parser
 
 
-def find_start_repeat_kmers(hist_dict):
-
-	order_num = 1
-
+def generate_min_list(hist_dict):
+	
 	min_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), np.less_equal, 
-		order = order_num)[0].tolist()
-	max_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), np.greater_equal, 
-		order = order_num)[0].tolist()
+		order = 1)[0].tolist()
 
+	return min_list
+	
+
+def generate_max_list(hist_dict):
+
+	max_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), np.greater_equal, 
+		order = 1)[0].tolist()
+
+	return max_list
+
+
+def find_first_peak_max(hist_dict, min_list = None):
+
+	if not min_list:
+		min_list = generate_min_list(hist_dict)
+
+	max_list = generate_max_list(hist_dict)
 	min_list_minimum = min(min_list)
 
 	for maximum in sorted(max_list):
 		if (maximum > min_list_minimum) and (maximum > 10):
-			first_peak = maximum
-			break
 
-	# Return the point 'x' such that the first peak is equidistant 
-	# between the first minimum and x
-	return ((2 * first_peak) - min_list_minimum)
+			# Return the point 'x' such that the first peak is equidistant 
+			# between the first minimum and x
+			return maximum
+
+	print "ERROR: Could not find the maximum of the first peak"
+
+	sys.exit(1)
+
+
+def find_start_first_peak(hist_dict):
+
+	min_list = generate_min_list(hist_dict)
+	first_peak_max = find_first_peak_max(hist_dict, min_list)
+
+	for minimum in sorted(min_list)[::-1]:
+		if minimum < first_peak_max:
+			return minimum
+
+	print "ERROR: Could not find the start of the first peak"
+
+	sys.exit(1)
+
+
+def find_start_repeat_kmers(hist_dict):
+
+	# Return the point 'x' such that the first peak is equidistant between the first minimum
+	# and x
+
+	start_first_peak = find_start_first_peak(hist_dict)
+
+	return ((2 * find_first_peak_max(hist_dict)) - start_first_peak)
 
 
 def create_hist_dict(in_file):
@@ -61,7 +100,7 @@ def create_hist_dict(in_file):
 	return hist_dict
 
 
-def calculate_gri(hist_dict, verbose, start_repetitive_kmers = 0):
+def calculate_gri(hist_dict, verbose, ignore_errors, start_repetitive_kmers = 0):
 	if not start_repetitive_kmers:
 		if verbose:
 			print "Estimating start of repetitive k-mers"
@@ -73,7 +112,14 @@ def calculate_gri(hist_dict, verbose, start_repetitive_kmers = 0):
 	if verbose:
 		print "Start of repetitive k-mers" , start_repetitive_kmers
 
-	total_number_kmers = sum((a * b) for (a, b) in hist_dict.items())
+	if ignore_errors:
+		min_val_cutoff = find_start_first_peak(hist_dict)
+		if verbose:
+			print "Using minimum k-mer occurrence of" , min_val_cutoff
+
+	total_number_kmers = sum((a * b) for (a, b) in hist_dict.items() if \
+			((not ignore_errors) or (a > min_val_cutoff)))
+
 	if verbose:
 		print "Total number of k-mers" , total_number_kmers
 
@@ -91,8 +137,9 @@ def calculate_gri(hist_dict, verbose, start_repetitive_kmers = 0):
 def create_parser():
 	parser = custom_argument_parser.CustomParser()
 	parser.add_argument("-v", "--verbose", action = "store_true")
-	parser.add_argument("-c", "--cutoffs", type = int, nargs = '+')
+	parser.add_argument("-c", "--repeat-cutoffs", type = int, nargs = '+')
 	parser.add_argument("-a", "--analyzer", action = "store_true")
+	parser.add_argument("-i", "--ignore-errors", action = "store_true")
 	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True)
 
 	return parser
@@ -102,12 +149,12 @@ def parser_main():
 	parser = create_parser()
 	args = parser.parse_args()
 
-	if args.cutoffs:
-		if len(args.file) != len(args.cutoffs):
-			print "ERROR: Need to have the same number of manual cutoffs as files"
+	if args.repeat_cutoffs:
+		if len(args.file) != len(args.repeat_cutoffs):
+			print "ERROR: Need to have the same number of manual repeat cutoffs as files"
 			sys.exit(1)
 	else:
-		args.cutoffs = [0 for x in args.file]
+		args.repeat_cutoffs = [0 for x in args.file]
 
 	return args
 
@@ -115,12 +162,13 @@ def parser_main():
 def main():
 	args = parser_main()
 
-	manual_cutoffs = args.cutoffs
+	manual_repeat_cutoffs = args.repeat_cutoffs
 	file_paths = args.file
 	verbose = args.verbose
 	analyzer = args.analyzer
+	ignore_errors = args.ignore_errors
 
-	for (file_name, cutoff) in zip(file_paths, manual_cutoffs):
+	for (file_name, repeat_cutoff) in zip(file_paths, manual_repeat_cutoffs):
 
 		if analyzer:
 			subprocess.call(["kmerspectrumanalyzer", file_name])
@@ -135,7 +183,7 @@ def main():
 		with open(file_name, 'r') as f:
 			print "Started processing" , file_name
 			hist_dict = create_hist_dict(f)
-			gri = calculate_gri(hist_dict, verbose, cutoff)
+			gri = calculate_gri(hist_dict, verbose, ignore_errors, repeat_cutoff)
 			print "GRI = %0.4f" %(gri)
 			print "Finished processing" , file_name
 
