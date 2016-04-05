@@ -32,7 +32,7 @@ import custom_argument_parser
 def generate_min_list(hist_dict):
 	
 	min_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), np.less_equal, 
-		order = 1)[0].tolist()
+		order = 3)[0].tolist()
 
 	return min_list
 	
@@ -40,7 +40,7 @@ def generate_min_list(hist_dict):
 def generate_max_list(hist_dict):
 
 	max_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), np.greater_equal, 
-		order = 1)[0].tolist()
+		order = 3)[0].tolist()
 
 	return max_list
 
