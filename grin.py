@@ -47,6 +47,7 @@ def generate_max_list(hist_dict):
 
 def find_main_peak(hist_dict, min_list = None):
 
+	min_list = generate_min_list(hist_dict)
 	max_list = generate_max_list(hist_dict)
 	min_list_minimum = min(min_list)
 
@@ -79,10 +80,18 @@ def find_start_first_peak(hist_dict):
 
 def find_start_repeat_kmers(hist_dict):
 
-	# Return the point 'x' such that the first peak is equidistant between the first minimum
-	# and x
+#	Old method:
+#	# Return the point 'x' such that the first peak is equidistant between the first minimum
+#	# and x
+#
+#	start_first_peak = find_start_first_peak(hist_dict)
+#
+#	return ((2 * find_main_peak(hist_dict)) - start_first_peak)
 
-	start_first_peak = find_start_first_peak(hist_dict)
+#	New method:
+#	Not sure why this works, but it seems to give a good prediction
+
+	return ((1.65 * find_main_peak(hist_dict)) + 1)
 
 
 
