@@ -61,7 +61,7 @@ def find_main_peak(hist_dict, min_list = None):
 				if k > min_list_minimum and k > 10:
 					return k
 
-	print "ERROR: Could not find the maximum of the main peak"
+	sys.stderr.write("ERROR: Could not find the maximum of the main peak\n")
 	sys.exit(1)
 
 
@@ -74,7 +74,7 @@ def find_start_first_peak(hist_dict):
 		if minimum < first_peak_max:
 			return minimum
 
-	print "ERROR: Could not find the start of the main peak"
+	sys.stderr.write("ERROR: Could not find the start of the main peak\n")
 	sys.exit(1)
 
 
@@ -174,22 +174,22 @@ def parser_main():
 
 	if args.repeat_cutoffs:
 		if len(args.file) != len(args.repeat_cutoffs):
-			print "ERROR: Need to have the same number of manual repeat cutoffs as files"
+			sys.stderr.write("ERROR: Need to have the same number of manual repeat cutoffs as files\n")
 			sys.exit(1)
 	else:
 		args.repeat_cutoffs = [0 for x in args.file]
 
 	if args.manual_error_cutoffs and args.ignore_error:
-		print "ERROR: Cannot specify both --manual-error-cutoffs and --ignore-error"
+		sys.stderr.write("ERROR: Cannot specify both --manual-error-cutoffs and --ignore-error\n")
 		sys.exit(1)
 
 	if args.manual_error_cutoffs:
 		if len(args.file) != len(args.manual_error_cutoffs):
-			print "ERROR: Need to have the same number of manual error cutoffs as files"
+			sys.stderr.write("ERROR: Need to have the same number of manual error cutoffs as files\n")
 			sys.exit(1)
 
 		if any(cutoff <= 0 for cutoff in args.manual_error_cutoffs):
-			print "ERROR: --manual-error-cuttoffs must be positive"
+			sys.stderr.write("ERROR: --manual-error-cuttoffs must be positive\n")
 			sys.exit(1)
 
 	return args
@@ -208,7 +208,7 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, file_list):
 		error_cutoffs = manual_error_cutoffs
 	else:
 		# ERROR: Should have been caught in parser_main()
-		print "ERROR: Option parsing error checking let through some mutually exclusive options"
+		sys.stderr.write("ERROR: Option parsing error checking let through some mutually exclusive options\n")
 		sys.exit(1)
 
 	return error_cutoffs
@@ -242,7 +242,7 @@ def main():
 			hist_dict = create_hist_dict(f)
 			gri = calculate_gri(hist_dict, verbose, error_cutoff, repeat_cutoff)
 			if gri == -1:
-				print "ERROR: Error cutoff greater than start of repetitive k-mers. Skipping this file..."
+				sys.stderr.write("ERROR: Error cutoff greater than start of repetitive k-mers. Skipping this file...\n")
 			else:
 				print "GRI = %0.4f" %(gri)
 			print "Finished processing" , file_name
