@@ -100,7 +100,11 @@ def create_hist_dict(in_file):
 	return hist_dict
 
 
-def calculate_gri(hist_dict, verbose, ignore_errors, start_repetitive_kmers = 0):
+def calculate_gri(hist_dict, verbose, error_cutoff, start_repetitive_kmers = 0):
+	
+	# Negative returns signify an error:
+	# -1 => error cutoff greater than start of repetitive k-mers
+
 	if not start_repetitive_kmers:
 		if verbose:
 			print "Estimating start of repetitive k-mers"
@@ -112,13 +116,25 @@ def calculate_gri(hist_dict, verbose, ignore_errors, start_repetitive_kmers = 0)
 	if verbose:
 		print "Start of repetitive k-mers" , start_repetitive_kmers
 
-	if ignore_errors:
-		min_val_cutoff = find_start_first_peak(hist_dict)
+	# error_cutoff: 0 => use entire k-mer spectrum
+	#				-1 => Auto error checking
+	#				>= 1 => error cutoff manually specified
+	if error_cutoff:
+		if error_cutoff == -1:
+			min_val_cutoff = find_start_first_peak(hist_dict)
+		else:
+			min_val_cutoff = error_cutoff
+
+		if min_val_cutoff > start_repetitive_kmers:
+			return -1
+
 		if verbose:
 			print "Using minimum k-mer occurrence of" , min_val_cutoff
+	else:
+		min_val_cutoff = 0
 
 	total_number_kmers = sum((a * b) for (a, b) in hist_dict.items() if \
-			((not ignore_errors) or (a > min_val_cutoff)))
+			((not error_cutoff) or (a > min_val_cutoff)))
 
 	if verbose:
 		print "Total number of k-mers" , total_number_kmers
@@ -139,7 +155,8 @@ def create_parser():
 	parser.add_argument("-v", "--verbose", action = "store_true")
 	parser.add_argument("-c", "--repeat-cutoffs", type = int, nargs = '+')
 	parser.add_argument("-a", "--analyzer", action = "store_true")
-	parser.add_argument("-i", "--ignore-errors", action = "store_true")
+	parser.add_argument("-e", "--manual-error-cutoffs", type = int, nargs = '+')
+	parser.add_argument("-i", "--ignore-error", action = "store_true")
 	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True)
 
 	return parser
@@ -156,7 +173,39 @@ def parser_main():
 	else:
 		args.repeat_cutoffs = [0 for x in args.file]
 
+	if args.manual_error_cutoffs and args.ignore_error:
+		print "ERROR: Cannot specify both --manual-error-cutoffs and --ignore-error"
+		sys.exit(1)
+
+	if args.manual_error_cutoffs:
+		if len(args.file) != len(args.manual_error_cutoffs):
+			print "ERROR: Need to have the same number of manual error cutoffs as files"
+			sys.exit(1)
+
+		if any(cutoff <= 0 for cutoff in args.manual_error_cutoffs):
+			print "ERROR: --manual-error-cuttoffs must be positive"
+			sys.exit(1)
+
 	return args
+
+
+def set_error_cutoffs(ignore_error, manual_error_cutoffs, file_list):
+	error_cutoffs = []
+	if not ignore_error and not manual_error_cutoffs:
+		# User doesn't want to do anything about errors:
+		error_cutoffs = [0 for x in file_list]
+	elif ignore_error:
+		# User wants errror cutoff to be automatically determined
+		error_cutoffs = [-1 for x  in file_list]
+	elif manual_error_cutoffs:
+		# User has manually specified error cutoffs
+		error_cutoffs = manual_error_cutoffs
+	else:
+		# ERROR: Should have been caught in parser_main()
+		print "ERROR: Option parsing error checking let through some mutually exclusive options"
+		sys.exit(1)
+
+	return error_cutoffs
 
 
 def main():
@@ -166,9 +215,11 @@ def main():
 	file_paths = args.file
 	verbose = args.verbose
 	analyzer = args.analyzer
-	ignore_errors = args.ignore_errors
+	
+	error_cutoffs = set_error_cutoffs(args.ignore_error, args.manual_error_cutoffs, args.file)
 
-	for (file_name, repeat_cutoff) in zip(file_paths, manual_repeat_cutoffs):
+	for (file_name, repeat_cutoff, error_cutoff) in \
+	zip(file_paths, manual_repeat_cutoffs, error_cutoffs):
 
 		if analyzer:
 			subprocess.call(["kmerspectrumanalyzer", file_name])
@@ -183,8 +234,11 @@ def main():
 		with open(file_name, 'r') as f:
 			print "Started processing" , file_name
 			hist_dict = create_hist_dict(f)
-			gri = calculate_gri(hist_dict, verbose, ignore_errors, repeat_cutoff)
-			print "GRI = %0.4f" %(gri)
+			gri = calculate_gri(hist_dict, verbose, error_cutoff, repeat_cutoff)
+			if gri == -1:
+				print "ERROR: Error cutoff greater than start of repetitive k-mers. Skipping this file..."
+			else:
+				print "GRI = %0.4f" %(gri)
 			print "Finished processing" , file_name
 
 
