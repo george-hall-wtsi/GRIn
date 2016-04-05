@@ -45,37 +45,35 @@ def generate_max_list(hist_dict):
 	return max_list
 
 
-def find_first_peak_max(hist_dict, min_list = None):
-
-	if not min_list:
-		min_list = generate_min_list(hist_dict)
+def find_main_peak(hist_dict, min_list = None):
 
 	max_list = generate_max_list(hist_dict)
 	min_list_minimum = min(min_list)
 
-	for maximum in sorted(max_list):
-		if (maximum > min_list_minimum) and (maximum > 10):
+	max_y_vals = [hist_dict[x] for x  in max_list if x in hist_dict.keys()]
 
-			# Return the point 'x' such that the first peak is equidistant 
-			# between the first minimum and x
-			return maximum
+	for maximum in sorted(max_y_vals)[::-1]:
+		# Although this looks really inefficient, we hopefully shouldn't have to do it more
+		# than twice (hopefully just once) and I can't quickly think of a better way to do it
+		for (k, v) in hist_dict.iteritems():
+			if v == maximum:
+				if k > min_list_minimum and k > 10:
+					return k
 
-	print "ERROR: Could not find the maximum of the first peak"
-
+	print "ERROR: Could not find the maximum of the main peak"
 	sys.exit(1)
 
 
 def find_start_first_peak(hist_dict):
 
 	min_list = generate_min_list(hist_dict)
-	first_peak_max = find_first_peak_max(hist_dict, min_list)
+	first_peak_max = find_main_peak(hist_dict, min_list)
 
 	for minimum in sorted(min_list)[::-1]:
 		if minimum < first_peak_max:
 			return minimum
 
-	print "ERROR: Could not find the start of the first peak"
-
+	print "ERROR: Could not find the start of the main peak"
 	sys.exit(1)
 
 
@@ -86,7 +84,6 @@ def find_start_repeat_kmers(hist_dict):
 
 	start_first_peak = find_start_first_peak(hist_dict)
 
-	return ((2 * find_first_peak_max(hist_dict)) - start_first_peak)
 
 
 def create_hist_dict(in_file):
