@@ -100,29 +100,13 @@ def find_start_first_peak(hist_dict):
 def find_start_repeat_kmers(hist_dict):
 
 	"""
-	For a main peak with x co-ordinate 'a', returns ((1.65 * 'a') + 1), as this seems
-	to do a good job at predicting the minimum between the main and next peak,
-	which is where the repetitive k-mers are predicted to start occurring. 
-
-	Previously, this function returned a point 'a' such that the x co-ordinate of 
-	the main peak was equidistant between the start of the main peak and 'a'. This was
-	replaced because the newer method seems to work slightly better (although the
-	difference is marginal). 
+	Returns a point 'a' such that the x co-ordinate of the main peak is equidistant between 
+	the start of the main peak and 'a'. 
 	"""
 
-#	Old method:
-#	# Return the point 'x' such that the first peak is equidistant between the first minimum
-#	# and x
-#
-#	start_first_peak = find_start_first_peak(hist_dict)
-#
-#	return ((2 * find_main_peak(hist_dict)) - start_first_peak)
+	start_first_peak = find_start_first_peak(hist_dict)
 
-	# New method:
-	# Not sure why this works, but it seems to give a good prediction
-
-	return ((1.65 * find_main_peak(hist_dict)) + 1)
-
+	return int((2 * find_main_peak(hist_dict)) - start_first_peak)
 
 
 def create_hist_dict(in_file):
