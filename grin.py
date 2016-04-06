@@ -97,7 +97,7 @@ def find_start_first_peak(hist_dict):
 	sys.exit(1)
 
 
-def find_start_repeat_kmers(hist_dict):
+def find_start_repeat_kmers(hist_dict, verbose):
 
 	"""
 	Returns a point 'a' such that the x co-ordinate of the main peak is equidistant between 
@@ -105,6 +105,8 @@ def find_start_repeat_kmers(hist_dict):
 	"""
 
 	start_first_peak = find_start_first_peak(hist_dict)
+	if verbose:
+		print "Start of first peak =" , start_first_peak
 
 	return int((2 * find_main_peak(hist_dict)) - start_first_peak)
 
@@ -139,7 +141,7 @@ def calculate_gri(hist_dict, verbose, error_cutoff, start_repetitive_kmers = 0):
 	if not start_repetitive_kmers:
 		if verbose:
 			print "Estimating start of repetitive k-mers"
-		start_repetitive_kmers = find_start_repeat_kmers(hist_dict)
+		start_repetitive_kmers = find_start_repeat_kmers(hist_dict, verbose)
 	else:
 		if verbose:
 			print "User specified start of reptitive k-mers =" , start_repetitive_kmers
