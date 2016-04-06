@@ -30,6 +30,10 @@ import custom_argument_parser
 
 
 def generate_min_list(hist_dict):
+
+	"""
+	Returns a list of the x values corresponding to the minima in hist_dict.
+	"""
 	
 	min_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), np.less_equal, 
 		order = 3)[0].tolist()
@@ -39,6 +43,10 @@ def generate_min_list(hist_dict):
 
 def generate_max_list(hist_dict):
 
+	"""
+	Returns a list of the x values corresponding to the maxima in hist_dict.
+	"""
+
 	max_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), np.greater_equal, 
 		order = 3)[0].tolist()
 
@@ -46,6 +54,12 @@ def generate_max_list(hist_dict):
 
 
 def find_main_peak(hist_dict, min_list = None):
+
+	"""
+	Returns the x value of the main peak in hist_dict. The main peak is the peak
+	which should correspond to homozygous k-mers, not that which occurs right at
+	the beginning of the k-mer spectrum, which is due to base errors in the reads.
+	"""
 
 	min_list = generate_min_list(hist_dict)
 	max_list = generate_max_list(hist_dict)
@@ -67,6 +81,11 @@ def find_main_peak(hist_dict, min_list = None):
 
 def find_start_first_peak(hist_dict):
 
+	"""
+	Returns the minimum preceding the main peak, which is predicted to be the start
+	of the main peak. 
+	"""
+
 	min_list = generate_min_list(hist_dict)
 	first_peak_max = find_main_peak(hist_dict, min_list)
 
@@ -79,6 +98,17 @@ def find_start_first_peak(hist_dict):
 
 
 def find_start_repeat_kmers(hist_dict):
+
+	"""
+	For a main peak with x co-ordinate 'a', returns ((1.65 * 'a') + 1), as this seems
+	to do a good job at predicting the minimum between the main and next peak,
+	which is where the repetitive k-mers are predicted to start occurring. 
+
+	Previously, this function returned a point 'a' such that the x co-ordinate of 
+	the main peak was equidistant between the start of the main peak and 'a'. This was
+	replaced because the newer method seems to work slightly better (although the
+	difference is marginal). 
+	"""
 
 #	Old method:
 #	# Return the point 'x' such that the first peak is equidistant between the first minimum
@@ -97,6 +127,11 @@ def find_start_repeat_kmers(hist_dict):
 
 def create_hist_dict(in_file):
 
+	"""
+	Returns a dictionary with number of occurrences as the keys and the frequency
+	corresponding to each occurence as its value. 
+	"""
+
 	hist_dict = {}
 
 	for line in in_file.readlines():
@@ -107,6 +142,12 @@ def create_hist_dict(in_file):
 
 
 def calculate_gri(hist_dict, verbose, error_cutoff, start_repetitive_kmers = 0):
+
+	"""
+	Returns the GRI, which we have defined to be the percentage of repetitive k-mers
+	in a k-mer spectrum. The user can choose to ignore k-mers caused by base errors
+	when counting the total number of k-mers, thus increasing the GRI. 
+	"""
 	
 	# Negative returns signify an error:
 	# -1 => error cutoff greater than start of repetitive k-mers
@@ -157,6 +198,13 @@ def calculate_gri(hist_dict, verbose, error_cutoff, start_repetitive_kmers = 0):
 
 
 def create_parser():
+	
+	"""
+	Returns a parser based on my custom parser, which is stored in 
+	custom_argument_parser.py. I have done it in this way because I wanted to be 
+	able to write my own help and usage messages. 
+	"""
+
 	parser = custom_argument_parser.CustomParser()
 	parser.add_argument("-v", "--verbose", action = "store_true")
 	parser.add_argument("-c", "--repeat-cutoffs", type = int, nargs = '+')
@@ -169,6 +217,12 @@ def create_parser():
 
 
 def parser_main():
+
+	"""
+	Parses command line arguments and performs extra error checking. Returns these 
+	arguments as a Namespace object. 
+	"""
+
 	parser = create_parser()
 	args = parser.parse_args()
 
@@ -196,6 +250,13 @@ def parser_main():
 
 
 def set_error_cutoffs(ignore_error, manual_error_cutoffs, file_list):
+
+	"""
+	Determines if the user wants to ignore the k-mers attributed to base errors or not, 
+	and then sets the error cutoffs accordingly, such that calculate_gri() behaves 
+	correctly. 
+	"""
+
 	error_cutoffs = []
 	if not ignore_error and not manual_error_cutoffs:
 		# User doesn't want to do anything about errors:
@@ -215,6 +276,11 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, file_list):
 
 
 def main():
+
+	"""
+	Main driver function. 
+	"""
+
 	args = parser_main()
 
 	manual_repeat_cutoffs = args.repeat_cutoffs
