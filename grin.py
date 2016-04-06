@@ -279,6 +279,16 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, file_list):
 	return error_cutoffs
 
 
+def run_analyzer(file_name):
+
+	subprocess.call(["kmerspectrumanalyzer", file_name])
+	ksa_output_file = file_name + ".fit.detail.csv"
+	with open(ksa_output_file, 'r') as f, open(ksa_output_file + ".hist", 'w') as g:
+		for line in f.readlines():
+			splat = line.strip().split()
+			g.write(splat[0] + " " + splat[2] + "\n")
+
+
 def main():
 
 	"""
@@ -298,13 +308,7 @@ def main():
 	zip(file_paths, manual_repeat_cutoffs, error_cutoffs):
 
 		if analyzer:
-			subprocess.call(["kmerspectrumanalyzer", file_name])
-			with open(file_name + ".fit.detail.csv", 'r') as f, \
-			open(file_name + ".fit.detail.csv.hist", 'w') as g:
-					for line in f.readlines():
-						splat = line.strip().split()
-						g.write(splat[0] + " " + splat[2] + "\n")
-				
+			run_analyzer(file_name)	
 			file_name += ".fit.detail.csv.hist"
 
 		with open(file_name, 'r') as f:
