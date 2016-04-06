@@ -118,8 +118,8 @@ def find_start_repeat_kmers(hist_dict):
 #
 #	return ((2 * find_main_peak(hist_dict)) - start_first_peak)
 
-#	New method:
-#	Not sure why this works, but it seems to give a good prediction
+	# New method:
+	# Not sure why this works, but it seems to give a good prediction
 
 	return ((1.65 * find_main_peak(hist_dict)) + 1)
 
