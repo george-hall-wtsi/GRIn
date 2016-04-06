@@ -228,18 +228,21 @@ def parser_main():
 
 	if args.repeat_cutoffs:
 		if len(args.file) != len(args.repeat_cutoffs):
-			sys.stderr.write("ERROR: Need to have the same number of manual repeat cutoffs as files\n")
+			sys.stderr.write("ERROR: Need to have the same number of manual repeat ")
+			sys.stderr.write("cutoffs as files\n")
 			sys.exit(1)
 	else:
 		args.repeat_cutoffs = [0 for x in args.file]
 
 	if args.manual_error_cutoffs and args.ignore_error:
-		sys.stderr.write("ERROR: Cannot specify both --manual-error-cutoffs and --ignore-error\n")
+		sys.stderr.write("ERROR: Cannot specify both --manual-error-cutoffs ")
+		sys.stderr.write("and --ignore-error\n")
 		sys.exit(1)
 
 	if args.manual_error_cutoffs:
 		if len(args.file) != len(args.manual_error_cutoffs):
-			sys.stderr.write("ERROR: Need to have the same number of manual error cutoffs as files\n")
+			sys.stderr.write("ERROR: Need to have the same number of manual error ")
+			sys.stderr.write("cutoffs as files\n")
 			sys.exit(1)
 
 		if any(cutoff <= 0 for cutoff in args.manual_error_cutoffs):
@@ -269,7 +272,8 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, file_list):
 		error_cutoffs = manual_error_cutoffs
 	else:
 		# ERROR: Should have been caught in parser_main()
-		sys.stderr.write("ERROR: Option parsing error checking let through some mutually exclusive options\n")
+		sys.stderr.write("ERROR: Option parsing error checking let through some ")
+		sys.stderr.write("mutually exclusive options\n")
 		sys.exit(1)
 
 	return error_cutoffs
@@ -308,7 +312,8 @@ def main():
 			hist_dict = create_hist_dict(f)
 			gri = calculate_gri(hist_dict, verbose, error_cutoff, repeat_cutoff)
 			if gri == -1:
-				sys.stderr.write("ERROR: Error cutoff greater than start of repetitive k-mers. Skipping this file...\n")
+				sys.stderr.write("ERROR: Error cutoff greater than start of repetitive ")
+				sys.stderr.write("k-mers. Skipping this file...\n")
 			else:
 				print "GRI = %0.4f" %(gri)
 			print "Finished processing" , file_name
