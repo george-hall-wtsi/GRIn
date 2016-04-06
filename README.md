@@ -18,3 +18,6 @@ Graph showing the effect of different k-mer sizes on the spectrum:
 
 
 Requires Numpy and Scipy. Tested with Numpy 1.9.2 and Scipy 0.16.0.
+
+Citation for Kmerspectrumanalyzer:
+"Rapid quantification of sequence repeats to resolve the size, structure and contents of bacterial genomes." Williams D, Trimble WL, Shilts M, Meyer F, and Ochman H.
