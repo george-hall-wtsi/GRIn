@@ -13,8 +13,16 @@ The k-mers counted for this statistic need to be reasonably large (>= 31bp) for 
 metric to be meaningful, as we have found that shorter k-mer words can lead to
 inaccuracies in the k-mer spectra produced.
 
+The '-a/--analyzer' flag can be used to first run KMERSPECTRUMANALYZER [1] on the data, 
+to try and predict how the k-mer spectrum 'should' look. This sometimes seems to improve 
+matters, but sometimes appears to make things worse. 
+
 Graph showing the effect of different k-mer sizes on the spectrum:
 ![K-mer spectrum for k = 15, 31, 51, 71, 91, 101](graphs/multiple_k.png)
 
 
 Requires Numpy and Scipy. Tested with Numpy 1.9.2 and Scipy 0.16.0.
+
+### References:
+
+[1] "Rapid quantification of sequence repeats to resolve the size, structure and contents of bacterial genomes." Williams D, Trimble WL, Shilts M, Meyer F, and Ochman H.
