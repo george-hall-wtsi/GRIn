@@ -82,19 +82,10 @@ def find_main_peak(hist_dict, min_list = None):
 def find_start_main_peak(hist_dict):
 
 	"""
-	Returns the minimum preceding the main peak, which is predicted to be the start
-	of the main peak. 
+	Returns the smallest minimum value. 
 	"""
 
-	min_list = generate_min_list(hist_dict)
-	first_peak_max = find_main_peak(hist_dict, min_list)
-
-	for minimum in sorted(min_list)[::-1]:
-		if minimum < first_peak_max:
-			return minimum
-
-	sys.stderr.write("ERROR: Could not find the start of the main peak\n")
-	sys.exit(1)
+	return min(generate_min_list(hist_dict))
 
 
 def find_start_repeat_kmers(hist_dict, verbose = False):
