@@ -127,7 +127,7 @@ def create_hist_dict(in_file):
 	return hist_dict
 
 
-def calculate_gri(hist_dict, verbose, error_cutoff, start_repetitive_kmers = 0):
+def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, start_repetitive_kmers = 0):
 
 	"""
 	Returns the GRI, which we have defined to be the percentage of repetitive k-mers
@@ -166,15 +166,21 @@ def calculate_gri(hist_dict, verbose, error_cutoff, start_repetitive_kmers = 0):
 	else:
 		min_val_cutoff = 0
 
+	if upper_bound is None:
+		upper_bound = max(hist_dict.keys())
+	else:
+		if verbose:
+			print "Using upper bound of" , upper_bound
+
 	total_number_kmers = sum((a * b) for (a, b) in hist_dict.items() if \
-			((not error_cutoff) or (a > min_val_cutoff)))
+		((a <= upper_bound) and ((not error_cutoff) or (a > min_val_cutoff))))
 
 	if verbose:
 		print "Total number of k-mers" , total_number_kmers
 
 	number_repetitive_kmers = 0
 	for (a, b) in hist_dict.items():
-		if (a >= start_repetitive_kmers):
+		if ((a <= upper_bound) and (a >= start_repetitive_kmers)):
 			number_repetitive_kmers += (a * b)
 
 	if verbose:
@@ -197,6 +203,7 @@ def create_parser():
 	parser.add_argument("-a", "--analyzer", action = "store_true")
 	parser.add_argument("-e", "--manual-error-cutoffs", type = int, nargs = '+')
 	parser.add_argument("-i", "--ignore-error", action = "store_true")
+	parser.add_argument("-u", "--upper-bound", type = int)
 	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True)
 
 	return parser
@@ -233,6 +240,11 @@ def parser_main():
 
 		if any(cutoff <= 0 for cutoff in args.manual_error_cutoffs):
 			sys.stderr.write("ERROR: --manual-error-cuttoffs must be positive\n")
+			sys.exit(1)
+
+	if args.upper_bound:
+		if args.upper_bound <= 0:
+			sys.stderr.write("ERROR: --upper-bound must be a positive integer\n")
 			sys.exit(1)
 
 	return args
@@ -287,6 +299,7 @@ def main():
 	file_paths = args.file
 	verbose = args.verbose
 	analyzer = args.analyzer
+	upper_bound = args.upper_bound
 	
 	error_cutoffs = set_error_cutoffs(args.ignore_error, args.manual_error_cutoffs, args.file)
 
@@ -300,7 +313,7 @@ def main():
 		with open(file_name, 'r') as f:
 			print "Started processing" , file_name
 			hist_dict = create_hist_dict(f)
-			gri = calculate_gri(hist_dict, verbose, error_cutoff, repeat_cutoff)
+			gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, repeat_cutoff)
 			if gri == -1:
 				sys.stderr.write("ERROR: Error cutoff greater than start of repetitive ")
 				sys.stderr.write("k-mers. Skipping this file...\n")
