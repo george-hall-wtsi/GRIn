@@ -97,7 +97,7 @@ def find_start_main_peak(hist_dict):
 	sys.exit(1)
 
 
-def find_start_repeat_kmers(hist_dict, verbose):
+def find_start_repeat_kmers(hist_dict, verbose = False):
 
 	"""
 	Returns a point 'a' such that the x co-ordinate of the main peak is equidistant between 
