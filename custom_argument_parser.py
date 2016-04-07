@@ -6,14 +6,14 @@ class CustomParser(argparse.ArgumentParser):
 
 	def generate_usage_message(self):
 		store_str = "usage: grin [-h] [-v] [-a] [-u upper-bound] [-i] [-e error-cutoff "
-		store_str += "[error-cutoff ...]] [-c cutoff [cutoff ...]] -f file [file ...]\n\n"
+		store_str += "[error-cutoff ...]] [-c cutoff [cutoff ...]] -f file [file ...]\n"
 
 		return store_str
 
 	def generate_help_message(self):
 		store_str = "\n"
 		store_str += self.generate_usage_message()
-		store_str += "required arguments:\n"
+		store_str += "\nrequired arguments:\n"
 		store_str += "\t-f, --file              one or more input histogram files\n\n"
 
 		store_str += "optional arguments:\n"
