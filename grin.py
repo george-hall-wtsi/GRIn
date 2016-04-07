@@ -79,7 +79,7 @@ def find_main_peak(hist_dict, min_list = None):
 	sys.exit(1)
 
 
-def find_start_first_peak(hist_dict):
+def find_start_main_peak(hist_dict):
 
 	"""
 	Returns the minimum preceding the main peak, which is predicted to be the start
@@ -104,7 +104,7 @@ def find_start_repeat_kmers(hist_dict, verbose):
 	the start of the main peak and 'a'. 
 	"""
 
-	start_first_peak = find_start_first_peak(hist_dict)
+	start_first_peak = find_start_main_peak(hist_dict)
 	if verbose:
 		print "Start of first peak =" , start_first_peak
 
@@ -154,7 +154,7 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, start_repetitiv
 	#				>= 1 => error cutoff manually specified
 	if error_cutoff:
 		if error_cutoff == -1:
-			min_val_cutoff = find_start_first_peak(hist_dict)
+			min_val_cutoff = find_start_main_peak(hist_dict)
 		else:
 			min_val_cutoff = error_cutoff
 
