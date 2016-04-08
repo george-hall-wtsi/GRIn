@@ -270,6 +270,13 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, file_list):
 
 def run_analyzer(file_name):
 
+	"""
+	First run KMERSPECTRUMANALYZER (see README for citation) and then calculate 
+	GRI based on the histogram output by this program. This idea is to give a 
+	k-mer spectrum with more noticable and accurate repeat peaks, but this is 
+	often not the case.
+	"""
+
 	subprocess.call(["kmerspectrumanalyzer", file_name])
 	ksa_output_file = file_name + ".fit.detail.csv"
 	with open(ksa_output_file, 'r') as f, open(ksa_output_file + ".hist", 'w') as g:
@@ -311,6 +318,8 @@ def main():
 			else:
 				print "GRI = %0.4f" %(gri)
 
+
 if __name__ == "__main__":
 	main()
+
 
