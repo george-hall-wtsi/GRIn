@@ -193,6 +193,7 @@ def create_parser():
 	parser.add_argument("-c", "--repeat-cutoffs", type = int, nargs = '+')
 	parser.add_argument("-a", "--analyzer", action = "store_true")
 	parser.add_argument("-e", "--manual-error-cutoffs", type = int, nargs = '+')
+	parser.add_argument("-E", "--single-error-cutoff", type = int, nargs = '?')
 	parser.add_argument("-i", "--ignore-error", action = "store_true")
 	parser.add_argument("-u", "--upper-bound", type = int)
 	parser.add_argument("-f", "--file", type = str, nargs = '+', required = True)
@@ -223,6 +224,16 @@ def parser_main():
 		sys.stderr.write("and --ignore-error\n")
 		sys.exit(1)
 
+	if args.manual_error_cutoffs and args.single_error_cutoff:
+		sys.stderr.write("ERROR: Cannot specify both --manual-error cutoffs ")
+		sys.stderr.write("and --single-error-cutoff\n")
+		sys.exit(1)
+
+	if args.ignore_error and args.single_error_cutoff:
+		sys.stderr.write("ERROR: Cannot specify both --ignore-error ")
+		sys.stderr.write("and --single-error-cutoff\n")
+		sys.exit(1)
+
 	if args.manual_error_cutoffs:
 		if len(args.file) != len(args.manual_error_cutoffs):
 			sys.stderr.write("ERROR: Need to have the same number of manual error ")
@@ -233,6 +244,12 @@ def parser_main():
 			sys.stderr.write("ERROR: --manual-error-cuttoffs must be positive\n")
 			sys.exit(1)
 
+	if args.single_error_cutoff:
+		if args.single_error_cutoff <= 0:
+			sys.stderr.write("ERROR: --single-error-cutoff must be positive\n")
+			sys.exit(1)
+
+
 	if args.upper_bound:
 		if args.upper_bound <= 0:
 			sys.stderr.write("ERROR: --upper-bound must be a positive integer\n")
@@ -241,7 +258,7 @@ def parser_main():
 	return args
 
 
-def set_error_cutoffs(ignore_error, manual_error_cutoffs, file_list):
+def set_error_cutoffs(ignore_error, manual_error_cutoffs, single_error_cutoff, file_list):
 
 	"""
 	Determines if the user wants to ignore the k-mers attributed to base errors or not, 
@@ -249,21 +266,23 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, file_list):
 	correctly. 
 	"""
 
+	# Check that only one of the three options has been set:
+	assert sum([bool(x) for x in [ignore_error, manual_error_cutoffs, single_error_cutoff]]) == 1, \
+			"Can only set one of ignore_error, manual_error_cutoffs, single_error_cutoff"
+
 	error_cutoffs = []
-	if not ignore_error and not manual_error_cutoffs:
+	if not single_error_cutoff and not ignore_error and not manual_error_cutoffs:
 		# User doesn't want to do anything about errors:
 		error_cutoffs = [0 for x in file_list]
 	elif ignore_error:
 		# User wants errror cutoff to be automatically determined
 		error_cutoffs = [-1 for x  in file_list]
-	elif manual_error_cutoffs:
+	elif single_error_cutoff or manual_error_cutoffs:
 		# User has manually specified error cutoffs
-		error_cutoffs = manual_error_cutoffs
-	else:
-		# ERROR: Should have been caught in parser_main()
-		sys.stderr.write("ERROR: Option parsing error checking let through some ")
-		sys.stderr.write("mutually exclusive options\n")
-		sys.exit(1)
+		if manual_error_cutoffs:
+			error_cutoffs = manual_error_cutoffs
+		else:
+			error_cutoffs = [single_error_cutoff for x in file_list]
 
 	return error_cutoffs
 
@@ -299,7 +318,8 @@ def main():
 	analyzer = args.analyzer
 	upper_bound = args.upper_bound
 	
-	error_cutoffs = set_error_cutoffs(args.ignore_error, args.manual_error_cutoffs, args.file)
+	error_cutoffs = set_error_cutoffs(args.ignore_error, args.manual_error_cutoffs, 
+			args.single_error_cutoff, args.file)
 
 	for (file_name, repeat_cutoff, error_cutoff) in \
 	zip(file_paths, manual_repeat_cutoffs, error_cutoffs):
