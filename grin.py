@@ -267,7 +267,7 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, single_error_cutoff, f
 	"""
 
 	# Check that only one of the three options has been set:
-	assert sum([bool(x) for x in [ignore_error, manual_error_cutoffs, single_error_cutoff]]) == 1, \
+	assert 0 <= sum([bool(x) for x in [ignore_error, manual_error_cutoffs, single_error_cutoff]]) <= 1, \
 			"Can only set one of ignore_error, manual_error_cutoffs, single_error_cutoff"
 
 	error_cutoffs = []
