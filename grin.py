@@ -302,7 +302,7 @@ def main():
 			file_name += ".fit.detail.csv.hist"
 
 		with open(file_name, 'r') as f:
-			print "Started processing" , file_name
+			print "Processing" , file_name
 			hist_dict = create_hist_dict(f)
 			gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, repeat_cutoff)
 			if gri == -1:
@@ -310,8 +310,6 @@ def main():
 				sys.stderr.write("k-mers. Skipping this file...\n")
 			else:
 				print "GRI = %0.4f" %(gri)
-			print "Finished processing" , file_name
-
 
 if __name__ == "__main__":
 	main()
