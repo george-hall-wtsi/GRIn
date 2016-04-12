@@ -328,15 +328,18 @@ def main():
 			run_analyzer(file_name)	
 			file_name += ".fit.detail.csv.hist"
 
-		with open(file_name, 'r') as f:
-			print "Processing" , file_name
-			hist_dict = create_hist_dict(f)
-			gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, repeat_cutoff)
-			if gri == -1:
-				sys.stderr.write("ERROR: Error cutoff greater than start of repetitive ")
-				sys.stderr.write("k-mers. Skipping this file...\n")
-			else:
-				print "GRI = %0.4f" %(gri)
+		try:
+			with open(file_name, 'r') as f:
+				print "Processing" , file_name
+				hist_dict = create_hist_dict(f)
+				gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, repeat_cutoff)
+				if gri == -1:
+					sys.stderr.write("ERROR: Error cutoff greater than start of repetitive ")
+					sys.stderr.write("k-mers. Skipping this file...\n")
+				else:
+					print "GRI = %0.4f" %(gri)
+		except IOError:
+			sys.stderr.write("ERROR: Could not open file \"" + file_name + "\". Skipping...\n")
 
 
 if __name__ == "__main__":
