@@ -304,6 +304,23 @@ def run_analyzer(file_name):
 			g.write(splat[0] + " " + splat[2] + "\n")
 
 
+def process_histogram_file(file_name, verbose, error_cutoff, upper_bound, repeat_cutoff):
+
+	"""
+	Compute GRI for a histogram file.
+	"""
+
+	with open(file_name, 'r') as f:
+		print "Processing" , file_name
+		hist_dict = create_hist_dict(f)
+		gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, repeat_cutoff)
+		if gri == -1:
+			sys.stderr.write("ERROR: Error cutoff greater than start of repetitive ")
+			sys.stderr.write("k-mers. Skipping this file...\n")
+		else:
+			print "GRI = %0.4f" %(gri)
+
+
 def main():
 
 	"""
@@ -329,20 +346,11 @@ def main():
 			file_name += ".fit.detail.csv.hist"
 
 		try:
-			with open(file_name, 'r') as f:
-				print "Processing" , file_name
-				hist_dict = create_hist_dict(f)
-				gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, repeat_cutoff)
-				if gri == -1:
-					sys.stderr.write("ERROR: Error cutoff greater than start of repetitive ")
-					sys.stderr.write("k-mers. Skipping this file...\n")
-				else:
-					print "GRI = %0.4f" %(gri)
+			process_histogram_file(file_name, verbose, error_cutoff, upper_bound, repeat_cutoff)
 		except IOError:
 			sys.stderr.write("ERROR: Could not open file \"" + file_name + "\". Skipping...\n")
 
 
 if __name__ == "__main__":
 	main()
-
 
