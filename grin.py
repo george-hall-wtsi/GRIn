@@ -73,9 +73,8 @@ def find_main_peak(hist_dict, min_list = None):
         # shouldn't have to do it more than twice (hopefully just once)
         # and I can't quickly think of a better way to do it
         for (k, v) in hist_dict.iteritems():
-            if v == maximum:
-                if k > min_list_minimum and k > 10:
-                    return k
+            if v == maximum and k > min_list_minimum and k > 10:
+                return k
 
     sys.stderr.write("ERROR: Could not find the maximum of the main ")
     sys.stderr.write("peak\n")
