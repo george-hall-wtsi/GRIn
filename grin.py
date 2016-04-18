@@ -20,6 +20,7 @@
 ################################################################################
 
 
+from __future__ import print_function, division
 import sys
 import subprocess
 
@@ -76,8 +77,8 @@ def find_main_peak(hist_dict, min_list = None):
             if v == maximum and k > min_list_minimum and k > 10:
                 return k
 
-    sys.stderr.write("ERROR: Could not find the maximum of the main ")
-    sys.stderr.write("peak\n")
+    print("ERROR: Could not find the maximum of the main peak", 
+        file = sys.stderr)
     sys.exit(1)
 
 
@@ -99,7 +100,7 @@ def find_start_repeat_kmers(hist_dict, verbose = False):
 
     start_first_peak = find_start_main_peak(hist_dict)
     if verbose:
-        print "Start of first peak =" , start_first_peak
+        print("Start of first peak =", start_first_peak)
 
     return int((2 * find_main_peak(hist_dict)) - start_first_peak)
 
@@ -135,15 +136,15 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
 
     if not start_repetitive_kmers:
         if verbose:
-            print "Estimating start of repetitive k-mers"
+            print("Estimating start of repetitive k-mers")
         start_repetitive_kmers = find_start_repeat_kmers(hist_dict, verbose)
     else:
         if verbose:
-            print "User specified start of reptitive k-mers =" , 
-            start_repetitive_kmers
+            print("User specified start of reptitive k-mers =", 
+				start_repetitive_kmers)
 
     if verbose:
-        print "Start of repetitive k-mers" , start_repetitive_kmers
+        print("Start of repetitive k-mers", start_repetitive_kmers)
 
     # error_cutoff: 0 => use entire k-mer spectrum
     #				-1 => Auto error checking
@@ -158,7 +159,7 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
             return -1
 
         if verbose:
-            print "Using minimum k-mer occurrence of" , min_val_cutoff
+            print("Using minimum k-mer occurrence of", min_val_cutoff)
     else:
         min_val_cutoff = 0
 
@@ -166,13 +167,13 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         upper_bound = max(hist_dict.keys())
     else:
         if verbose:
-            print "Using upper bound of" , upper_bound
+            print("Using upper bound of", upper_bound)
 
     total_number_kmers = sum((a * b) for (a, b) in hist_dict.items() if \
         ((a <= upper_bound) and ((not error_cutoff) or (a > min_val_cutoff))))
 
     if verbose:
-        print "Total number of k-mers" , total_number_kmers
+        print("Total number of k-mers", total_number_kmers)
 
     number_repetitive_kmers = 0
     for (a, b) in hist_dict.items():
@@ -180,9 +181,9 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
             number_repetitive_kmers += (a * b)
 
     if verbose:
-        print "Number of repetitive k-mers" , number_repetitive_kmers
+        print("Number of repetitive k-mers", number_repetitive_kmers)
 
-    return ((1.0 * number_repetitive_kmers) / total_number_kmers)
+    return (number_repetitive_kmers / total_number_kmers)
 
 
 def create_parser():
@@ -220,47 +221,48 @@ def parser_main():
 
     if args.repeat_cutoffs:
         if len(args.file) != len(args.repeat_cutoffs):
-            sys.stderr.write("ERROR: Need to have the same number of manual")
-            sys.stderr.write(" repeat cutoffs as files\n")
+            print("ERROR: Need to have the same number of manual repeat",
+                "cutoffs as files", file = sys.stderr)
             sys.exit(1)
     else:
         args.repeat_cutoffs = [0 for x in args.file]
 
     if args.manual_error_cutoffs and args.ignore_error:
-        sys.stderr.write("ERROR: Cannot specify both --manual-error-cutoffs ")
-        sys.stderr.write("and --ignore-error\n")
+        print("ERROR: Cannot specify both --manual-error-cutoffs and",
+            "--ignore-error", file = sys.stderr)
         sys.exit(1)
 
     if args.manual_error_cutoffs and args.single_error_cutoff:
-        sys.stderr.write("ERROR: Cannot specify both --manual-error cutoffs ")
-        sys.stderr.write("and --single-error-cutoff\n")
+        print("ERROR: Cannot specify both --manual-error cutoffs and",
+            "--single-error-cutoff", file = sys.stderr)
         sys.exit(1)
 
     if args.ignore_error and args.single_error_cutoff:
-        sys.stderr.write("ERROR: Cannot specify both --ignore-error ")
-        sys.stderr.write("and --single-error-cutoff\n")
+        print("ERROR: Cannot specify both --ignore-error and",
+            "--single-error-cutoff", file = sys.stderr)
         sys.exit(1)
 
     if args.manual_error_cutoffs:
         if len(args.file) != len(args.manual_error_cutoffs):
-            sys.stderr.write("ERROR: Need to have the same number of manual ")
-            sys.stderr.write("error cutoffs as files\n")
+            print("ERROR: Need to have the same number of manual error",
+                "cutoffs as files", file = sys.stderr)
             sys.exit(1)
 
         if any(cutoff <= 0 for cutoff in args.manual_error_cutoffs):
-            sys.stderr.write("ERROR: --manual-error-cuttoffs must be ")
-            sys.stderr.write("positive\n")
+            print("ERROR: --manual-error-cuttoffs must be a positive integer", 
+                file = sys.stderr)
             sys.exit(1)
 
     if args.single_error_cutoff:
         if args.single_error_cutoff <= 0:
-            sys.stderr.write("ERROR: --single-error-cutoff must be positive\n")
+            print("ERROR: --single-error-cutoff must be a positive integer", 
+                file = sys.stderr)
             sys.exit(1)
 
     if args.upper_bound:
         if args.upper_bound <= 0:
-            sys.stderr.write("ERROR: --upper-bound must be a positive ")
-            sys.stderr.write("integer\n")
+            print("ERROR: --upper-bound must be a positive integer",
+                file = sys.stderr)
             sys.exit(1)
 
     return args
@@ -273,9 +275,7 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, single_error_cutoff,
     Determines if the user wants to ignore the k-mers attributed to base errors
     or not, and then sets the error cutoffs accordingly, such that
     calculate_gri() behaves correctly. 
-    """
-
-    # Check that only one of the three options has been set:
+    """ # Check that only one of the three options has been set:
     assert 0 <= sum([bool(x) for x in 
         [ignore_error, manual_error_cutoffs, single_error_cutoff]]) <= 1, \
         "Can only set one of ignore_error, manual_error_cutoffs, " + \
@@ -329,15 +329,15 @@ def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
     """
 
     with open(file_name, 'r') as f:
-        print "Processing" , file_name
+        print("Processing", file_name)
         hist_dict = create_hist_dict(f)
         gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, 
             repeat_cutoff)
         if gri == -1:
-            sys.stderr.write("ERROR: Error cutoff greater than start of ")
-            sys.stderr.write("repetitive k-mers. Skipping this file...\n")
+            print("ERROR: Error cutoff greater than start of",
+                "repetitive k-mers. Skipping this file...", file = sys.stderr)
         else:
-            print "GRI = %0.4f" %(gri)
+            print("GRI = %0.4f" %(gri))
 
 
 def main():
@@ -368,8 +368,8 @@ def main():
             process_histogram_file(file_name, verbose, error_cutoff, 
                 upper_bound, repeat_cutoff)
         except IOError:
-            sys.stderr.write("ERROR: Could not open file \"" + file_name)
-            sys.stderr.write(". Skipping...\n")
+            print("ERROR: Could not open file \"" + file_name + "\".", 
+                "Skipping...", file = sys.stderr)
 
 
 if __name__ == "__main__":
