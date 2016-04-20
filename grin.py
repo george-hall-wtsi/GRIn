@@ -225,7 +225,7 @@ def parser_main():
                 "cutoffs as files", file = sys.stderr)
             sys.exit(1)
     else:
-        args.repeat_cutoffs = [0 for x in args.file]
+        args.repeat_cutoffs = [0 for _ in args.file]
 
     if args.manual_error_cutoffs and args.ignore_error:
         print("ERROR: Cannot specify both --manual-error-cutoffs and",
