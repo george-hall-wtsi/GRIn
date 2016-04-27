@@ -1,22 +1,22 @@
 #! /usr/bin/env python
 
 ################################################################################
-# Copyright (c) 2016 Genome Research Ltd. 
-# 
-# Author: George Hall <gh10@sanger.ac.uk> 
-# 
-# This program is free software: you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
-# Foundation; either version 3 of the License, or (at your option) any later 
-# version. 
-# 
-# This program is distributed in the hope that it will be useful, but WITHOUT 
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
-# details. 
-# 
-# You should have received a copy of the GNU General Public License along with 
-# this program. If not, see <http://www.gnu.org/licenses/>. 
+# Copyright (c) 2016 Genome Research Ltd.
+#
+# Author: George Hall <gh10@sanger.ac.uk>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
 ################################################################################
 
 
@@ -35,8 +35,8 @@ def generate_min_list(hist_dict):
     """
     Returns a list of the x values corresponding to the minima in hist_dict.
     """
-    
-    min_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), 
+
+    min_list = scipy.signal.argrelextrema(np.array(hist_dict.values()),
         np.less_equal, order = 3)[0].tolist()
 
     return min_list
@@ -48,7 +48,7 @@ def generate_max_list(hist_dict):
     Returns a list of the x values corresponding to the maxima in hist_dict.
     """
 
-    max_list = scipy.signal.argrelextrema(np.array(hist_dict.values()), 
+    max_list = scipy.signal.argrelextrema(np.array(hist_dict.values()),
         np.greater_equal, order = 3)[0].tolist()
 
     return max_list
@@ -57,9 +57,9 @@ def generate_max_list(hist_dict):
 def find_main_peak(hist_dict, min_list = None):
 
     """
-    Returns the x value of the main peak in hist_dict. The main peak is the 
-    peak which should correspond to homozygous k-mers, not that which occurs 
-    right at the beginning of the k-mer spectrum, which is due to base errors 
+    Returns the x value of the main peak in hist_dict. The main peak is the
+    peak which should correspond to homozygous k-mers, not that which occurs
+    right at the beginning of the k-mer spectrum, which is due to base errors
     in the reads.
     """
 
@@ -77,7 +77,7 @@ def find_main_peak(hist_dict, min_list = None):
             if v == maximum and k > min_list_minimum and k > 10:
                 return k
 
-    print("ERROR: Could not find the maximum of the main peak", 
+    print("ERROR: Could not find the maximum of the main peak",
         file = sys.stderr)
     sys.exit(1)
 
@@ -85,7 +85,7 @@ def find_main_peak(hist_dict, min_list = None):
 def find_start_main_peak(hist_dict):
 
     """
-    Returns the smallest minimum value. 
+    Returns the smallest minimum value.
     """
 
     return min(generate_min_list(hist_dict))
@@ -95,7 +95,7 @@ def find_start_repeat_kmers(hist_dict, verbose = False):
 
     """
     Returns a point 'a' such that the x co-ordinate of the main peak is
-    equidistant between the start of the main peak and 'a'. 
+    equidistant between the start of the main peak and 'a'.
     """
 
     start_first_peak = find_start_main_peak(hist_dict)
@@ -109,7 +109,7 @@ def create_hist_dict(in_file):
 
     """
     Returns a dictionary with number of occurrences as the keys and the
-    frequency corresponding to each occurence as its value. 
+    frequency corresponding to each occurence as its value.
     """
 
     hist_dict = {}
@@ -121,16 +121,16 @@ def create_hist_dict(in_file):
     return hist_dict
 
 
-def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, 
+def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
     start_repetitive_kmers = 0):
 
     """
     Returns the GRI, which we have defined to be the percentage of
     repetitive k-mers in a k-mer spectrum. The user can choose to ignore
     k-mers caused by base errors when counting the total number of k-mers,
-    thus increasing the GRI. 
+    thus increasing the GRI.
     """
-    
+
     # Negative returns signify an error:
     # -1 => error cutoff greater than start of repetitive k-mers
 
@@ -140,7 +140,7 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         start_repetitive_kmers = find_start_repeat_kmers(hist_dict, verbose)
     else:
         if verbose:
-            print("User specified start of reptitive k-mers =", 
+            print("User specified start of reptitive k-mers =",
 				start_repetitive_kmers)
 
     if verbose:
@@ -189,9 +189,9 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
 def create_parser():
 	
     """
-    Returns a parser based on my custom parser, which is stored in 
-    custom_argument_parser.py. I have done it in this way because I wanted to 
-    be able to write my own help and usage messages. 
+    Returns a parser based on my custom parser, which is stored in
+    custom_argument_parser.py. I have done it in this way because I wanted to
+    be able to write my own help and usage messages.
     """
 
     parser = custom_argument_parser.CustomParser()
@@ -213,7 +213,7 @@ def parser_main():
 
     """
     Parses command line arguments and performs extra error checking.
-    Returns these arguments as a Namespace object. 
+    Returns these arguments as a Namespace object.
     """
 
     parser = create_parser()
@@ -249,13 +249,13 @@ def parser_main():
             sys.exit(1)
 
         if any(cutoff <= 0 for cutoff in args.manual_error_cutoffs):
-            print("ERROR: --manual-error-cuttoffs must be a positive integer", 
+            print("ERROR: --manual-error-cuttoffs must be a positive integer",
                 file = sys.stderr)
             sys.exit(1)
 
     if args.single_error_cutoff:
         if args.single_error_cutoff <= 0:
-            print("ERROR: --single-error-cutoff must be a positive integer", 
+            print("ERROR: --single-error-cutoff must be a positive integer",
                 file = sys.stderr)
             sys.exit(1)
 
@@ -268,15 +268,15 @@ def parser_main():
     return args
 
 
-def set_error_cutoffs(ignore_error, manual_error_cutoffs, single_error_cutoff, 
+def set_error_cutoffs(ignore_error, manual_error_cutoffs, single_error_cutoff,
         file_list):
 
     """
     Determines if the user wants to ignore the k-mers attributed to base errors
     or not, and then sets the error cutoffs accordingly, such that
-    calculate_gri() behaves correctly. 
+    calculate_gri() behaves correctly.
     """ # Check that only one of the three options has been set:
-    assert 0 <= sum([bool(x) for x in 
+    assert 0 <= sum([bool(x) for x in
         [ignore_error, manual_error_cutoffs, single_error_cutoff]]) <= 1, \
         "Can only set one of ignore_error, manual_error_cutoffs, " + \
         "single_error_cutoff"
@@ -305,9 +305,9 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, single_error_cutoff,
 def run_analyzer(file_name):
 
     """
-    First run KMERSPECTRUMANALYZER (see README for citation) and then calculate 
-    GRI based on the histogram output by this program. This idea is to give a 
-    k-mer spectrum with more noticable and accurate repeat peaks, but this is 
+    First run KMERSPECTRUMANALYZER (see README for citation) and then calculate
+    GRI based on the histogram output by this program. This idea is to give a
+    k-mer spectrum with more noticable and accurate repeat peaks, but this is
     often not the case.
     """
 
@@ -315,13 +315,13 @@ def run_analyzer(file_name):
     ksa_output_file = file_name + ".fit.detail.csv"
     with open(ksa_output_file, 'r') as f, \
         open(ksa_output_file + ".hist", 'w') as g:
-        
+
         for line in f.readlines():
             splat = line.strip().split()
             g.write(splat[0] + " " + splat[2] + "\n")
 
 
-def process_histogram_file(file_name, verbose, error_cutoff, upper_bound, 
+def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
         repeat_cutoff):
 
     """
@@ -331,7 +331,7 @@ def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
     with open(file_name, 'r') as f:
         print("Processing", file_name)
         hist_dict = create_hist_dict(f)
-        gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound, 
+        gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
             repeat_cutoff)
         if gri == -1:
             print("ERROR: Error cutoff greater than start of",
@@ -343,7 +343,7 @@ def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
 def main():
 
     """
-    Main driver function. 
+    Main driver function.
     """
 
     args = parser_main()
@@ -353,8 +353,8 @@ def main():
     verbose = args.verbose
     analyzer = args.analyzer
     upper_bound = args.upper_bound
-    
-    error_cutoffs = set_error_cutoffs(args.ignore_error, 
+
+    error_cutoffs = set_error_cutoffs(args.ignore_error,
         args.manual_error_cutoffs, args.single_error_cutoff, args.file)
 
     for (file_name, repeat_cutoff, error_cutoff) in \
@@ -365,10 +365,10 @@ def main():
             file_name += ".fit.detail.csv.hist"
 
         try:
-            process_histogram_file(file_name, verbose, error_cutoff, 
+            process_histogram_file(file_name, verbose, error_cutoff,
                 upper_bound, repeat_cutoff)
         except IOError:
-            print("ERROR: Could not open file \"" + file_name + "\".", 
+            print("ERROR: Could not open file \"" + file_name + "\".",
                 "Skipping...", file = sys.stderr)
 
 
