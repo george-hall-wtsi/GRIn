@@ -73,9 +73,9 @@ def find_main_peak(hist_dict, min_list=None):
         # Although this looks really inefficient, we hopefully
         # shouldn't have to do it more than twice (hopefully just once)
         # and I can't quickly think of a better way to do it
-        for (k, v) in hist_dict.iteritems():
-            if v == maximum and k > min_list_minimum and k > 10:
-                return k
+        for (key, value) in hist_dict.iteritems():
+            if value == maximum and key > min_list_minimum and key > 10:
+                return key
 
     print("ERROR: Could not find the maximum of the main peak",
           file=sys.stderr)
@@ -169,16 +169,16 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         if verbose:
             print("Using upper bound of", upper_bound)
 
-    total_number_kmers = sum((a * b) for (a, b) in hist_dict.items() if \
-        (a <= upper_bound) and ((not error_cutoff) or (a > min_val_cutoff)))
+    total_number_kmers = sum((occ * freq) for (occ, freq) in hist_dict.items() if \
+        (occ <= upper_bound) and ((not error_cutoff) or (occ > min_val_cutoff)))
 
     if verbose:
         print("Total number of k-mers", total_number_kmers)
 
     number_repetitive_kmers = 0
-    for (a, b) in hist_dict.items():
-        if (a <= upper_bound) and (a >= start_repetitive_kmers):
-            number_repetitive_kmers += (a * b)
+    for (occ, freq) in hist_dict.items():
+        if (occ <= upper_bound) and (occ >= start_repetitive_kmers):
+            number_repetitive_kmers += (occ * freq)
 
     if verbose:
         print("Number of repetitive k-mers", number_repetitive_kmers)
