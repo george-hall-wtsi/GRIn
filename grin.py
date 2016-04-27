@@ -22,7 +22,6 @@
 
 from __future__ import print_function, division
 import sys
-import subprocess
 
 import scipy.signal
 import numpy as np
@@ -199,7 +198,6 @@ def create_parser():
     parser = custom_argument_parser.CustomParser()
     parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument("-c", "--repeat-cutoffs", type=int, nargs='+')
-    parser.add_argument("-a", "--analyzer", action="store_true")
     parser.add_argument("-e", "--manual-error-cutoffs", type=int,
                         nargs='+')
     parser.add_argument("-E", "--single-error-cutoff", type=int, nargs='?')
@@ -304,25 +302,6 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, single_error_cutoff,
     return error_cutoffs
 
 
-def run_analyzer(file_name):
-
-    """
-    First run KMERSPECTRUMANALYZER (see README for citation) and then calculate
-    GRI based on the histogram output by this program. This idea is to give a
-    k-mer spectrum with more noticable and accurate repeat peaks, but this is
-    often not the case.
-    """
-
-    subprocess.call(["kmerspectrumanalyzer", file_name])
-    ksa_output_file = file_name + ".fit.detail.csv"
-    with open(ksa_output_file, 'r') as f, \
-        open(ksa_output_file + ".hist", 'w') as g:
-
-        for line in f.readlines():
-            splat = line.strip().split()
-            g.write(splat[0] + " " + splat[2] + "\n")
-
-
 def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
                            repeat_cutoff):
 
@@ -353,7 +332,6 @@ def main():
     manual_repeat_cutoffs = args.repeat_cutoffs
     file_paths = args.file
     verbose = args.verbose
-    analyzer = args.analyzer
     upper_bound = args.upper_bound
 
     error_cutoffs = set_error_cutoffs(args.ignore_error,
@@ -363,10 +341,6 @@ def main():
 
     for (file_name, repeat_cutoff, error_cutoff) in \
     zip(file_paths, manual_repeat_cutoffs, error_cutoffs):
-
-        if analyzer:
-            run_analyzer(file_name)
-            file_name += ".fit.detail.csv.hist"
 
         try:
             process_histogram_file(file_name, verbose, error_cutoff,
