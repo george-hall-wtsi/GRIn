@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-################################################################################
+###############################################################################
 # Copyright (c) 2016 Genome Research Ltd.
 #
 # Author: George Hall <gh10@sanger.ac.uk>
@@ -17,7 +17,7 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
-################################################################################
+###############################################################################
 
 
 """
@@ -33,7 +33,7 @@ gh10@sanger.ac.uk.
 from __future__ import print_function, division
 import sys
 
-import scipy.signal
+import scipy.signal as sig
 import numpy as np
 
 import custom_argument_parser
@@ -45,8 +45,8 @@ def generate_min_list(hist_dict):
     Returns a list of the x values corresponding to the minima in hist_dict.
     """
 
-    min_list = scipy.signal.argrelextrema(np.array(hist_dict.values()),
-                                          np.less_equal, order=3)[0].tolist()
+    min_list = sig.argrelextrema(np.array(hist_dict.values()),
+                                 np.less_equal, order=3)[0].tolist()
 
     return min_list
 
@@ -57,8 +57,8 @@ def generate_max_list(hist_dict):
     Returns a list of the x values corresponding to the maxima in hist_dict.
     """
 
-    max_list = scipy.signal.argrelextrema(np.array(hist_dict.values()),
-                                          np.greater_equal, order=3)[0].tolist()
+    max_list = sig.argrelextrema(np.array(hist_dict.values()),
+                                 np.greater_equal, order=3)[0].tolist()
 
     return max_list
 
@@ -285,9 +285,11 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, single_error_cutoff,
     Determines if the user wants to ignore the k-mers attributed to base errors
     or not, and then sets the error cutoffs accordingly, such that
     calculate_gri() behaves correctly.
-    """ # Check that only one of the three options has been set:
-    assert 0 <= sum([bool(x) for x in
-                     [ignore_error, manual_error_cutoffs, single_error_cutoff]]) <= 1, \
+    """
+
+    # Check that only one of the three options has been set:
+    assert 0 <= sum([bool(x) for x in [ignore_error, manual_error_cutoffs,
+                                       single_error_cutoff]]) <= 1, \
         "Can only set one of ignore_error, manual_error_cutoffs, " + \
         "single_error_cutoff"
 
