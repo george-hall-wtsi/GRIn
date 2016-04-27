@@ -37,7 +37,7 @@ def generate_min_list(hist_dict):
     """
 
     min_list = scipy.signal.argrelextrema(np.array(hist_dict.values()),
-        np.less_equal, order = 3)[0].tolist()
+        np.less_equal, order=3)[0].tolist()
 
     return min_list
 	
@@ -49,12 +49,12 @@ def generate_max_list(hist_dict):
     """
 
     max_list = scipy.signal.argrelextrema(np.array(hist_dict.values()),
-        np.greater_equal, order = 3)[0].tolist()
+        np.greater_equal, order=3)[0].tolist()
 
     return max_list
 
 
-def find_main_peak(hist_dict, min_list = None):
+def find_main_peak(hist_dict, min_list=None):
 
     """
     Returns the x value of the main peak in hist_dict. The main peak is the
@@ -78,7 +78,7 @@ def find_main_peak(hist_dict, min_list = None):
                 return k
 
     print("ERROR: Could not find the maximum of the main peak",
-        file = sys.stderr)
+        file=sys.stderr)
     sys.exit(1)
 
 
@@ -91,7 +91,7 @@ def find_start_main_peak(hist_dict):
     return min(generate_min_list(hist_dict))
 
 
-def find_start_repeat_kmers(hist_dict, verbose = False):
+def find_start_repeat_kmers(hist_dict, verbose=False):
 
     """
     Returns a point 'a' such that the x co-ordinate of the main peak is
@@ -122,7 +122,7 @@ def create_hist_dict(in_file):
 
 
 def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
-    start_repetitive_kmers = 0):
+    start_repetitive_kmers=0):
 
     """
     Returns the GRI, which we have defined to be the percentage of
@@ -195,16 +195,16 @@ def create_parser():
     """
 
     parser = custom_argument_parser.CustomParser()
-    parser.add_argument("-v", "--verbose", action = "store_true")
-    parser.add_argument("-c", "--repeat-cutoffs", type = int, nargs = '+')
-    parser.add_argument("-a", "--analyzer", action = "store_true")
-    parser.add_argument("-e", "--manual-error-cutoffs", type = int,
-        nargs = '+')
-    parser.add_argument("-E", "--single-error-cutoff", type = int, nargs = '?')
-    parser.add_argument("-i", "--ignore-error", action = "store_true")
-    parser.add_argument("-u", "--upper-bound", type = int)
-    parser.add_argument("-f", "--file", type = str, nargs = '+',
-        required = True)
+    parser.add_argument("-v", "--verbose", action="store_true")
+    parser.add_argument("-c", "--repeat-cutoffs", type=int, nargs='+')
+    parser.add_argument("-a", "--analyzer", action="store_true")
+    parser.add_argument("-e", "--manual-error-cutoffs", type=int,
+        nargs='+')
+    parser.add_argument("-E", "--single-error-cutoff", type=int, nargs='?')
+    parser.add_argument("-i", "--ignore-error", action="store_true")
+    parser.add_argument("-u", "--upper-bound", type=int)
+    parser.add_argument("-f", "--file", type=str, nargs='+',
+        required=True)
 
     return parser
 
@@ -222,47 +222,47 @@ def parser_main():
     if args.repeat_cutoffs:
         if len(args.file) != len(args.repeat_cutoffs):
             print("ERROR: Need to have the same number of manual repeat",
-                "cutoffs as files", file = sys.stderr)
+                "cutoffs as files", file=sys.stderr)
             sys.exit(1)
     else:
         args.repeat_cutoffs = [0 for _ in args.file]
 
     if args.manual_error_cutoffs and args.ignore_error:
         print("ERROR: Cannot specify both --manual-error-cutoffs and",
-            "--ignore-error", file = sys.stderr)
+            "--ignore-error", file=sys.stderr)
         sys.exit(1)
 
     if args.manual_error_cutoffs and args.single_error_cutoff:
         print("ERROR: Cannot specify both --manual-error cutoffs and",
-            "--single-error-cutoff", file = sys.stderr)
+            "--single-error-cutoff", file=sys.stderr)
         sys.exit(1)
 
     if args.ignore_error and args.single_error_cutoff:
         print("ERROR: Cannot specify both --ignore-error and",
-            "--single-error-cutoff", file = sys.stderr)
+            "--single-error-cutoff", file=sys.stderr)
         sys.exit(1)
 
     if args.manual_error_cutoffs:
         if len(args.file) != len(args.manual_error_cutoffs):
             print("ERROR: Need to have the same number of manual error",
-                "cutoffs as files", file = sys.stderr)
+                "cutoffs as files", file=sys.stderr)
             sys.exit(1)
 
         if any(cutoff <= 0 for cutoff in args.manual_error_cutoffs):
             print("ERROR: --manual-error-cuttoffs must be a positive integer",
-                file = sys.stderr)
+                file=sys.stderr)
             sys.exit(1)
 
     if args.single_error_cutoff:
         if args.single_error_cutoff <= 0:
             print("ERROR: --single-error-cutoff must be a positive integer",
-                file = sys.stderr)
+                file=sys.stderr)
             sys.exit(1)
 
     if args.upper_bound:
         if args.upper_bound <= 0:
             print("ERROR: --upper-bound must be a positive integer",
-                file = sys.stderr)
+                file=sys.stderr)
             sys.exit(1)
 
     return args
@@ -335,7 +335,7 @@ def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
             repeat_cutoff)
         if gri == -1:
             print("ERROR: Error cutoff greater than start of",
-                "repetitive k-mers. Skipping this file...", file = sys.stderr)
+                "repetitive k-mers. Skipping this file...", file=sys.stderr)
         else:
             print("GRI = %0.4f" %(gri))
 
@@ -369,7 +369,7 @@ def main():
                 upper_bound, repeat_cutoff)
         except IOError:
             print("ERROR: Could not open file \"" + file_name + "\".",
-                "Skipping...", file = sys.stderr)
+                "Skipping...", file=sys.stderr)
 
 
 if __name__ == "__main__":
