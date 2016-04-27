@@ -178,8 +178,11 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         if verbose:
             print("Using upper bound of", upper_bound)
 
-    total_number_kmers = sum((occ * freq) for (occ, freq) in hist_dict.items() if \
-        (occ <= upper_bound) and ((not error_cutoff) or (occ > min_val_cutoff)))
+    total_number_kmers = 0
+    for (occ, freq) in hist_dict.items():
+        if occ <= upper_bound and \
+                ((not error_cutoff) or (occ > min_val_cutoff)):
+            total_number_kmers += (occ * freq)
 
     if verbose:
         print("Total number of k-mers", total_number_kmers)
