@@ -20,6 +20,16 @@
 ################################################################################
 
 
+"""
+GRIn is a program which computed a set of read's Genome Repeat Index (GRI). The
+GRI is defined as being the proportion of k-mers in a set of read's k-mer
+spectrum which are repetitive. All of this is explained in much more detail in
+the paper accompanying this program (only stored locally as of 27/4/16).  For
+anything to do with this program, please contact George Hall at
+gh10@sanger.ac.uk.
+"""
+
+
 from __future__ import print_function, division
 import sys
 
