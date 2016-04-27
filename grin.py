@@ -309,9 +309,9 @@ def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
     Compute GRI for a histogram file.
     """
 
-    with open(file_name, 'r') as f:
+    with open(file_name, 'r') as hist_file:
         print("Processing", file_name)
-        hist_dict = create_hist_dict(f)
+        hist_dict = create_hist_dict(hist_file)
         gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
                             repeat_cutoff)
         if gri == -1:
