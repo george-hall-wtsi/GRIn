@@ -170,20 +170,22 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
             print("Using upper bound of", upper_bound)
 
     total_number_kmers = sum((a * b) for (a, b) in hist_dict.items() if \
-        ((a <= upper_bound) and ((not error_cutoff) or (a > min_val_cutoff))))
+        (a <= upper_bound) and ((not error_cutoff) or (a > min_val_cutoff)))
 
     if verbose:
         print("Total number of k-mers", total_number_kmers)
 
     number_repetitive_kmers = 0
     for (a, b) in hist_dict.items():
-        if ((a <= upper_bound) and (a >= start_repetitive_kmers)):
+        if (a <= upper_bound) and (a >= start_repetitive_kmers):
             number_repetitive_kmers += (a * b)
 
     if verbose:
         print("Number of repetitive k-mers", number_repetitive_kmers)
 
-    return (number_repetitive_kmers / total_number_kmers)
+    gri = number_repetitive_kmers / total_number_kmers
+
+    return gri
 
 
 def create_parser():
