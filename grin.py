@@ -129,6 +129,21 @@ def create_hist_dict(in_file):
     return hist_dict
 
 
+def count_num_kmers(hist_dict, lower_bound, upper_bound):
+
+    """
+    Count the number of k-mers contained in the hist dict between lower_bound
+    and upper_bound
+    """
+
+    kmer_count = 0
+    for (occ, freq) in hist_dict.items():
+        if lower_bound <= occ <= upper_bound:
+            kmer_count += (occ * freq)
+
+    return kmer_count
+
+
 def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
                   start_repetitive_kmers=0):
 
@@ -177,19 +192,15 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
     if verbose:
         print("Using upper bound of", upper_bound)
 
-    total_number_kmers = 0
-    for (occ, freq) in hist_dict.items():
-        if occ <= upper_bound and \
-                ((not error_cutoff) or (occ > min_val_cutoff)):
-            total_number_kmers += (occ * freq)
+    total_number_kmers = count_num_kmers(hist_dict, min_val_cutoff,
+                                         upper_bound)
 
     if verbose:
         print("Total number of k-mers", total_number_kmers)
 
-    number_repetitive_kmers = 0
-    for (occ, freq) in hist_dict.items():
-        if (occ <= upper_bound) and (occ >= start_repetitive_kmers):
-            number_repetitive_kmers += (occ * freq)
+    number_repetitive_kmers = count_num_kmers(hist_dict,
+                                              start_repetitive_kmers,
+                                              upper_bound)
 
     if verbose:
         print("Number of repetitive k-mers", number_repetitive_kmers)
