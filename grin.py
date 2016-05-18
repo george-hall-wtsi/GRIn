@@ -186,6 +186,7 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
 
     if verbose:
         print("Using minimum k-mer occurrence of", min_val_cutoff)
+        print("K-mer depth =", find_kmer_depth(hist_dict))
 
     if upper_bound is None:
         upper_bound = 20 * find_kmer_depth(hist_dict)
