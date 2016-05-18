@@ -62,7 +62,7 @@ def generate_max_list(hist_dict):
     return max_list
 
 
-def find_main_peak(hist_dict, min_list=None):
+def find_kmer_depth(hist_dict, min_list=None):
 
     """
     Returns the x value of the main peak in hist_dict. The main peak is the
@@ -110,7 +110,7 @@ def find_start_repeat_kmers(hist_dict, verbose=False):
     if verbose:
         print("Start of first peak =", start_first_peak)
 
-    return (2 * find_main_peak(hist_dict)) - start_first_peak
+    return (2 * find_kmer_depth(hist_dict)) - start_first_peak
 
 
 def create_hist_dict(in_file):
@@ -172,7 +172,7 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         min_val_cutoff = 0
 
     if upper_bound is None:
-        upper_bound = 20 * find_main_peak(hist_dict)
+        upper_bound = 20 * find_kmer_depth(hist_dict)
 
     if verbose:
         print("Using upper bound of", upper_bound)
