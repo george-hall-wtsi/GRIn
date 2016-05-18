@@ -181,10 +181,10 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         if min_val_cutoff > start_repetitive_kmers:
             return -1
 
-        if verbose:
-            print("Using minimum k-mer occurrence of", min_val_cutoff)
     else:
         min_val_cutoff = 0
+    if verbose:
+        print("Using minimum k-mer occurrence of", min_val_cutoff)
 
     if upper_bound is None:
         upper_bound = 20 * find_kmer_depth(hist_dict)
