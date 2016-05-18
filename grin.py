@@ -182,7 +182,8 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
             return -1
 
     else:
-        min_val_cutoff = 0
+        min_val_cutoff = 1
+
     if verbose:
         print("Using minimum k-mer occurrence of", min_val_cutoff)
 
