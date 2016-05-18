@@ -155,8 +155,8 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         print("Start of repetitive k-mers", start_repetitive_kmers)
 
     # error_cutoff: 0 => use entire k-mer spectrum
-    #				-1 => Auto error checking
-    #				>= 1 => error cutoff manually specified
+    #               -1 => Auto error checking
+    #		    >= 1 => error cutoff manually specified
     if error_cutoff:
         if error_cutoff == -1:
             min_val_cutoff = find_start_main_peak(hist_dict)
