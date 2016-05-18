@@ -110,7 +110,7 @@ def find_start_repeat_kmers(hist_dict, verbose=False):
     if verbose:
         print("Start of first peak =", start_first_peak)
 
-    return int((2 * find_main_peak(hist_dict)) - start_first_peak)
+    return (2 * find_main_peak(hist_dict)) - start_first_peak
 
 
 def create_hist_dict(in_file):
@@ -123,7 +123,7 @@ def create_hist_dict(in_file):
     hist_dict = {}
 
     for line in in_file.readlines():
-        splat = [float(x) for x in line.strip().split()]
+        splat = [int(x) for x in line.strip().split()]
         hist_dict[splat[0]] = splat[1]
 
     return hist_dict
