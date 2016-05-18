@@ -172,10 +172,10 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         min_val_cutoff = 0
 
     if upper_bound is None:
-        upper_bound = max(hist_dict.keys())
-    else:
-        if verbose:
-            print("Using upper bound of", upper_bound)
+        upper_bound = 20 * find_main_peak(hist_dict)
+
+    if verbose:
+        print("Using upper bound of", upper_bound)
 
     total_number_kmers = 0
     for (occ, freq) in hist_dict.items():
