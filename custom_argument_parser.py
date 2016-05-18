@@ -32,7 +32,8 @@ class CustomParser(argparse.ArgumentParser):
 
     """Subclass to get custom error messages"""
 
-    def generate_usage_message(self):
+    @staticmethod
+    def generate_usage_message():
         """Custom usage message"""
         store_str = "usage: grin [-h] [-v] [-a] [-u upper-bound] [-i] "
         store_str += "[-E single-error-cutoff] "
