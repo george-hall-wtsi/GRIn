@@ -252,18 +252,8 @@ def parser_main():
     else:
         args.repeat_cutoffs = [0 for _ in args.file]
 
-    if args.manual_error_cutoffs and args.ignore_error:
-        print("ERROR: Cannot specify both --manual-error-cutoffs and",
-              "--ignore-error", file=sys.stderr)
-        sys.exit(1)
-
     if args.manual_error_cutoffs and args.single_error_cutoff:
         print("ERROR: Cannot specify both --manual-error cutoffs and",
-              "--single-error-cutoff", file=sys.stderr)
-        sys.exit(1)
-
-    if args.ignore_error and args.single_error_cutoff:
-        print("ERROR: Cannot specify both --ignore-error and",
               "--single-error-cutoff", file=sys.stderr)
         sys.exit(1)
 
@@ -293,8 +283,7 @@ def parser_main():
     return args
 
 
-def set_error_cutoffs(ignore_error, manual_error_cutoffs, single_error_cutoff,
-                      file_list):
+def set_error_cutoffs(manual_error_cutoffs, single_error_cutoff, file_list):
 
     """
     Determines if the user wants to ignore the k-mers attributed to base errors
@@ -303,22 +292,18 @@ def set_error_cutoffs(ignore_error, manual_error_cutoffs, single_error_cutoff,
     """
 
     # Check that only one of the three options has been set:
-    assert 0 <= sum([bool(x) for x in [ignore_error, manual_error_cutoffs,
+    assert 0 <= sum([bool(x) for x in [manual_error_cutoffs,
                                        single_error_cutoff]]) <= 1, \
-        "Can only set one of ignore_error, manual_error_cutoffs, " + \
+        "Can only set one of manual_error_cutoffs and " + \
         "single_error_cutoff"
 
     error_cutoffs = []
     if not single_error_cutoff and \
-        not ignore_error and \
         not manual_error_cutoffs:
 
         # User doesn't want to do anything about errors:
         error_cutoffs = [0 for x in file_list]
 
-    elif ignore_error:
-        # User wants errror cutoff to be automatically determined
-        error_cutoffs = [-1 for x  in file_list]
     elif single_error_cutoff or manual_error_cutoffs:
         # User has manually specified error cutoffs
         if manual_error_cutoffs:
@@ -361,8 +346,7 @@ def main():
     verbose = args.verbose
     upper_bound = args.upper_bound
 
-    error_cutoffs = set_error_cutoffs(args.ignore_error,
-                                      args.manual_error_cutoffs,
+    error_cutoffs = set_error_cutoffs(args.manual_error_cutoffs,
                                       args.single_error_cutoff,
                                       args.file)
 

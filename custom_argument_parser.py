@@ -35,7 +35,7 @@ class CustomParser(argparse.ArgumentParser):
     @staticmethod
     def generate_usage_message():
         """Custom usage message"""
-        store_str = "usage: grin [-h] [-v] [-a] [-u upper-bound] [-i] "
+        store_str = "usage: grin [-h] [-v] [-a] [-u upper-bound] "
         store_str += "[-E single-error-cutoff] "
         store_str += "[-e error-cutoff [error-cutoff ...]] "
         store_str += "[-c cutoff [cutoff ...]] -f file [file ...]\n"
@@ -59,9 +59,6 @@ class CustomParser(argparse.ArgumentParser):
         store_str += "\t-u, --upper-bound          "
         store_str += "upper bound after which k-mers do not contribute to "
         store_str += "total or repetitive k-mer counts\n"
-        store_str += "\t-i, --ignore-error         "
-        store_str += "estimate the erroneous k-mers and do not include them "
-        store_str += "in the total k-mer count\n"
         store_str += "\t-e, --error-cutoffs        "
         store_str += "manual list of the end of the error peak (one per "
         store_str += "file)\n"
