@@ -278,33 +278,34 @@ def parser_main():
     return args
 
 
-def set_error_cutoffs(manual_error_cutoffs, single_error_cutoff, num_files):
+def set_cutoffs(indiv_cutoffs, single_cutoff, num_files):
 
     """
-    Determines if the user wants to ignore the k-mers attributed to base errors
-    or not, and then sets the error cutoffs accordingly, such that
-    calculate_gri() behaves correctly.
+    This function takes the list of infividual cutoffs specified by the user
+    (will be None if none were specified); a single cutoff if specified by the
+    user (will be None if it was not specified); the number of input files.
+
+    If individual cutoffs were specified then that list is returned, if a
+    single cutoff was specified then a list is returned with that cutoff
+    repeated once for each file, else it is assumed that the user wants to use
+    the default (i.e. automatic estimation) option later, and so a list
+    containing a 0 for each file is returned.
     """
 
-    # Check that only one of the three options has been set:
-    assert 0 <= sum([bool(x) for x in [manual_error_cutoffs,
-                                       single_error_cutoff]]) <= 1, \
+    # Check that only one of these has been set (user can only specify a single
+    # cutoff for the entire set of files, or an individual cutoff for each
+    # file, but not both)
+    assert not (indiv_cutoffs and single_cutoff), \
         "Can only set one of manual_error_cutoffs and single_error_cutoff"
 
-    error_cutoffs = []
-    if not single_error_cutoff and not manual_error_cutoffs:
-        # User doesn't want to do anything about errors, so set to 0 to
-        # indictate this
-        error_cutoffs = [0 for x in num_files]
+    if indiv_cutoffs and not single_cutoff:
+        return indiv_cutoffs
 
-    elif single_error_cutoff or manual_error_cutoffs:
-        # User has manually specified error cutoffs
-        if manual_error_cutoffs:
-            error_cutoffs = manual_error_cutoffs
-        else:
-            error_cutoffs = [single_error_cutoff for _ in num_files]
+    elif single_cutoff and not indiv_cutoffs:
+        return [single_cutoff for _ in xrange(num_files)]
 
-    return error_cutoffs
+    else:
+        return [0 for _ in xrange(num_files)]
 
 
 def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
@@ -352,9 +353,8 @@ def main():
 
     upper_bound = args.upper_bound
     repeat_cutoffs = set_repeat_cutoffs(args.repeat_cutoffs, len(file_paths))
-    error_cutoffs = set_error_cutoffs(args.manual_error_cutoffs,
-                                      args.single_error_cutoff,
-                                      len(file_paths))
+    error_cutoffs = set_cutoffs(args.manual_error_cutoffs,
+                                args.single_error_cutoff, len(file_paths))
 
     for (file_name, repeat_cutoff, error_cutoff) in \
     zip(file_paths, repeat_cutoffs, error_cutoffs):
