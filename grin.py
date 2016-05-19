@@ -226,7 +226,6 @@ def create_parser():
     parser.add_argument("-e", "--indiv-error-cutoffs", type=int,
                         nargs='+')
     parser.add_argument("-E", "--single-error-cutoff", type=int, nargs='?')
-    parser.add_argument("-i", "--ignore-error", action="store_true")
     parser.add_argument("-u", "--upper-bound", type=int)
     parser.add_argument("-f", "--file", type=str, nargs='+',
                         required=True)
