@@ -343,20 +343,6 @@ def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
             print("GRI = %0.4f" %(gri))
 
 
-def set_repeat_cutoffs(user_repeat_cutoffs, num_files):
-
-    """
-    Return a list of the specified repeat cutoffs if provided by the user,
-    else return a list containing a 0 for each file. This 0 tells the program
-    later to estimate the repeat cutoff.
-    """
-
-    if user_repeat_cutoffs:
-        return user_repeat_cutoffs
-    else:
-        return [0 for _ in xrange(num_files)]
-
-
 def main():
 
     """
