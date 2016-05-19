@@ -275,10 +275,12 @@ def parser_main():
     parser = create_parser()
     args = parser.parse_args()
 
+    num_files = len(args.file)
+
     error_check_cutoffs(args.indiv_error_cutoffs, args.single_error_cutoff,
-                        len(args.file), "error")
+                        num_files, "error")
     error_check_cutoffs(args.indiv_repeat_cutoffs, args.single_repeat_cutoff,
-                        len(args.file), "repeat")
+                        num_files, "repeat")
 
     if args.upper_bound:
         if args.upper_bound <= 0:
