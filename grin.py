@@ -37,6 +37,8 @@ import numpy as np
 
 import custom_argument_parser
 
+# For use in some error messages
+MY_EMAIL = "gh10@sanger.ac.uk"
 
 def generate_min_list(hist_dict):
 
@@ -296,7 +298,12 @@ def set_cutoffs(indiv_cutoffs, single_cutoff, num_files):
     # cutoff for the entire set of files, or an individual cutoff for each
     # file, but not both)
     assert not (indiv_cutoffs and single_cutoff), \
-        "Can only set one of manual_error_cutoffs and single_error_cutoff"
+        "For error, repeat, and upper cutoffs, setting individual cutoffs " + \
+        "and a single cutoff to be applied to the whole set of files is " + \
+        "mutually exclusive. This should have been checked in the " + \
+        "argument parsing error checking, but was clearly missed, and " + \
+        "appeared here. Please email me about seeing this message (" + \
+        MY_EMAIL + ")"
 
     if indiv_cutoffs and not single_cutoff:
         return indiv_cutoffs
