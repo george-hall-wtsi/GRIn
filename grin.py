@@ -147,7 +147,7 @@ def count_num_kmers(hist_dict, lower_bound, upper_bound):
 
 
 def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
-                  start_repetitive_kmers=0):
+                  repeat_cutoff=0):
 
     """
     Returns the GRI, which we have defined to be the percentage of
@@ -159,24 +159,24 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
     # Negative returns signify an error:
     # -1 => error cutoff greater than start of repetitive k-mers
 
-    if not start_repetitive_kmers:
+    if not repeat_cutoff:
         if verbose:
             print("Estimating start of repetitive k-mers")
-        start_repetitive_kmers = find_start_repeat_kmers(hist_dict, verbose)
+        repeat_cutoff = find_start_repeat_kmers(hist_dict, verbose)
     else:
         if verbose:
             print("User specified start of reptitive k-mers =",
-                  start_repetitive_kmers)
+                  repeat_cutoff)
 
     if verbose:
-        print("Start of repetitive k-mers", start_repetitive_kmers)
+        print("Start of repetitive k-mers", repeat_cutoff)
 
     # error_cutoff: 0 => auto error checking
     #		    >= 1 => error cutoff manually specified
     if error_cutoff:
         min_val_cutoff = error_cutoff
 
-        if min_val_cutoff > start_repetitive_kmers:
+        if min_val_cutoff > repeat_cutoff:
             print("ERROR: Error cutoff greater than start of",
                   "repetitive k-mers. Skipping this file...", file=sys.stderr)
             return -1
@@ -202,7 +202,7 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         print("Total number of k-mers", total_number_kmers)
 
     number_repetitive_kmers = count_num_kmers(hist_dict,
-                                              start_repetitive_kmers,
+                                              repeat_cutoff,
                                               upper_bound)
 
     if verbose:
