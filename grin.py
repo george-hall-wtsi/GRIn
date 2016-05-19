@@ -159,11 +159,6 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_cutoff,
     an error message first!).
     """
 
-    # Error check error cutoff (need to do more error checking here...)
-    if error_cutoff > repeat_cutoff:
-        print("ERROR: Error cutoff greater than start of",
-              "repetitive k-mers. Skipping this file...", file=sys.stderr)
-        return -1
 
     total_number_kmers = count_num_kmers(hist_dict, error_cutoff, upper_cutoff)
     number_repetitive_kmers = count_num_kmers(hist_dict, repeat_cutoff,
@@ -352,6 +347,21 @@ def compute_upper_cutoff(hist_dict, verbose, initial_upper_cutoff):
         return initial_upper_cutoff
 
 
+def error_check_computed_cutoffs(error_cutoff, repeat_cutoff, upper_cutoff):
+
+    """
+    Check we aren't going to have problems with these cutoffs later. Need to
+    add more checks...
+    """
+
+    if error_cutoff > repeat_cutoff:
+        print("ERROR: Error cutoff greater than start of",
+              "repetitive k-mers. Skipping this file...", file=sys.stderr)
+        return -1
+
+    return 0
+
+
 def process_histogram_file(file_name, verbose, in_error_cutoff,
                            in_upper_cutoff, in_repeat_cutoff):
 
@@ -371,6 +381,10 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
                                               in_repeat_cutoff)
         upper_cutoff = compute_upper_cutoff(hist_dict, verbose,
                                             in_upper_cutoff)
+
+        if error_check_computed_cutoffs(error_cutoff, repeat_cutoff,
+                                        upper_cutoff) == -1:
+            return
 
         gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_cutoff,
                             repeat_cutoff)
