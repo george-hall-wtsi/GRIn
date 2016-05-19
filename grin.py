@@ -146,7 +146,7 @@ def count_num_kmers(hist_dict, lower_bound, upper_bound):
     return kmer_count
 
 
-def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
+def calculate_gri(hist_dict, verbose, error_cutoff, upper_cutoff,
                   repeat_cutoff):
 
     """
@@ -178,13 +178,13 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
 
 
     # If necessary, estimate upper cutoff
-    if upper_bound == 0:
-        upper_bound = 20 * find_kmer_depth(hist_dict)
+    if upper_cutoff == 0:
+        upper_cutoff = 20 * find_kmer_depth(hist_dict)
         if verbose:
-            print("Estimated upper cutoff as", upper_bound)
+            print("Estimated upper cutoff as", upper_cutoff)
     else:
         if verbose:
-            print("Using user specified upper bound of", upper_bound)
+            print("Using user specified upper bound of", upper_cutoff)
 
     # Error check error cutoff
     if error_cutoff > repeat_cutoff:
@@ -197,14 +197,14 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
 
 
     total_number_kmers = count_num_kmers(hist_dict, error_cutoff,
-                                         upper_bound)
+                                         upper_cutoff)
 
     if verbose:
         print("Total number of k-mers", total_number_kmers)
 
     number_repetitive_kmers = count_num_kmers(hist_dict,
                                               repeat_cutoff,
-                                              upper_bound)
+                                              upper_cutoff)
 
     if verbose:
         print("Number of repetitive k-mers", number_repetitive_kmers)
