@@ -176,6 +176,16 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         if verbose:
             print("Using user specified error cutoff of", error_cutoff)
 
+
+    # If necessary, estimate upper cutoff
+    if upper_bound == 0:
+        upper_bound = 20 * find_kmer_depth(hist_dict)
+        if verbose:
+            print("Estimated upper cutoff as", upper_bound)
+    else:
+        if verbose:
+            print("Using user specified upper bound of", upper_bound)
+
     # Error check error cutoff
     if error_cutoff > repeat_cutoff:
         print("ERROR: Error cutoff greater than start of",
@@ -185,11 +195,6 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
     if verbose:
         print("K-mer depth =", find_kmer_depth(hist_dict))
 
-    if upper_bound is None:
-        upper_bound = 20 * find_kmer_depth(hist_dict)
-
-    if verbose:
-        print("Using upper bound of", upper_bound)
 
     total_number_kmers = count_num_kmers(hist_dict, error_cutoff,
                                          upper_bound)
