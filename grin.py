@@ -153,11 +153,9 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
     Returns the GRI, which we have defined to be the percentage of
     repetitive k-mers in a k-mer spectrum. The user can choose to ignore
     k-mers caused by base errors when counting the total number of k-mers,
-    thus increasing the GRI.
+    thus increasing the GRI. Return -1 if there has been a problem (print
+    an error message first!).
     """
-
-    # Negative returns signify an error:
-    # -1 => error cutoff greater than start of repetitive k-mers
 
     if not repeat_cutoff:
         if verbose:
