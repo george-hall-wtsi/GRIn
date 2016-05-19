@@ -157,7 +157,8 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
     an error message first!).
     """
 
-    if not repeat_cutoff:
+    # If necessary, estimate repeat cutoff
+    if repeat_cutoff == 0:
         if verbose:
             print("Estimating start of repetitive k-mers")
         repeat_cutoff = find_start_repeat_kmers(hist_dict, verbose)
@@ -165,9 +166,6 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         if verbose:
             print("User specified start of reptitive k-mers =",
                   repeat_cutoff)
-
-    if verbose:
-        print("Start of repetitive k-mers", repeat_cutoff)
 
     # error_cutoff: 0 => auto error checking
     #		    >= 1 => error cutoff manually specified
