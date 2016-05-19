@@ -177,6 +177,8 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
         min_val_cutoff = error_cutoff
 
         if min_val_cutoff > start_repetitive_kmers:
+            print("ERROR: Error cutoff greater than start of",
+                  "repetitive k-mers. Skipping this file...", file=sys.stderr)
             return -1
 
     else:
@@ -336,10 +338,7 @@ def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
         hist_dict = create_hist_dict(hist_file)
         gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
                             repeat_cutoff)
-        if gri == -1:
-            print("ERROR: Error cutoff greater than start of",
-                  "repetitive k-mers. Skipping this file...", file=sys.stderr)
-        else:
+        if gri != -1:
             print("GRI = %0.4f" %(gri))
 
 
