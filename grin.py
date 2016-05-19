@@ -147,7 +147,7 @@ def count_num_kmers(hist_dict, lower_bound, upper_bound):
 
 
 def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
-                  repeat_cutoff=0):
+                  repeat_cutoff):
 
     """
     Returns the GRI, which we have defined to be the percentage of
