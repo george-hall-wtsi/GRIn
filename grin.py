@@ -226,7 +226,8 @@ def create_parser():
     parser.add_argument("-e", "--indiv-error-cutoffs", type=int,
                         nargs='+')
     parser.add_argument("-E", "--single-error-cutoff", type=int, nargs='?')
-    parser.add_argument("-u", "--upper-bound", type=int)
+    parser.add_argument("-u", "--indiv-upper-cutoffs", type=int, nargs='+')
+    parser.add_argument("-U", "--single-upper-cutoff", type=int, nargs='?')
     parser.add_argument("-f", "--file", type=str, nargs='+',
                         required=True)
 
@@ -281,12 +282,9 @@ def parser_main():
                         num_files, "error")
     error_check_cutoffs(args.indiv_repeat_cutoffs, args.single_repeat_cutoff,
                         num_files, "repeat")
+    error_check_cutoffs(args.indiv_upper_cutoffs, args.single_upper_cutoff,
+                        num_files, "upper")
 
-    if args.upper_bound:
-        if args.upper_bound <= 0:
-            print("ERROR: --upper-bound must be a positive integer",
-                  file=sys.stderr)
-            sys.exit(1)
 
     return args
 
@@ -369,18 +367,19 @@ def main():
     file_paths = args.file
     verbose = args.verbose
 
-    upper_bound = args.upper_bound
     repeat_cutoffs = set_cutoffs(args.indiv_repeat_cutoffs,
                                  args.single_repeat_cutoff, len(file_paths))
     error_cutoffs = set_cutoffs(args.indiv_error_cutoffs,
                                 args.single_error_cutoff, len(file_paths))
+    upper_cutoffs = set_cutoffs(args.indiv_upper_cutoffs,
+                                args.single_upper_cutoff, len(file_paths))
 
-    for (file_name, repeat_cutoff, error_cutoff) in \
-    zip(file_paths, repeat_cutoffs, error_cutoffs):
+    for (file_name, repeat_cutoff, error_cutoff, upper_cutoff) in \
+    zip(file_paths, repeat_cutoffs, error_cutoffs, upper_cutoffs):
 
         try:
             process_histogram_file(file_name, verbose, error_cutoff,
-                                   upper_bound, repeat_cutoff)
+                                   upper_cutoff, repeat_cutoff)
         except IOError:
             print("ERROR: Could not open file \"" + file_name + "\".",
                   "Skipping...", file=sys.stderr)
