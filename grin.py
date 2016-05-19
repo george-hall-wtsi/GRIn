@@ -148,8 +148,7 @@ def count_num_kmers(hist_dict, lower_bound, upper_bound):
     return kmer_count
 
 
-def calculate_gri(hist_dict, verbose, error_cutoff, upper_cutoff,
-                  repeat_cutoff):
+def calculate_gri(number_repetitive_kmers, total_number_kmers):
 
     """
     Returns the GRI, which we have defined to be the percentage of
@@ -158,16 +157,6 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_cutoff,
     thus increasing the GRI. Return -1 if there has been a problem (print
     an error message first!).
     """
-
-
-    total_number_kmers = count_num_kmers(hist_dict, error_cutoff, upper_cutoff)
-    number_repetitive_kmers = count_num_kmers(hist_dict, repeat_cutoff,
-                                              upper_cutoff)
-
-    if verbose:
-        print("K-mer depth =", find_kmer_depth(hist_dict))
-        print("Total number of k-mers", total_number_kmers)
-        print("Number of repetitive k-mers", number_repetitive_kmers)
 
     gri = number_repetitive_kmers / total_number_kmers
 
@@ -386,12 +375,19 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
                                         upper_cutoff) == -1:
             return
 
-        gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_cutoff,
-                            repeat_cutoff)
+        total_number_kmers = count_num_kmers(hist_dict, error_cutoff,
+                                             upper_cutoff)
+        number_repetitive_kmers = count_num_kmers(hist_dict, repeat_cutoff,
+                                                  upper_cutoff)
 
-        # There was not an error
-        if gri != -1:
-            print("GRI = %0.4f" %(gri))
+        if verbose:
+            print("K-mer depth =", find_kmer_depth(hist_dict))
+            print("Total number of k-mers", total_number_kmers)
+            print("Number of repetitive k-mers", number_repetitive_kmers)
+
+        gri = calculate_gri(number_repetitive_kmers, total_number_kmers)
+
+        print("GRI = %0.4f" %(gri))
 
     return
 
