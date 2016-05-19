@@ -223,7 +223,7 @@ def create_parser():
     parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument("-c", "--indiv-repeat-cutoffs", type=int, nargs='+')
     parser.add_argument("-C", "--single-repeat-cutoff", type=int, nargs='?')
-    parser.add_argument("-e", "--manual-error-cutoffs", type=int,
+    parser.add_argument("-e", "--indiv-error-cutoffs", type=int,
                         nargs='+')
     parser.add_argument("-E", "--single-error-cutoff", type=int, nargs='?')
     parser.add_argument("-i", "--ignore-error", action="store_true")
@@ -362,7 +362,7 @@ def main():
     upper_bound = args.upper_bound
     repeat_cutoffs = set_cutoffs(args.indiv_repeat_cutoffs,
                                  args.single_repeat_cutoff, len(file_paths))
-    error_cutoffs = set_cutoffs(args.manual_error_cutoffs,
+    error_cutoffs = set_cutoffs(args.indiv_error_cutoffs,
                                 args.single_error_cutoff, len(file_paths))
 
     for (file_name, repeat_cutoff, error_cutoff) in \
