@@ -37,8 +37,10 @@ import numpy as np
 
 import custom_argument_parser
 
+
 # For use in some error messages
 MY_EMAIL = "gh10@sanger.ac.uk"
+
 
 def generate_min_list(hist_dict):
 
