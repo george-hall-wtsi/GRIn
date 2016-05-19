@@ -278,13 +278,8 @@ def parser_main():
 
     error_check_cutoffs(args.indiv_error_cutoffs, args.single_error_cutoff,
                         len(args.file), "error")
-
-    if args.indiv_repeat_cutoffs:
-        if len(args.file) != len(args.indiv_repeat_cutoffs):
-            print("ERROR: Need to have the same number of individual repeat",
-                  "cutoffs as files", file=sys.stderr)
-            sys.exit(1)
-
+    error_check_cutoffs(args.indiv_repeat_cutoffs, args.single_repeat_cutoff,
+                        len(args.file), "repeat")
 
     if args.upper_bound:
         if args.upper_bound <= 0:
