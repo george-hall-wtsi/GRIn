@@ -186,7 +186,8 @@ def create_parser():
     return parser
 
 
-def error_check_cutoffs(indiv_cutoffs, single_cutoff, num_files, cutoff_name):
+def error_check_user_cutoffs(indiv_cutoffs, single_cutoff, num_files,
+                             cutoff_name):
 
     """
     Error checking for user specified cutoffs.
@@ -230,12 +231,12 @@ def parser_main():
 
     num_files = len(args.file)
 
-    error_check_cutoffs(args.indiv_error_cutoffs, args.single_error_cutoff,
-                        num_files, "error")
-    error_check_cutoffs(args.indiv_repeat_cutoffs, args.single_repeat_cutoff,
-                        num_files, "repeat")
-    error_check_cutoffs(args.indiv_upper_cutoffs, args.single_upper_cutoff,
-                        num_files, "upper")
+    error_check_user_cutoffs(args.indiv_error_cutoffs,
+                             args.single_error_cutoff, num_files, "error")
+    error_check_user_cutoffs(args.indiv_repeat_cutoffs,
+                             args.single_repeat_cutoff, num_files, "repeat")
+    error_check_user_cutoffs(args.indiv_upper_cutoffs,
+                             args.single_upper_cutoff, num_files, "upper")
 
 
     return args
@@ -336,7 +337,7 @@ def compute_upper_cutoff(hist_dict, verbose, initial_upper_cutoff):
         return initial_upper_cutoff
 
 
-def error_check_computed_cutoffs(error_cutoff, repeat_cutoff, upper_cutoff):
+def sanity_check_cutoffs_before_use(error_cutoff, repeat_cutoff, upper_cutoff):
 
     """
     Check we aren't going to have problems with these cutoffs later. Need to
@@ -371,8 +372,8 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
         upper_cutoff = compute_upper_cutoff(hist_dict, verbose,
                                             in_upper_cutoff)
 
-        if error_check_computed_cutoffs(error_cutoff, repeat_cutoff,
-                                        upper_cutoff) == -1:
+        if sanity_check_cutoffs_before_use(error_cutoff, repeat_cutoff,
+                                           upper_cutoff) == -1:
             return
 
         total_number_kmers = count_num_kmers(hist_dict, error_cutoff,
