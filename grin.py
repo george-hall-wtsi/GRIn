@@ -192,21 +192,13 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_cutoff,
               "repetitive k-mers. Skipping this file...", file=sys.stderr)
         return -1
 
-    if verbose:
-        print("K-mer depth =", find_kmer_depth(hist_dict))
-
-
-    total_number_kmers = count_num_kmers(hist_dict, error_cutoff,
-                                         upper_cutoff)
-
-    if verbose:
-        print("Total number of k-mers", total_number_kmers)
-
-    number_repetitive_kmers = count_num_kmers(hist_dict,
-                                              repeat_cutoff,
+    total_number_kmers = count_num_kmers(hist_dict, error_cutoff, upper_cutoff)
+    number_repetitive_kmers = count_num_kmers(hist_dict, repeat_cutoff,
                                               upper_cutoff)
 
     if verbose:
+        print("K-mer depth =", find_kmer_depth(hist_dict))
+        print("Total number of k-mers", total_number_kmers)
         print("Number of repetitive k-mers", number_repetitive_kmers)
 
     gri = number_repetitive_kmers / total_number_kmers
