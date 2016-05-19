@@ -169,20 +169,17 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
     if verbose:
         print("Start of repetitive k-mers", start_repetitive_kmers)
 
-    # error_cutoff: 0 => use entire k-mer spectrum
-    #               -1 => Auto error checking
+    # error_cutoff: 0 => auto error checking
     #		    >= 1 => error cutoff manually specified
     if error_cutoff:
-        if error_cutoff == -1:
-            min_val_cutoff = find_start_main_peak(hist_dict)
-        else:
-            min_val_cutoff = error_cutoff
+        min_val_cutoff = error_cutoff
 
         if min_val_cutoff > start_repetitive_kmers:
             return -1
 
     else:
-        min_val_cutoff = 1
+        # Default to predicting error cutoff
+        min_val_cutoff = find_start_main_peak(hist_dict)
 
     if verbose:
         print("Using minimum k-mer occurrence of", min_val_cutoff)
@@ -294,14 +291,12 @@ def set_error_cutoffs(manual_error_cutoffs, single_error_cutoff, file_list):
     # Check that only one of the three options has been set:
     assert 0 <= sum([bool(x) for x in [manual_error_cutoffs,
                                        single_error_cutoff]]) <= 1, \
-        "Can only set one of manual_error_cutoffs and " + \
-        "single_error_cutoff"
+        "Can only set one of manual_error_cutoffs and single_error_cutoff"
 
     error_cutoffs = []
-    if not single_error_cutoff and \
-        not manual_error_cutoffs:
-
-        # User doesn't want to do anything about errors:
+    if not single_error_cutoff and not manual_error_cutoffs:
+        # User doesn't want to do anything about errors, so set to 0 to
+        # indictate this
         error_cutoffs = [0 for x in file_list]
 
     elif single_error_cutoff or manual_error_cutoffs:
@@ -309,7 +304,7 @@ def set_error_cutoffs(manual_error_cutoffs, single_error_cutoff, file_list):
         if manual_error_cutoffs:
             error_cutoffs = manual_error_cutoffs
         else:
-            error_cutoffs = [single_error_cutoff for x in file_list]
+            error_cutoffs = [single_error_cutoff for _ in file_list]
 
     return error_cutoffs
 
