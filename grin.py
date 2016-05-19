@@ -246,8 +246,6 @@ def parser_main():
             print("ERROR: Need to have the same number of manual repeat",
                   "cutoffs as files", file=sys.stderr)
             sys.exit(1)
-    else:
-        args.repeat_cutoffs = [0 for _ in args.file]
 
     if args.manual_error_cutoffs and args.single_error_cutoff:
         print("ERROR: Cannot specify both --manual-error cutoffs and",
@@ -328,6 +326,20 @@ def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
             print("GRI = %0.4f" %(gri))
 
 
+def set_repeat_cutoffs(user_repeat_cutoffs, num_files):
+
+    """
+    Return a list of the specified repeat cutoffs if provided by the user,
+    else return a list containing a 0 for each file. This 0 tells the program
+    later to estimate the repeat cutoff.
+    """
+
+    if user_repeat_cutoffs:
+        return user_repeat_cutoffs
+    else:
+        return [0 for _ in xrange(num_files)]
+
+
 def main():
 
     """
@@ -335,18 +347,17 @@ def main():
     """
 
     args = parser_main()
-
-    manual_repeat_cutoffs = args.repeat_cutoffs
     file_paths = args.file
     verbose = args.verbose
-    upper_bound = args.upper_bound
 
+    upper_bound = args.upper_bound
+    repeat_cutoffs = set_repeat_cutoffs(args.repeat_cutoffs, len(file_paths))
     error_cutoffs = set_error_cutoffs(args.manual_error_cutoffs,
                                       args.single_error_cutoff,
                                       args.file)
 
     for (file_name, repeat_cutoff, error_cutoff) in \
-    zip(file_paths, manual_repeat_cutoffs, error_cutoffs):
+    zip(file_paths, repeat_cutoffs, error_cutoffs):
 
         try:
             process_histogram_file(file_name, verbose, error_cutoff,
