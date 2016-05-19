@@ -221,7 +221,8 @@ def create_parser():
 
     parser = custom_argument_parser.CustomParser()
     parser.add_argument("-v", "--verbose", action="store_true")
-    parser.add_argument("-c", "--repeat-cutoffs", type=int, nargs='+')
+    parser.add_argument("-c", "--indiv-repeat-cutoffs", type=int, nargs='+')
+    parser.add_argument("-C", "--single-repeat-cutoff", type=int, nargs='?')
     parser.add_argument("-e", "--manual-error-cutoffs", type=int,
                         nargs='+')
     parser.add_argument("-E", "--single-error-cutoff", type=int, nargs='?')
@@ -243,9 +244,9 @@ def parser_main():
     parser = create_parser()
     args = parser.parse_args()
 
-    if args.repeat_cutoffs:
-        if len(args.file) != len(args.repeat_cutoffs):
-            print("ERROR: Need to have the same number of manual repeat",
+    if args.indiv_repeat_cutoffs:
+        if len(args.file) != len(args.indiv_repeat_cutoffs):
+            print("ERROR: Need to have the same number of individual repeat",
                   "cutoffs as files", file=sys.stderr)
             sys.exit(1)
 
@@ -359,7 +360,8 @@ def main():
     verbose = args.verbose
 
     upper_bound = args.upper_bound
-    repeat_cutoffs = set_repeat_cutoffs(args.repeat_cutoffs, len(file_paths))
+    repeat_cutoffs = set_cutoffs(args.indiv_repeat_cutoffs,
+                                 args.single_repeat_cutoff, len(file_paths))
     error_cutoffs = set_cutoffs(args.manual_error_cutoffs,
                                 args.single_error_cutoff, len(file_paths))
 
