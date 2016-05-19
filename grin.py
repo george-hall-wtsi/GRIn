@@ -174,19 +174,17 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
     # error_cutoff: 0 => auto error checking
     #		    >= 1 => error cutoff manually specified
     if error_cutoff:
-        min_val_cutoff = error_cutoff
-
-        if min_val_cutoff > repeat_cutoff:
+        if error_cutoff > repeat_cutoff:
             print("ERROR: Error cutoff greater than start of",
                   "repetitive k-mers. Skipping this file...", file=sys.stderr)
             return -1
 
     else:
         # Default to predicting error cutoff
-        min_val_cutoff = find_start_main_peak(hist_dict)
+        error_cutoff = find_start_main_peak(hist_dict)
 
     if verbose:
-        print("Using minimum k-mer occurrence of", min_val_cutoff)
+        print("Using error cutoff of", error_cutoff)
         print("K-mer depth =", find_kmer_depth(hist_dict))
 
     if upper_bound is None:
@@ -195,7 +193,7 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
     if verbose:
         print("Using upper bound of", upper_bound)
 
-    total_number_kmers = count_num_kmers(hist_dict, min_val_cutoff,
+    total_number_kmers = count_num_kmers(hist_dict, error_cutoff,
                                          upper_bound)
 
     if verbose:
