@@ -278,7 +278,7 @@ def parser_main():
     return args
 
 
-def set_error_cutoffs(manual_error_cutoffs, single_error_cutoff, file_list):
+def set_error_cutoffs(manual_error_cutoffs, single_error_cutoff, num_files):
 
     """
     Determines if the user wants to ignore the k-mers attributed to base errors
@@ -295,14 +295,14 @@ def set_error_cutoffs(manual_error_cutoffs, single_error_cutoff, file_list):
     if not single_error_cutoff and not manual_error_cutoffs:
         # User doesn't want to do anything about errors, so set to 0 to
         # indictate this
-        error_cutoffs = [0 for x in file_list]
+        error_cutoffs = [0 for x in num_files]
 
     elif single_error_cutoff or manual_error_cutoffs:
         # User has manually specified error cutoffs
         if manual_error_cutoffs:
             error_cutoffs = manual_error_cutoffs
         else:
-            error_cutoffs = [single_error_cutoff for _ in file_list]
+            error_cutoffs = [single_error_cutoff for _ in num_files]
 
     return error_cutoffs
 
@@ -354,7 +354,7 @@ def main():
     repeat_cutoffs = set_repeat_cutoffs(args.repeat_cutoffs, len(file_paths))
     error_cutoffs = set_error_cutoffs(args.manual_error_cutoffs,
                                       args.single_error_cutoff,
-                                      args.file)
+                                      len(file_paths))
 
     for (file_name, repeat_cutoff, error_cutoff) in \
     zip(file_paths, repeat_cutoffs, error_cutoffs):
