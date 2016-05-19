@@ -234,6 +234,38 @@ def create_parser():
     return parser
 
 
+def error_check_cutoffs(indiv_cutoffs, single_cutoff, num_files, cutoff_name):
+
+    """
+    Error checking for user specified cutoffs.
+    """
+
+    if indiv_cutoffs and single_cutoff:
+        print("ERROR: Cannot specify both --indiv-", cutoff_name,
+              "-cutoffs and --single-", cutoff_name, "-cutoff", sep='',
+              file=sys.stderr)
+        sys.exit(1)
+
+    if indiv_cutoffs is not None:
+        if num_files != len(indiv_cutoffs):
+            print("ERROR: Need to have the same number of individual",
+                  cutoff_name, "cutoffs as files", file=sys.stderr)
+            sys.exit(1)
+
+        if any(cutoff <= 0 for cutoff in indiv_cutoffs):
+            print("ERROR: --indiv-", cutoff_name, "-cutoffs must all be ",
+                  "positive integers", sep='', file=sys.stderr)
+            sys.exit(1)
+
+    if single_cutoff is not None:
+        if single_cutoff <= 0:
+            print("ERROR: --single-", cutoff_name, "-cutoff must be a ",
+                  "positive integer", sep='', file=sys.stderr)
+            sys.exit(1)
+
+    return
+
+
 def parser_main():
 
     """
@@ -244,33 +276,15 @@ def parser_main():
     parser = create_parser()
     args = parser.parse_args()
 
+    error_check_cutoffs(args.indiv_error_cutoffs, args.single_error_cutoff,
+                        len(args.file), "error")
+
     if args.indiv_repeat_cutoffs:
         if len(args.file) != len(args.indiv_repeat_cutoffs):
             print("ERROR: Need to have the same number of individual repeat",
                   "cutoffs as files", file=sys.stderr)
             sys.exit(1)
 
-    if args.manual_error_cutoffs and args.single_error_cutoff:
-        print("ERROR: Cannot specify both --manual-error cutoffs and",
-              "--single-error-cutoff", file=sys.stderr)
-        sys.exit(1)
-
-    if args.manual_error_cutoffs:
-        if len(args.file) != len(args.manual_error_cutoffs):
-            print("ERROR: Need to have the same number of manual error",
-                  "cutoffs as files", file=sys.stderr)
-            sys.exit(1)
-
-        if any(cutoff <= 0 for cutoff in args.manual_error_cutoffs):
-            print("ERROR: --manual-error-cuttoffs must be a positive integer",
-                  file=sys.stderr)
-            sys.exit(1)
-
-    if args.single_error_cutoff:
-        if args.single_error_cutoff <= 0:
-            print("ERROR: --single-error-cutoff must be a positive integer",
-                  file=sys.stderr)
-            sys.exit(1)
 
     if args.upper_bound:
         if args.upper_bound <= 0:
