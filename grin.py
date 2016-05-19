@@ -157,36 +157,7 @@ def calculate_gri(hist_dict, verbose, error_cutoff, upper_cutoff,
     an error message first!).
     """
 
-    # If necessary, estimate repeat cutoff
-    if repeat_cutoff == 0:
-        if verbose:
-            print("Estimating start of repetitive k-mers")
-        repeat_cutoff = find_start_repeat_kmers(hist_dict, verbose)
-    else:
-        if verbose:
-            print("User specified start of reptitive k-mers =",
-                  repeat_cutoff)
-
-    # If necessary, estimate error cutoff
-    if error_cutoff == 0:
-        error_cutoff = find_start_main_peak(hist_dict)
-        if verbose:
-            print("Estimated error cutoff as", error_cutoff)
-    else:
-        if verbose:
-            print("Using user specified error cutoff of", error_cutoff)
-
-
-    # If necessary, estimate upper cutoff
-    if upper_cutoff == 0:
-        upper_cutoff = 20 * find_kmer_depth(hist_dict)
-        if verbose:
-            print("Estimated upper cutoff as", upper_cutoff)
-    else:
-        if verbose:
-            print("Using user specified upper bound of", upper_cutoff)
-
-    # Error check error cutoff
+    # Error check error cutoff (need to do more error checking here...)
     if error_cutoff > repeat_cutoff:
         print("ERROR: Error cutoff greater than start of",
               "repetitive k-mers. Skipping this file...", file=sys.stderr)
@@ -319,20 +290,94 @@ def set_cutoffs(indiv_cutoffs, single_cutoff, num_files):
         return [0 for _ in xrange(num_files)]
 
 
-def process_histogram_file(file_name, verbose, error_cutoff, upper_bound,
-                           repeat_cutoff):
+def compute_error_cutoff(hist_dict, verbose, initial_error_cutoff):
+
+    """
+    Carry out error cutoff estimation as required.
+    """
+
+    if initial_error_cutoff == 0:
+        error_cutoff = find_start_main_peak(hist_dict)
+        if verbose:
+            print("Estimated error cutoff as", error_cutoff)
+
+        return error_cutoff
+
+    else:
+        if verbose:
+            print("Using user specified error cutoff of", initial_error_cutoff)
+
+        return initial_error_cutoff
+
+
+def compute_repeat_cutoff(hist_dict, verbose, initial_repeat_cutoff):
+
+    """
+    Carry out repeat cutoff estimation as necessary.
+    """
+
+    if initial_repeat_cutoff == 0:
+        repeat_cutoff = find_start_repeat_kmers(hist_dict, verbose)
+        if verbose:
+            print("Estimated start of repetitive k-mers as", repeat_cutoff)
+
+        return repeat_cutoff
+
+    else:
+        if verbose:
+            print("Using user specified start of reptitive k-mers as",
+                  initial_repeat_cutoff)
+
+        return initial_repeat_cutoff
+
+def compute_upper_cutoff(hist_dict, verbose, initial_upper_cutoff):
+
+    """
+    Carry out upper cutoff estimation as necessary.
+    """
+
+    if initial_upper_cutoff == 0:
+        upper_cutoff = 20 * find_kmer_depth(hist_dict)
+        if verbose:
+            print("Estimated upper cutoff as", upper_cutoff)
+
+        return upper_cutoff
+
+    else:
+        if verbose:
+            print("Using user specified upper bound of", initial_upper_cutoff)
+
+        return initial_upper_cutoff
+
+
+def process_histogram_file(file_name, verbose, in_error_cutoff,
+                           in_upper_cutoff, in_repeat_cutoff):
 
     """
     Compute GRI for a histogram file.
     """
 
     with open(file_name, 'r') as hist_file:
+
         print("Processing", file_name)
+
         hist_dict = create_hist_dict(hist_file)
-        gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_bound,
+
+        error_cutoff = compute_error_cutoff(hist_dict, verbose,
+                                            in_error_cutoff)
+        repeat_cutoff = compute_repeat_cutoff(hist_dict, verbose,
+                                              in_repeat_cutoff)
+        upper_cutoff = compute_upper_cutoff(hist_dict, verbose,
+                                            in_upper_cutoff)
+
+        gri = calculate_gri(hist_dict, verbose, error_cutoff, upper_cutoff,
                             repeat_cutoff)
+
+        # There was not an error
         if gri != -1:
             print("GRI = %0.4f" %(gri))
+
+    return
 
 
 def main():
