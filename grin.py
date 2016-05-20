@@ -382,7 +382,7 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
     return
 
 
-def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files, name):
+def process_user_cutoffs(indiv_cutoffs, single_cutoff, num_files, name):
 
     """
     Taking the cutoff command line arguments for a specific type of cutoff,
@@ -405,13 +405,13 @@ def main():
     num_files = len(file_paths)
     verbose = args.verbose
 
-    error_cutoffs = construct_cutoff_list(args.indiv_error_cutoffs,
+    error_cutoffs = process_user_cutoffs(args.indiv_error_cutoffs,
                                           args.single_error_cutoff,
                                           num_files, "error")
-    repeat_cutoffs = construct_cutoff_list(args.indiv_repeat_cutoffs,
+    repeat_cutoffs = process_user_cutoffs(args.indiv_repeat_cutoffs,
                                            args.single_repeat_cutoff,
                                            num_files, "repeat")
-    upper_cutoffs = construct_cutoff_list(args.indiv_upper_cutoffs,
+    upper_cutoffs = process_user_cutoffs(args.indiv_upper_cutoffs,
                                           args.single_upper_cutoff,
                                           num_files, "upper")
 
