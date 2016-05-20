@@ -184,6 +184,19 @@ def create_parser():
     return parser
 
 
+def parser_main():
+
+    """
+    Parses command line arguments and performs extra error checking.
+    Returns these arguments as a Namespace object.
+    """
+
+    parser = create_parser()
+    args = parser.parse_args()
+
+    return args
+
+
 def error_check_user_cutoffs(indiv_cutoffs, single_cutoff, num_files,
                              cutoff_name):
 
@@ -215,19 +228,6 @@ def error_check_user_cutoffs(indiv_cutoffs, single_cutoff, num_files,
             sys.exit(1)
 
     return
-
-
-def parser_main():
-
-    """
-    Parses command line arguments and performs extra error checking.
-    Returns these arguments as a Namespace object.
-    """
-
-    parser = create_parser()
-    args = parser.parse_args()
-
-    return args
 
 
 def set_cutoffs(indiv_cutoffs, single_cutoff, num_files):
