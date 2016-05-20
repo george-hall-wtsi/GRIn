@@ -38,7 +38,7 @@ import numpy as np
 import custom_argument_parser
 
 
-# For use in some error messages
+# For use in some more serious error messages
 MY_EMAIL = "gh10@sanger.ac.uk"
 
 
@@ -69,10 +69,10 @@ def generate_max_list(hist_dict):
 def find_kmer_depth(hist_dict, min_list=None):
 
     """
-    Returns the x value of the main peak in hist_dict. The main peak is the
-    peak which should correspond to homozygous k-mers, not that which occurs
-    right at the beginning of the k-mer spectrum, which is due to base errors
-    in the reads.
+    Returns the x value of the maximum of the main peak in hist_dict. The main
+    peak is the peak which should correspond to homozygous k-mers, it is not
+    the downwards curve which normally appears at the beginning of the k-mer
+    spectrum, which is due to base errors in the reads.
     """
 
     min_list = generate_min_list(hist_dict)
@@ -97,7 +97,8 @@ def find_kmer_depth(hist_dict, min_list=None):
 def find_start_main_peak(hist_dict):
 
     """
-    Returns the smallest minimum value.
+    Returns the smallest value in the list of minima. This normally constitutes
+    the beginning of the main peak.
     """
 
     return min(generate_min_list(hist_dict))
@@ -106,7 +107,7 @@ def find_start_main_peak(hist_dict):
 def find_start_repeat_kmers(hist_dict, verbose=False):
 
     """
-    Returns a point 'a' such that the x co-ordinate of the main peak is
+    Returns a point 'a' such that the x co-ordinate of the k-mer depth is
     equidistant between the start of the main peak and 'a'.
     """
 
@@ -120,8 +121,10 @@ def find_start_repeat_kmers(hist_dict, verbose=False):
 def create_hist_dict(in_file):
 
     """
-    Returns a dictionary with number of occurrences as the keys and the
-    frequency corresponding to each occurence as its value.
+    Returns a dictionary containing the frequency distribution of k-mers in the
+    set of reads. Each key is a specific number of occurrences, and the value
+    paired with this key is the number of distinct k-mers which occur this many
+    times in the reads.
     """
 
     hist_dict = {}
@@ -136,8 +139,8 @@ def create_hist_dict(in_file):
 def count_num_kmers(hist_dict, lower_bound, upper_bound):
 
     """
-    Count the number of k-mers contained in the hist dict between lower_bound
-    and upper_bound
+    Count the total number of k-mers contained in the hist dict between
+    lower_bound and upper_bound.
     """
 
     kmer_count = 0
@@ -151,11 +154,7 @@ def count_num_kmers(hist_dict, lower_bound, upper_bound):
 def calculate_gri(number_repetitive_kmers, total_number_kmers):
 
     """
-    Returns the GRI, which we have defined to be the percentage of
-    repetitive k-mers in a k-mer spectrum. The user can choose to ignore
-    k-mers caused by base errors when counting the total number of k-mers,
-    thus increasing the GRI. Return -1 if there has been a problem (print
-    an error message first!).
+    Returns the percentage of repetitive k-mers.
     """
 
     gri = number_repetitive_kmers / total_number_kmers
@@ -168,7 +167,8 @@ def create_parser():
     """
     Returns a parser based on my custom parser, which is stored in
     custom_argument_parser.py. I have done it in this way because I wanted to
-    be able to write my own help and usage messages.
+    be able to write my own help and usage messages. These messages obviously
+    need to be kept up-to-date as features are added/removed.
     """
 
     parser = custom_argument_parser.CustomParser()
@@ -187,8 +187,7 @@ def create_parser():
 def parser_main():
 
     """
-    Parses command line arguments and performs extra error checking.
-    Returns these arguments as a Namespace object.
+    Creates the parser and returns the parsed arguments.
     """
 
     parser = create_parser()
@@ -201,7 +200,9 @@ def error_check_user_cutoffs(indiv_cutoffs, single_cutoff, num_files,
                              cutoff_name):
 
     """
-    Error checking for user specified cutoffs.
+    Error checking for user specified cutoffs. This checks that mutually
+    exclusive options have not both be specified, and also that the correct
+    number of values have been specified (if appropriate).
     """
 
     if indiv_cutoffs and single_cutoff:
@@ -234,19 +235,22 @@ def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files):
 
     """
     This function takes the list of infividual cutoffs specified by the user
-    (will be None if none were specified); a single cutoff if specified by the
-    user (will be None if it was not specified); the number of input files.
+    (will be None if it was not specified); a single cutoff if specified by the
+    user (will be None if it was not specified); and the number of input files.
 
-    If individual cutoffs were specified then that list is returned, if a
+    If individual cutoffs were specified then that list is returned; If a
     single cutoff was specified then a list is returned with that cutoff
-    repeated once for each file, else it is assumed that the user wants to use
-    the default (i.e. automatic estimation) option later, and so a list
-    containing a 0 for each file is returned.
+    repeated once for each file; Otherwise, it is assumed that the user wants
+    the value of this cutoff to be automatically estimated. As this is
+    impossible to do at this stage in the program, a list is returned
+    containing a 0 for each file. This is used later in the program as a
+    signal that the cutoff still needs to be estimated.
     """
 
     # Check that only one of these has been set (user can only specify a single
     # cutoff for the entire set of files, or an individual cutoff for each
-    # file, but not both)
+    # file, but not both). This is just here to make sure that I didn't mess up
+    # my error checking earlier.
     assert not (indiv_cutoffs and single_cutoff), \
         "For error, repeat, and upper cutoffs, setting individual cutoffs " + \
         "and a single cutoff to be applied to the whole set of files is " + \
@@ -268,7 +272,7 @@ def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files):
 def est_error_cutoff_if_required(hist_dict, verbose, initial_error_cutoff):
 
     """
-    Carry out error cutoff estimation as required.
+    Carry out error cutoff estimation if required.
     """
 
     if initial_error_cutoff == 0:
@@ -288,7 +292,7 @@ def est_error_cutoff_if_required(hist_dict, verbose, initial_error_cutoff):
 def est_repeat_cutoff_if_required(hist_dict, verbose, initial_repeat_cutoff):
 
     """
-    Carry out repeat cutoff estimation as necessary.
+    Carry out repeat cutoff estimation if required.
     """
 
     if initial_repeat_cutoff == 0:
@@ -309,7 +313,7 @@ def est_repeat_cutoff_if_required(hist_dict, verbose, initial_repeat_cutoff):
 def est_upper_cutoff_if_required(hist_dict, verbose, initial_upper_cutoff):
 
     """
-    Carry out upper cutoff estimation as necessary.
+    Carry out upper cutoff estimation if required.
     """
 
     if initial_upper_cutoff == 0:
@@ -329,8 +333,9 @@ def est_upper_cutoff_if_required(hist_dict, verbose, initial_upper_cutoff):
 def check_cutoff_consistency(error_cutoff, repeat_cutoff, upper_cutoff):
 
     """
-    Check we aren't going to have problems with these cutoffs later. Need to
-    add more checks...
+    Check we aren't going to have problems with these cutoffs later. This is
+    simple stuff, i.e. the error cutoff is not larger than the repeat cutoff
+    etc. Need to add more checks here to prevent a GRI > 1 being calculated...
     """
 
     if error_cutoff > repeat_cutoff:
@@ -345,7 +350,9 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
                            in_upper_cutoff, in_repeat_cutoff):
 
     """
-    Compute GRI for a histogram file.
+    Main function for interacting with an individual histogram file. This
+    function creates a hist dict for the file, sets any cutoffs which still
+    need to be set, and computes and prints the GRI for the file.
     """
 
     with open(file_name, 'r') as hist_file:
@@ -385,8 +392,9 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
 def process_user_cutoffs(indiv_cutoffs, single_cutoff, num_files, name):
 
     """
-    Taking the cutoff command line arguments for a specific type of cutoff,
-    construct a list with the correct cutoff values for this cutoff.
+    This function takes the cutoff command line arguments for a specific type
+    of cutoff (i.e. error, repeat, or upper) and constructs the correct cutoff
+    list for this cutoff.
     """
 
     error_check_user_cutoffs(indiv_cutoffs, single_cutoff, num_files, name)
@@ -397,7 +405,9 @@ def process_user_cutoffs(indiv_cutoffs, single_cutoff, num_files, name):
 def main():
 
     """
-    Main driver function.
+    This is the main function for the program. It just calls the argument
+    parser, calls the cutoff list constructors, and then iterates over the
+    input files, calculating and printing their GRIs.
     """
 
     args = parser_main()
