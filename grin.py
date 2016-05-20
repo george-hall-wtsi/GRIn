@@ -406,14 +406,14 @@ def main():
     verbose = args.verbose
 
     error_cutoffs = process_user_cutoffs(args.indiv_error_cutoffs,
-                                          args.single_error_cutoff,
-                                          num_files, "error")
+                                         args.single_error_cutoff,
+                                         num_files, "error")
     repeat_cutoffs = process_user_cutoffs(args.indiv_repeat_cutoffs,
-                                           args.single_repeat_cutoff,
-                                           num_files, "repeat")
+                                          args.single_repeat_cutoff,
+                                          num_files, "repeat")
     upper_cutoffs = process_user_cutoffs(args.indiv_upper_cutoffs,
-                                          args.single_upper_cutoff,
-                                          num_files, "upper")
+                                         args.single_upper_cutoff,
+                                         num_files, "upper")
 
     for (file_name, repeat_cutoff, error_cutoff, upper_cutoff) in \
     zip(file_paths, repeat_cutoffs, error_cutoffs, upper_cutoffs):
