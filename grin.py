@@ -354,14 +354,14 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
         hist_dict = create_hist_dict(hist_file)
 
         error_cutoff = est_error_cutoff_if_required(hist_dict, verbose,
-                                            in_error_cutoff)
+                                                    in_error_cutoff)
         repeat_cutoff = est_repeat_cutoff_if_required(hist_dict, verbose,
-                                              in_repeat_cutoff)
+                                                      in_repeat_cutoff)
         upper_cutoff = est_upper_cutoff_if_required(hist_dict, verbose,
-                                            in_upper_cutoff)
+                                                    in_upper_cutoff)
 
         if check_cutoff_consistency(error_cutoff, repeat_cutoff,
-                                           upper_cutoff) == -1:
+                                    upper_cutoff) == -1:
             return
 
         total_number_kmers = count_num_kmers(hist_dict, error_cutoff,
