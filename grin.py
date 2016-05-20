@@ -334,13 +334,18 @@ def check_cutoff_consistency(error_cutoff, repeat_cutoff, upper_cutoff):
 
     """
     Check we aren't going to have problems with these cutoffs later. This is
-    simple stuff, i.e. the error cutoff is not larger than the repeat cutoff
-    etc. Need to add more checks here to prevent a GRI > 1 being calculated...
+    simple stuff, i.e. ensure that error cutoff < repeat cutoff < upper cutoff.
+    etc.
     """
 
-    if error_cutoff > repeat_cutoff:
-        print("ERROR: Error cutoff greater than start of",
-              "repetitive k-mers. Skipping this file...", file=sys.stderr)
+    if not (error_cutoff < repeat_cutoff < upper_cutoff):
+        print("ERROR: The error cutoff must be smaller than the repeat",
+              "cutoff, which in turn must be smaller than the upper cutoff.",
+              file=sys.stderr)
+        print("That is: error cutoff < repeat cutoff < upper cutoff.",
+              file=sys.stderr)
+        print("Skipping this file...", file=sys.stderr)
+
         return -1
 
     return 0
