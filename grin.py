@@ -230,7 +230,7 @@ def error_check_user_cutoffs(indiv_cutoffs, single_cutoff, num_files,
     return
 
 
-def set_cutoffs(indiv_cutoffs, single_cutoff, num_files):
+def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files):
 
     """
     This function takes the list of infividual cutoffs specified by the user
@@ -391,7 +391,7 @@ def process_user_cutoffs(indiv_cutoffs, single_cutoff, num_files, name):
 
     error_check_user_cutoffs(indiv_cutoffs, single_cutoff, num_files, name)
 
-    return set_cutoffs(indiv_cutoffs, single_cutoff, num_files)
+    return construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files)
 
 
 def main():
