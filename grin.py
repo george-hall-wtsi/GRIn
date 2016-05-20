@@ -327,7 +327,7 @@ def compute_upper_cutoff(hist_dict, verbose, initial_upper_cutoff):
         return initial_upper_cutoff
 
 
-def sanity_check_cutoffs_before_use(error_cutoff, repeat_cutoff, upper_cutoff):
+def check_cutoff_consistency(error_cutoff, repeat_cutoff, upper_cutoff):
 
     """
     Check we aren't going to have problems with these cutoffs later. Need to
@@ -362,7 +362,7 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
         upper_cutoff = compute_upper_cutoff(hist_dict, verbose,
                                             in_upper_cutoff)
 
-        if sanity_check_cutoffs_before_use(error_cutoff, repeat_cutoff,
+        if check_cutoff_consistency(error_cutoff, repeat_cutoff,
                                            upper_cutoff) == -1:
             return
 
@@ -383,7 +383,7 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
     return
 
 
-def extract_cutoff_lists_from_args(args):
+def construct_cutoff_lists_from_args(args):
 
     """
     Use parsed arguments to construct lists containing error, repeat, and
@@ -421,7 +421,7 @@ def main():
     verbose = args.verbose
 
     (error_cutoffs, repeat_cutoffs, upper_cutoffs) = \
-            extract_cutoff_lists_from_args(args)
+            construct_cutoff_lists_from_args(args)
 
     for (file_name, repeat_cutoff, error_cutoff, upper_cutoff) in \
     zip(file_paths, repeat_cutoffs, error_cutoffs, upper_cutoffs):
