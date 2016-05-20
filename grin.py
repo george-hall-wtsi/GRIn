@@ -159,9 +159,9 @@ def calculate_gri(number_repetitive_kmers, total_number_kmers):
 
     if total_number_kmers == 0:
         print("ERROR: It seems that there were zero total k-mers. It's weird ",
-        "this has happened - it's probably an issue with your cutoffs. ",
-        "Please email me and let me know about this happening (", MY_EMAIL,
-        "). Skipping this file...", file=sys.stderr, sep='')
+              "this has happened - it's probably an issue with your cutoffs. ",
+              "Please email me and let me know about this happening (",
+              MY_EMAIL, "). Skipping this file...", file=sys.stderr, sep='')
         return -1
 
     gri = number_repetitive_kmers / total_number_kmers
@@ -387,7 +387,7 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
                                                     in_upper_cutoff)
 
         if check_cutoff_consistency(error_cutoff, repeat_cutoff,
-                                   upper_cutoff) == -1:
+                                    upper_cutoff) == -1:
             return
 
         total_number_kmers = count_num_kmers(hist_dict, error_cutoff,
