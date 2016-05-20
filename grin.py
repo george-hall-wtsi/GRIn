@@ -389,6 +389,11 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
 
         gri = calculate_gri(number_repetitive_kmers, total_number_kmers)
 
+        if not (0 <= gri <= 1):
+            print("ERROR: GRI is not between 0 and 1. This should never ",
+                  "happen!!! Please email me and let me know about this (",
+                  MY_EMAIL, ")", file=sys.stderr, sep='')
+
         print("GRI = %0.4f" %(gri))
 
     return
