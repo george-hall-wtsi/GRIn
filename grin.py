@@ -305,6 +305,7 @@ def est_repeat_cutoff_if_required(hist_dict, verbose, initial_repeat_cutoff):
 
         return initial_repeat_cutoff
 
+
 def est_upper_cutoff_if_required(hist_dict, verbose, initial_upper_cutoff):
 
     """
