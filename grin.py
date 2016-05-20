@@ -48,8 +48,8 @@ def generate_min_list(hist_dict):
     Returns a list of the x values corresponding to the minima in hist_dict.
     """
 
-    min_list = sig.argrelextrema(np.array(hist_dict.values()),
-                                 np.less_equal, order=3)[0].tolist()
+    min_list = sig.argrelextrema(np.array(hist_dict.values()), np.less_equal,
+                                 order=3)[0].tolist()
 
     return min_list
 
@@ -175,13 +175,11 @@ def create_parser():
     parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument("-c", "--indiv-repeat-cutoffs", type=int, nargs='+')
     parser.add_argument("-C", "--single-repeat-cutoff", type=int, nargs='?')
-    parser.add_argument("-e", "--indiv-error-cutoffs", type=int,
-                        nargs='+')
+    parser.add_argument("-e", "--indiv-error-cutoffs", type=int, nargs='+')
     parser.add_argument("-E", "--single-error-cutoff", type=int, nargs='?')
     parser.add_argument("-u", "--indiv-upper-cutoffs", type=int, nargs='+')
     parser.add_argument("-U", "--single-upper-cutoff", type=int, nargs='?')
-    parser.add_argument("-f", "--file", type=str, nargs='+',
-                        required=True)
+    parser.add_argument("-f", "--file", type=str, nargs='+', required=True)
 
     return parser
 
