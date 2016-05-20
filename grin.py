@@ -383,31 +383,16 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
     return
 
 
-def construct_cutoff_lists_from_args(args):
+def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files, name):
 
     """
-    Use parsed arguments to construct lists containing error, repeat, and
-    upper cutoffs for each file.
+    Taking the cutoff command line arguments for a specific type of cutoff,
+    construct a list with the correct cutoff values for this cutoff.
     """
 
-    file_paths = args.file
-    num_files = len(file_paths)
+    error_check_user_cutoffs(indiv_cutoffs, single_cutoff, num_files, name)
 
-    error_check_user_cutoffs(args.indiv_error_cutoffs,
-                             args.single_error_cutoff, num_files, "error")
-    error_check_user_cutoffs(args.indiv_repeat_cutoffs,
-                             args.single_repeat_cutoff, num_files, "repeat")
-    error_check_user_cutoffs(args.indiv_upper_cutoffs,
-                             args.single_upper_cutoff, num_files, "upper")
-
-    error_cutoffs = set_cutoffs(args.indiv_error_cutoffs,
-                                args.single_error_cutoff, num_files)
-    repeat_cutoffs = set_cutoffs(args.indiv_repeat_cutoffs,
-                                 args.single_repeat_cutoff, num_files)
-    upper_cutoffs = set_cutoffs(args.indiv_upper_cutoffs,
-                                args.single_upper_cutoff, num_files)
-
-    return (error_cutoffs, repeat_cutoffs, upper_cutoffs)
+    return set_cutoffs(indiv_cutoffs, single_cutoff, num_files)
 
 
 def main():
@@ -418,10 +403,18 @@ def main():
 
     args = parser_main()
     file_paths = args.file
+    num_files = len(file_paths)
     verbose = args.verbose
 
-    (error_cutoffs, repeat_cutoffs, upper_cutoffs) = \
-            construct_cutoff_lists_from_args(args)
+    error_cutoffs = construct_cutoff_list(args.indiv_error_cutoffs,
+                                          args.single_error_cutoff,
+                                          num_files, "error")
+    repeat_cutoffs = construct_cutoff_list(args.indiv_repeat_cutoffs,
+                                           args.single_repeat_cutoff,
+                                           num_files, "repeat")
+    upper_cutoffs = construct_cutoff_list(args.indiv_upper_cutoffs,
+                                          args.single_upper_cutoff,
+                                          num_files, "upper")
 
     for (file_name, repeat_cutoff, error_cutoff, upper_cutoff) in \
     zip(file_paths, repeat_cutoffs, error_cutoffs, upper_cutoffs):
