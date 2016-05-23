@@ -9,9 +9,9 @@ Once these packages have been installed, simply `git clone` the latest release
 to a convenient location. GRIn can now be run with either `python grin.py` or
 you can run `chmod +x grin.py` and then execute it as `./grin.py`
 
-## The GRI
+## The Genome Repeat Index
 
-The GRI is the percentage of all k-mer words which are predicted to be
+The Genome Repeat Index (GRI) is the percentage of all k-mer words which are predicted to be
 repetitive. We predict that genomes with a lower GRI will be easier to assemble
 than those with a higher one. Hence:
 
@@ -34,7 +34,7 @@ these cutoffs are so important that if they are not set by the user then GRIn
 will estimate them itself and use those estimations in its calculation of the
 GRI. 
 
-###### The Error Cutoff
+##### The Error Cutoff
 
 The Error Cutoff is used to exclude erroneous k-mers from being used in the
 calculation. These are the k-mers contained in the initial error peak of the
@@ -44,7 +44,7 @@ they occur too few times to have originated from a genuine genomic region given
 the sequencing depth. By default, this cutoff is set to be the `x` value of the
 minimum between the error curve and the main peak.
 
-###### The Repeat Cutoff
+##### The Repeat Cutoff
 
 The Repeat Cutoff is our estimation of the minimum number of times we must
 observe a k-mer in the set of reads for us to consider it repetitive. In a
@@ -53,7 +53,7 @@ the first and second peak. If the peaks are not so easily observed, we set this
 to be the value `R`, such that the k-mer depth is equidistant between the error
 cutoff and `R`.
 
-###### The Upper Cutoff
+##### The Upper Cutoff
 
 We use the upper cutoff to exclude k-mers which are probably due to PCR
 duplication or other sequencing biases. If unset, GRIn sets this to 20 * k-mer
