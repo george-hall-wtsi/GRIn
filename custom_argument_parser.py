@@ -34,11 +34,15 @@ class CustomParser(argparse.ArgumentParser):
 
     @staticmethod
     def generate_usage_message():
+
         """Custom usage message"""
+
         return "usage: grin [-h] [options] -f file [file ...]\n"
 
     def generate_help_message(self):
+
         """Custom help message"""
+
         store_str = "\n"
         store_str += self.generate_usage_message()
         store_str += "\nrequired arguments:\n"
