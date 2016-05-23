@@ -99,13 +99,17 @@ class CustomParser(argparse.ArgumentParser):
         return store_str
 
     def print_usage(self, file=None):
+
         """Print custom usage message"""
+
         if file is None:
             file = sys.stdout
         self._print_message(self.generate_usage_message(), file)
 
     def print_help(self, file=None):
+
         """Print custom help message"""
+
         if file is None:
             file = sys.stdout
         self._print_message(self.generate_help_message(), file)
