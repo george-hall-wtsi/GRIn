@@ -48,7 +48,7 @@ minimum between the error curve and the main peak.
 
 The Repeat Cutoff is our estimation of the minimum number of times we must
 observe a k-mer in the set of reads for us to consider it repetitive. In a
-k-mer spectrum with easily obvserved peaks, this is simply the minimum between
+k-mer spectrum with easily observed peaks, this is simply the minimum between
 the first and second peak. If the peaks are not so easily observed, we set this
 to be the value `R`, such that the k-mer depth is equidistant between the error
 cutoff and `R`.
