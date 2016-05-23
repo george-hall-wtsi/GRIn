@@ -35,12 +35,7 @@ class CustomParser(argparse.ArgumentParser):
     @staticmethod
     def generate_usage_message():
         """Custom usage message"""
-        store_str = "usage: grin [-h] [-v] [-a] [-u upper-bound] "
-        store_str += "[-E single-error-cutoff] "
-        store_str += "[-e error-cutoff [error-cutoff ...]] "
-        store_str += "[-c cutoff [cutoff ...]] -f file [file ...]\n"
-
-        return store_str
+        return "usage: grin [-h] [options] -f file [file ...]\n"
 
     def generate_help_message(self):
         """Custom help message"""
