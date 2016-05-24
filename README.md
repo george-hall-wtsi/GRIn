@@ -1,5 +1,3 @@
-**GRIn is a small script to compute the Genome Repeat Index (GRI) from raw sequencing reads**
-
 ## Installation
 
 ##### Dependencies
