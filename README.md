@@ -2,19 +2,22 @@
 
 ## Installation
 
-GRIn requires Numpy and Scipy, so these need to be installed first. It has been
+##### Dependencies
+
+GRIn requires Numpy and Scipy, so these need to be installed. It has been
 tested with Numpy 1.9.2 and Scipy 0.16.0. The feature of Scipy used was
 introduced in Scipy 0.11.0, and I think the featues of Numpy I use are so basic
 that they will always have been present. Therefore I would guess that GRIn will
 work on any version of Numpy, and on versions of Scipy >= 0.11.0. If not,
 please let me know (gh10@sanger.ac.uk).
 
-Once these packages have been installed, simply download and decompress the
-latest release
-```
-wget https://github.com/george-hall/GRIn/releases/latest
-tar -xzvf ***LATEST RELEASE***
-```
+##### Installing GRIn itself
+
+Simply navigate to the latest release
+(https://github.com/george-hall/GRIn/releases/latest), then download and
+decompress the latest release.
+
+Inside the decompressed directory will be several files, including `grin.py`.
 GRIn can now be run with either `python grin.py` or
 you can run `chmod +x grin.py` and then execute it as `./grin.py`
 
