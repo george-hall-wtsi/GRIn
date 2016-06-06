@@ -81,7 +81,7 @@ def find_kmer_depth(hist_dict, min_list=None):
     max_list = generate_max_list(hist_dict)
     min_list_minimum = min(min_list)
 
-    max_y_vals = [hist_dict[x] for x  in max_list if x in hist_dict.keys()]
+    max_y_vals = [hist_dict[x] for x in max_list if x in hist_dict.keys()]
 
     for maximum in sorted(max_y_vals)[::-1]:
         # Although this looks really inefficient, we hopefully
