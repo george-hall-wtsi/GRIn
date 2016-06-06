@@ -45,25 +45,27 @@ MY_EMAIL = "gh10@sanger.ac.uk"
 def generate_min_list(hist_dict):
 
     """
-    Returns a list of the x values corresponding to the minima in hist_dict.
+    Returns a list of the occurrence values corresponding to the minima inx
+    hist_dict.
     """
 
     min_list = sig.argrelextrema(np.array(hist_dict.values()), np.less_equal,
                                  order=3)[0].tolist()
 
-    return min_list
+    return [hist_dict.keys()[x] for x in min_list]
 
 
 def generate_max_list(hist_dict):
 
     """
-    Returns a list of the x values corresponding to the maxima in hist_dict.
+    Returns a list of the occurrence values corresponding to the maxima in
+    hist_dict.
     """
 
     max_list = sig.argrelextrema(np.array(hist_dict.values()),
                                  np.greater_equal, order=3)[0].tolist()
 
-    return max_list
+    return [hist_dict.keys()[x] for x in max_list]
 
 
 def find_kmer_depth(hist_dict, min_list=None):
