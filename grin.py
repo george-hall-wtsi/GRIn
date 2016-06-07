@@ -106,7 +106,7 @@ def find_start_main_peak(hist_dict):
     return min(generate_min_list(hist_dict))
 
 
-def find_start_repeat_kmers(hist_dict, error_cutoff, verbose=False):
+def find_start_repeat_kmers(hist_dict, error_cutoff, verbose):
 
     """
     Returns a point 'a' such that the x co-ordinate of the k-mer depth is
