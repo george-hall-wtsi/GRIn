@@ -284,7 +284,7 @@ def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files):
         return [0 for _ in xrange(num_files)]
 
 
-def est_error_cutoff_if_required(hist_dict, verbose, initial_error_cutoff):
+def set_error_cutoff(hist_dict, verbose, initial_error_cutoff):
 
     """
     Carry out error cutoff estimation if required.
@@ -304,7 +304,7 @@ def est_error_cutoff_if_required(hist_dict, verbose, initial_error_cutoff):
         return initial_error_cutoff
 
 
-def est_repeat_cutoff_if_required(hist_dict, verbose, initial_repeat_cutoff,
+def set_repeat_cutoff(hist_dict, verbose, initial_repeat_cutoff,
                                   error_cutoff):
 
     """
@@ -327,7 +327,7 @@ def est_repeat_cutoff_if_required(hist_dict, verbose, initial_repeat_cutoff,
         return initial_repeat_cutoff
 
 
-def est_upper_cutoff_if_required(hist_dict, verbose, initial_upper_cutoff):
+def set_upper_cutoff(hist_dict, verbose, initial_upper_cutoff):
 
     """
     Carry out upper cutoff estimation if required.
@@ -383,12 +383,12 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
 
         hist_dict = create_hist_dict(hist_file)
 
-        error_cutoff = est_error_cutoff_if_required(hist_dict, verbose,
+        error_cutoff = set_error_cutoff(hist_dict, verbose,
                                                     in_error_cutoff)
-        repeat_cutoff = est_repeat_cutoff_if_required(hist_dict, verbose,
+        repeat_cutoff = set_repeat_cutoff(hist_dict, verbose,
                                                       in_repeat_cutoff,
                                                       error_cutoff)
-        upper_cutoff = est_upper_cutoff_if_required(hist_dict, verbose,
+        upper_cutoff = set_upper_cutoff(hist_dict, verbose,
                                                     in_upper_cutoff)
 
         if check_cutoff_consistency(error_cutoff, repeat_cutoff,
