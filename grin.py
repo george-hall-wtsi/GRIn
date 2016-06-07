@@ -287,7 +287,10 @@ def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files):
 def set_error_cutoff(hist_dict, verbose, initial_error_cutoff):
 
     """
-    Carry out error cutoff estimation if required.
+    Determine whether it is necessary to estimate the error cutoff, or if the
+    user has already specified one. If it is necessary to estimate one, then
+    carry out this estimation, and return the resulting cutoff. Otherwise,
+    simply return the cutoff which the user has specified.
     """
 
     if initial_error_cutoff == 0:
@@ -308,7 +311,10 @@ def set_repeat_cutoff(hist_dict, verbose, initial_repeat_cutoff,
                                   error_cutoff):
 
     """
-    Carry out repeat cutoff estimation if required.
+    Determine whether it is necessary to estimate the repeat cutoff, or if the
+    user has already specified one. If it is necessary to estimate one, then
+    carry out this estimation, and return the resulting cutoff. Otherwise,
+    simply return the cutoff which the user has specified.
     """
 
     if initial_repeat_cutoff == 0:
@@ -330,7 +336,10 @@ def set_repeat_cutoff(hist_dict, verbose, initial_repeat_cutoff,
 def set_upper_cutoff(hist_dict, verbose, initial_upper_cutoff):
 
     """
-    Carry out upper cutoff estimation if required.
+    Determine whether it is necessary to estimate the upper cutoff, or if the
+    user has already specified one. If it is necessary to estimate one, then
+    carry out this estimation, and return the resulting cutoff. Otherwise,
+    simply return the cutoff which the user has specified.
     """
 
     if initial_upper_cutoff == 0:
