@@ -106,18 +106,18 @@ def find_start_main_peak(hist_dict):
     return min(generate_min_list(hist_dict))
 
 
-def find_start_repeat_kmers(hist_dict, verbose=False):
+def find_start_repeat_kmers(hist_dict, error_cutoff, verbose=False):
 
     """
     Returns a point 'a' such that the x co-ordinate of the k-mer depth is
     equidistant between the start of the main peak and 'a'.
     """
 
-    start_first_peak = find_start_main_peak(hist_dict)
     if verbose:
-        print("Start of first peak =", start_first_peak)
+        print("Using error cutoff of", error_cutoff, "in repeat cutoff",
+              "in repeat cutoff estimation")
 
-    return (2 * find_kmer_depth(hist_dict)) - start_first_peak
+    return (2 * find_kmer_depth(hist_dict)) - error_cutoff
 
 
 def create_hist_dict(in_file):
@@ -304,14 +304,16 @@ def est_error_cutoff_if_required(hist_dict, verbose, initial_error_cutoff):
         return initial_error_cutoff
 
 
-def est_repeat_cutoff_if_required(hist_dict, verbose, initial_repeat_cutoff):
+def est_repeat_cutoff_if_required(hist_dict, verbose, initial_repeat_cutoff,
+                                  error_cutoff):
 
     """
     Carry out repeat cutoff estimation if required.
     """
 
     if initial_repeat_cutoff == 0:
-        repeat_cutoff = find_start_repeat_kmers(hist_dict, verbose)
+        repeat_cutoff = find_start_repeat_kmers(hist_dict, error_cutoff,
+                                                verbose)
         if verbose:
             print("Estimated start of repetitive k-mers as", repeat_cutoff)
 
@@ -384,7 +386,8 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
         error_cutoff = est_error_cutoff_if_required(hist_dict, verbose,
                                                     in_error_cutoff)
         repeat_cutoff = est_repeat_cutoff_if_required(hist_dict, verbose,
-                                                      in_repeat_cutoff)
+                                                      in_repeat_cutoff,
+                                                      error_cutoff)
         upper_cutoff = est_upper_cutoff_if_required(hist_dict, verbose,
                                                     in_upper_cutoff)
 
