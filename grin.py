@@ -177,40 +177,6 @@ def calculate_gri(number_repetitive_kmers, total_number_kmers):
     return gri
 
 
-def create_parser():
-
-    """
-    Returns a parser based on my custom parser, which is stored in
-    custom_argument_parser.py. I have done it in this way because I wanted to
-    be able to write my own help and usage messages. These messages obviously
-    need to be kept up-to-date as features are added/removed.
-    """
-
-    parser = custom_argument_parser.CustomParser()
-    parser.add_argument("-v", "--verbose", action="store_true")
-    parser.add_argument("-c", "--indiv-repeat-cutoffs", type=int, nargs='+')
-    parser.add_argument("-C", "--single-repeat-cutoff", type=int, nargs='?')
-    parser.add_argument("-e", "--indiv-error-cutoffs", type=int, nargs='+')
-    parser.add_argument("-E", "--single-error-cutoff", type=int, nargs='?')
-    parser.add_argument("-u", "--indiv-upper-cutoffs", type=int, nargs='+')
-    parser.add_argument("-U", "--single-upper-cutoff", type=int, nargs='?')
-    parser.add_argument("-f", "--file", type=str, nargs='+', required=True)
-
-    return parser
-
-
-def parser_main():
-
-    """
-    Creates the parser and returns the parsed arguments.
-    """
-
-    parser = create_parser()
-    args = parser.parse_args()
-
-    return args
-
-
 def error_check_user_cutoffs(args):
 
     """
@@ -438,7 +404,7 @@ def main():
     input files, calculating and printing their GRIs.
     """
 
-    args = parser_main()
+    args = custom_argument_parser.parser_main()
     file_paths = args.file
     num_files = len(file_paths)
     verbose = args.verbose
