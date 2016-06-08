@@ -118,10 +118,7 @@ class CustomParser(argparse.ArgumentParser):
 def create_parser():
 
     """
-    Returns a parser based on my custom parser, which is stored in
-    custom_argument_parser.py. I have done it in this way because I wanted to
-    be able to write my own help and usage messages. These messages obviously
-    need to be kept up-to-date as features are added/removed.
+    Returns my custom parser with the arguments added.
     """
 
     parser = CustomParser()
