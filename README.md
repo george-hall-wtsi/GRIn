@@ -6,12 +6,12 @@ words in a read set which are predicted to be repetitive. We predict that
 genomes with a lower GRI will be easier to assemble than those with a higher
 one. Hence:
 
-![GRI = number of repetitive k-mers / total number of k-mers](markdown_formulae/GRI_formula.gif)
+![GRI = number of repetitive k-mers / total number of k-mers](README_formulae/GRI_formula.gif)
 
 The number of k-mers in a set of reads occurring a minimum of `a` times and a
 maximum of `b` times can be computed by:
 
-![Total number k-mers formula](markdown_formulae/total_num_kmers.gif)
+![Total number k-mers formula](README_formulae/total_num_kmers.gif)
 
 where `freq(i)` gives the number of distinct k-mers occurring `i` times in the
 set of reads.
