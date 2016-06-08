@@ -340,7 +340,7 @@ def set_repeat_cutoff(hist_dict, initial_repeat_cutoff, error_cutoff, verbose):
         return initial_repeat_cutoff
 
 
-def set_upper_cutoff(hist_dict, verbose, initial_upper_cutoff):
+def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbose):
 
     """
     Determine whether it is necessary to estimate the upper cutoff, or if the
@@ -405,8 +405,8 @@ def process_histogram_file(file_name, initial_error_cutoff,
         repeat_cutoff = set_repeat_cutoff(hist_dict,
                                           initial_repeat_cutoff, error_cutoff,
                                           verbose)
-        upper_cutoff = set_upper_cutoff(hist_dict, verbose,
-                                        initial_upper_cutoff)
+        upper_cutoff = set_upper_cutoff(hist_dict, initial_upper_cutoff,
+                                        verbose)
 
         if check_cutoff_consistency(error_cutoff, repeat_cutoff,
                                     upper_cutoff) == -1:
