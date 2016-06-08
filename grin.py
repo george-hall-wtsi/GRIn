@@ -211,8 +211,7 @@ def parser_main():
     return args
 
 
-def error_check_user_cutoffs(indiv_cutoffs, single_cutoff, num_files,
-                             cutoff_name):
+def error_check_user_cutoffs(args):
 
     """
     Error checking for user specified cutoffs. This checks that mutually
@@ -220,28 +219,37 @@ def error_check_user_cutoffs(indiv_cutoffs, single_cutoff, num_files,
     number of values have been specified (if appropriate).
     """
 
-    if indiv_cutoffs and single_cutoff:
-        print("ERROR: Cannot specify both --indiv-", cutoff_name,
-              "-cutoffs and --single-", cutoff_name, "-cutoff", sep='',
-              file=sys.stderr)
-        sys.exit(1)
+    num_files = len(args.file)
 
-    if indiv_cutoffs is not None:
-        if num_files != len(indiv_cutoffs):
-            print("ERROR: Need to have the same number of individual",
-                  cutoff_name, "cutoffs as files", file=sys.stderr)
+    for (cutoff_name, indiv_cutoffs, single_cutoff) in \
+            [\
+            ("error", args.indiv_error_cutoffs, args.single_error_cutoff),\
+            ("repeat", args.indiv_repeat_cutoffs, args.single_repeat_cutoff),\
+            ("upper", args.indiv_upper_cutoffs, args.single_upper_cutoff)\
+            ]:
+
+        if indiv_cutoffs and single_cutoff:
+            print("ERROR: Cannot specify both --indiv-", cutoff_name,
+                  "-cutoffs and --single-", cutoff_name, "-cutoff", sep='',
+                  file=sys.stderr)
             sys.exit(1)
 
-        if any(cutoff <= 0 for cutoff in indiv_cutoffs):
-            print("ERROR: --indiv-", cutoff_name, "-cutoffs must all be ",
-                  "positive integers", sep='', file=sys.stderr)
-            sys.exit(1)
+        if indiv_cutoffs is not None:
+            if num_files != len(indiv_cutoffs):
+                print("ERROR: Need to have the same number of individual",
+                      cutoff_name, "cutoffs as files", file=sys.stderr)
+                sys.exit(1)
 
-    if single_cutoff is not None:
-        if single_cutoff <= 0:
-            print("ERROR: --single-", cutoff_name, "-cutoff must be a ",
-                  "positive integer", sep='', file=sys.stderr)
-            sys.exit(1)
+            if any(cutoff <= 0 for cutoff in indiv_cutoffs):
+                print("ERROR: --indiv-", cutoff_name, "-cutoffs must all be ",
+                      "positive integers", sep='', file=sys.stderr)
+                sys.exit(1)
+
+        if single_cutoff is not None:
+            if single_cutoff <= 0:
+                print("ERROR: --single-", cutoff_name, "-cutoff must be a ",
+                      "positive integer", sep='', file=sys.stderr)
+                sys.exit(1)
 
     return
 
@@ -431,13 +439,8 @@ def main():
     num_files = len(file_paths)
     verbose = args.verbose
 
-    # Error check cutoffs
-    error_check_user_cutoffs(args.indiv_error_cutoffs,
-                             args.single_error_cutoff, num_files, "error")
-    error_check_user_cutoffs(args.indiv_repeat_cutoffs,
-                             args.single_repeat_cutoff, num_files, "repeat")
-    error_check_user_cutoffs(args.indiv_upper_cutoffs,
-                             args.single_upper_cutoff, num_files, "upper")
+    # Check user has not set illegal cutoffs
+    error_check_user_cutoffs(args)
 
     # Construct cutoff lists
     error_cutoffs = construct_cutoff_list(args.indiv_error_cutoffs,
