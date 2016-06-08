@@ -384,8 +384,9 @@ def check_cutoff_consistency(error_cutoff, repeat_cutoff, upper_cutoff):
     return 0
 
 
-def process_histogram_file(file_name, verbose, initial_error_cutoff,
-                           initial_upper_cutoff, initial_repeat_cutoff):
+def process_histogram_file(file_name, initial_error_cutoff,
+                           initial_repeat_cutoff, initial_upper_cutoff,
+                           verbose):
 
     """
     Main function for interacting with an individual histogram file. This
@@ -457,8 +458,8 @@ def main():
     zip(file_paths, repeat_cutoffs, error_cutoffs, upper_cutoffs):
 
         try:
-            process_histogram_file(file_name, verbose, error_cutoff,
-                                   upper_cutoff, repeat_cutoff)
+            process_histogram_file(file_name, error_cutoff, repeat_cutoff,
+                                   upper_cutoff, verbose)
         except IOError:
             print("ERROR: Could not open file \"" + file_name + "\".",
                   "Skipping...", file=sys.stderr)
