@@ -45,8 +45,8 @@ MY_EMAIL = "gh10@sanger.ac.uk"
 def generate_min_list(hist_dict):
 
     """
-    Returns a list of the occurrence values corresponding to the minima inx
-    hist_dict.
+    Returns a list of the occurrence values corresponding to the minima in the
+    k-mer spectra represented by hist_dict.
     """
 
     min_list = sig.argrelextrema(np.array(hist_dict.values()), np.less_equal,
@@ -58,8 +58,8 @@ def generate_min_list(hist_dict):
 def generate_max_list(hist_dict):
 
     """
-    Returns a list of the occurrence values corresponding to the maxima in
-    hist_dict.
+    Returns a list of the occurrence values corresponding to the maxima in the
+    k-mer spectra represented by hist_dict.
     """
 
     max_list = sig.argrelextrema(np.array(hist_dict.values()),
@@ -156,7 +156,7 @@ def count_num_kmers(hist_dict, lower_bound, upper_bound):
 def calculate_gri(number_repetitive_kmers, total_number_kmers):
 
     """
-    Returns the percentage of repetitive k-mers.
+    Return the GRI (that is, the percentage of repetitive k-mers).
     """
 
     if total_number_kmers == 0:
@@ -389,8 +389,8 @@ def process_histogram_file(file_name, verbose, in_error_cutoff,
 
     """
     Main function for interacting with an individual histogram file. This
-    function creates a hist dict for the file, sets any cutoffs which still
-    need to be set, and computes and prints the GRI for the file.
+    function creates a hist dict for the file, sets the cutoffs for the file,
+    and computes and prints the GRI for the file.
     """
 
     with open(file_name, 'r') as hist_file:
