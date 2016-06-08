@@ -106,7 +106,7 @@ We use the upper cutoff to exclude k-mers which are probably due to PCR
 duplication or other sequencing biases. If unset, GRIn sets this to 20 * k-mer
 depth. 
 
-![Cutoff diagram](images/cutoff_diagram.png)
+![Cutoff diagram](README_images/cutoff_diagram.png)
 
 ## Notes
 
