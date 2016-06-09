@@ -43,7 +43,7 @@ class CustomParser(argparse.ArgumentParser):
 
         """Custom help message"""
 
-        store_str = "\n"
+        store_str = "\nGRIn (version 1.0.5)\n\n"
         store_str += self.generate_usage_message()
         store_str += "\nrequired arguments:\n"
         store_str += "\t-f, --file                   "
@@ -75,17 +75,17 @@ class CustomParser(argparse.ArgumentParser):
         store_str += "\t-h, --help                   print this message\n\n"
 
         store_str += "notes:\n"
-        store_str += "\t* if specified, the number of individual "
+        store_str += "\t* If specified, the number of individual "
         store_str += "cutoffs must equal the number of\n"
-        store_str += "\t  input files\n"
+        store_str += "\t  input files.\n"
 
-        store_str += "\t* all cutoffs must be positive integers\n"
+        store_str += "\t* All cutoffs must be positive integers.\n"
 
-        store_str += "\t* for each type of cutoff (error, repeat, upper), the "
+        store_str += "\t* For each type of cutoff (error, repeat, upper), the "
         store_str += "single cutoff and\n"
-        store_str += "\t  individual cutoffs options are mutual exclusive\n"
+        store_str += "\t  individual cutoffs options are mutual exclusive.\n"
 
-        store_str += "\t* if any cutoff is not set by the user then it will "
+        store_str += "\t* If any cutoff is not set by the user then it will "
         store_str += "be estimated and set by\n"
         store_str += "\t  GRIn: The error cutoff will be set to be the "
         store_str += "minimum following the\n"
@@ -93,8 +93,13 @@ class CustomParser(argparse.ArgumentParser):
         store_str += "the point R such that the \n"
         store_str += "\t  k-mer depth is equidistant between R and the error "
         store_str += "cutoff; the upper\n"
-        store_str += "\t  cutoff will be set to be 20 * the "
-        store_str += "k-mer depth\n\n"
+        store_str += "\t  cutoff will be set to be 20 * the k-mer depth.\n\n"
+
+        store_str += "Copyright Genome Research Limited 2016. Licenced under "
+        store_str += "the GNU GPL (see COPYING).\n\n"
+
+        store_str += "See https://github.com/george-hall/GRIn for more "
+        store_str += "information.\n\n"
 
         return store_str
 
