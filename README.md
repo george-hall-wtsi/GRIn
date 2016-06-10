@@ -23,12 +23,12 @@ GRI for real data. See the 'Using GRIn' section of this document.
 
 ##### Dependencies
 
-GRIn requires Numpy and Scipy. It has been tested with Numpy 1.9.2 and Scipy
-0.16.0. The feature of Scipy used was introduced in Scipy 0.11.0, and I think
-the featues of Numpy I use are so basic that they will always have been
-present. Therefore I would guess that GRIn will work on any version of Numpy,
-and on versions of Scipy >= 0.11.0. If not, please let me know
-(gh10@sanger.ac.uk).
+GRIn is compatible with both Python 2 and Python 3. It requires Numpy and
+Scipy. It has been tested with Numpy 1.9.2 and Scipy 0.16.0. The feature of
+Scipy used was introduced in Scipy 0.11.0, and I think the featues of Numpy I
+use are so basic that they will always have been present. Therefore I would
+guess that GRIn will work on any version of Numpy, and on versions of Scipy >=
+0.11.0. If not, please let me know (gh10@sanger.ac.uk).
 
 ##### Installing GRIn itself
 
