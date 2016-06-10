@@ -47,19 +47,56 @@ the Repeat Cutoff; and the Upper Cutoff. In fact, these cutoffs are so
 important that if they are not set by the user then GRIn will estimate them
 itself and use those estimations in its calculation of the GRI. 
 
-Using GRIn with individual cutoffs:
+#### Setting the cutoffs yourself
+
+For each cutoff, you can specify a single cutoff to be used for all input
+files, or you can specify individual cutoffs for each file. Single cutoffs
+(i.e. those to be applied to all files) are set using flags with capital
+letters, whereas individual cutoffs (i.e. those with a specific value set for
+each file) are set using flags with lowercase letters.
+
+##### The Error Cutoff
+
+Use `-E / --single-error-cutoff` to specify one error cutoff to be applied to all files.
+
+Use `-e / --indiv-error-cutoffs` to specify one error cutoff per input file.
+
+##### The Repeat Cutoff
+
+Use `-C / --single-repeat-cutoff` to specify one repeat cutoff to be applied to all files.
+
+Use `-c / --indiv-repeat-cutoffs` to specify one repeat cutoff per input file.
+
+##### The Upper Cutoff
+
+Use `-U / --single-upper-cutoff` to specify one upper cutoff to be applied to all files.
+
+Use `-u / --indiv-upper-cutoffs` to specify one upper cutoff per input file.
+
+##### NOTE
+
+The user must not use both the single and individual flags for the same cutoff.
+
+#### Examples
+
+In the following examples, I am using GRIn with two input files (`file1.hist`
+and `file2.hist`) in order to demonstrate the different ways in which the user
+can enter cutoffs. It should be noted that GRIn can work with any number of
+input files.
+
+Using the individual flags for each cutoff:
 
 ```
 grin -e 4 9 -c 36 49 -u 400 500 -f file1.hist file2.hist
 ```
 
-Using single cutoffs:
+Using the single cutoff flag for each:
 
 ```
 grin -E 5 -C 51 -U 740 -f file1.hist file2.hist
 ```
 
-The above command is equivalent to:
+Note: The above command is equivalent to:
 
 ```
 grin -e 5 5 -c 51 51 -u 740 740 -f file1.hist file2.hist
@@ -69,16 +106,20 @@ Finally, running GRIn without any manual cutoffs set (i.e. they will all be set
 automatically):
 
 ```
-grin -f file.hist
+grin -f file1.hist file2.hist
 ```
 
-Note you can mix and match different cutoff types etc:
+Note that you can mix and match different cutoff types. Here, for example, the
+Error Cutoff is specified using a single cutoff to be applied to all files, the
+Repeat Cutoff is specified using an individual cutoff for each file, and the
+Upper Cutoff is not specified at all, and therefore will be automatically
+computed by GRIn:
 
 ```
 grin -E 10 -c 36 72 -f file1.hist file2.hist
 ```
 
-## Cutoffs in more detail
+## The Cutoffs Explained
 
 ##### The Error Cutoff
 
@@ -87,7 +128,9 @@ calculation. These are the k-mers contained in the initial error peak of the
 spectrum (i.e. those only occurring fewer than, say, 10 times across all
 reads). These k-mers are, with high probability, due to sequencing errors, as
 they occur too few times to have originated from a genuine genomic region given
-the sequencing depth. By default, this cutoff is set to be the number of
+the sequencing depth. 
+
+By default, this cutoff is set to be the number of
 occurrences corresponding to the minimum between the error curve and the main
 peak in the k-mer spectrum.
 
@@ -100,11 +143,16 @@ the first and second peak. If the peaks are not so easily observed, we set this
 to be the value `R` such that the k-mer depth is equidistant between the error
 cutoff and `R`.
 
+If unset, GRIn sets the Repeat Cutoff to this value.
+
 ##### The Upper Cutoff
 
 We use the upper cutoff to exclude k-mers which are probably due to PCR
-duplication or other sequencing biases. If unset, GRIn sets this to 20 * k-mer
-depth. 
+duplication or other sequencing biases. 
+
+If unset, GRIn sets this to 20 * k-mer depth. 
+
+##### Diagram with cutoffs labelled
 
 ![Cutoff diagram](README_images/cutoff_diagram.png)
 
