@@ -49,10 +49,13 @@ def generate_min_list(hist_dict):
     k-mer spectra represented by hist_dict.
     """
 
-    min_list = sig.argrelextrema(np.array(hist_dict.values()), np.less_equal,
-                                 order=3)[0].tolist()
+    # hist_keys is a list containing the keys of hist_dict
+    # hist_vals is a list containing the values of hist_dict
+    (hist_keys, hist_vals) = (list(hist_dict.keys()), list(hist_dict.values()))
 
-    return [hist_dict.keys()[x] for x in min_list]
+    min_list = sig.argrelmin(np.array(hist_vals), order=3)[0].tolist()
+
+    return [hist_keys[x] for x in min_list]
 
 
 def generate_max_list(hist_dict):
@@ -62,10 +65,13 @@ def generate_max_list(hist_dict):
     k-mer spectra represented by hist_dict.
     """
 
-    max_list = sig.argrelextrema(np.array(hist_dict.values()),
-                                 np.greater_equal, order=3)[0].tolist()
+    # hist_keys is a list containing the keys of hist_dict
+    # hist_vals is a list containing the values of hist_dict
+    (hist_keys, hist_vals) = (list(hist_dict.keys()), list(hist_dict.values()))
 
-    return [hist_dict.keys()[x] for x in max_list]
+    max_list = sig.argrelmax(np.array(hist_vals), order=3)[0].tolist()
+
+    return [hist_keys[x] for x in max_list]
 
 
 def find_kmer_depth(hist_dict, min_list=None):
@@ -87,7 +93,7 @@ def find_kmer_depth(hist_dict, min_list=None):
         # Although this looks really inefficient, we hopefully
         # shouldn't have to do it more than twice (hopefully just once)
         # and I can't quickly think of a better way to do it
-        for (key, value) in hist_dict.iteritems():
+        for (key, value) in hist_dict.items():
             if value == maximum and key > min_list_minimum and key > 10:
                 return key
 
@@ -252,10 +258,10 @@ def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files):
         return indiv_cutoffs
 
     elif single_cutoff and not indiv_cutoffs:
-        return [single_cutoff for _ in xrange(num_files)]
+        return [single_cutoff for _ in range(num_files)]
 
     else:
-        return [0 for _ in xrange(num_files)]
+        return [0 for _ in range(num_files)]
 
 
 def set_error_cutoff(hist_dict, initial_error_cutoff, verbose):
