@@ -2,3 +2,4 @@ preview.html
 *.pyc
 tests/
 tag_message
+tests_old/
