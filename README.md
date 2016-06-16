@@ -119,6 +119,28 @@ computed by GRIn:
 grin -E 10 -c 36 72 -f file1.hist file2.hist
 ```
 
+#### How to use Jellyfish to generate k-mer spectra
+
+This information is correct for Jellyish version 2.2.3 [1], and describes the
+most straightforward way of using this program to generate k-mer spectra.
+Having installed Jellyfish, run
+
+```
+jellyfish count -t **NUMBER OF THREADS** -C -s **SIZE OF HASH TABLE** -m **K-MER SIZE** **INPUT FILES**
+```
+
+Where 'SIZE OF HASH TABLE' is the number of cells in a hash table (I normally
+use 100 million). This command will store the hash table as a file named
+`mer\_counts.jf`. To generate the k-mer spectrum, run
+
+```
+jellyfish histo mer_counts.jf > **WHERE TO STORE SPECTRUM**
+```
+
+Now you can view the spectrum using an graph plotting tool. For much more
+detailed information on how to use Jellyfish to its full extent, see its
+documentation.
+
 ## The Cutoffs Explained
 
 ##### The Error Cutoff
@@ -161,7 +183,7 @@ If unset, GRIn sets this to 20 * k-mer depth.
 We recommend using a k-mer size of 31bp for this tool to work well, although
 providing that the k-mers are 'long enough' (roughly between 21bp and 71bp) we
 see little difference in the resulting GRI when using different k-mer sizes. We
-use [Jellyfish](https://github.com/gmarcais/Jellyfish) for the k-mer counting.
+use Jellyfish [1] for the k-mer counting.
 
 We are currently writing a paper on the GRI and its uses.
 
@@ -173,3 +195,7 @@ GPL, which is contained in [COPYING](COPYING).
 ## Contact me
 
 For anything to do with GRIn, contact George Hall at gh10@sanger.ac.uk
+
+## References
+
+[1] https://github.com/gmarcais/Jellyfish
