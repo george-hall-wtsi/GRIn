@@ -59,10 +59,10 @@ class CustomParser(argparse.ArgumentParser):
         store_str += "\t                             the error curve\n"
         store_str += "\t-E, --single-error-cutoff    "
         store_str += "single error cutoff to be applied to all files\n\n"
-        store_str += "\t-c, --indiv-repeat-cutoffs   "
+        store_str += "\t-r, --indiv-repeat-cutoffs   "
         store_str += "list of repeat cutoffs for start of repetitive\n"
         store_str += "\t                             k-mers\n"
-        store_str += "\t-C, --single-repeat-cutoff   "
+        store_str += "\t-R, --single-repeat-cutoff   "
         store_str += "single repeat cutoff to be applied to all files\n\n"
         store_str += "\t-u, --indiv-upper-cutoffs    "
         store_str += "list of upper cutoffs after which k-mers do not\n"
@@ -128,8 +128,8 @@ def create_parser():
 
     parser = CustomParser()
     parser.add_argument("-v", "--verbose", action="store_true")
-    parser.add_argument("-c", "--indiv-repeat-cutoffs", type=int, nargs='+')
-    parser.add_argument("-C", "--single-repeat-cutoff", type=int, nargs='?')
+    parser.add_argument("-r", "--indiv-repeat-cutoffs", type=int, nargs='+')
+    parser.add_argument("-R", "--single-repeat-cutoff", type=int, nargs='?')
     parser.add_argument("-e", "--indiv-error-cutoffs", type=int, nargs='+')
     parser.add_argument("-E", "--single-error-cutoff", type=int, nargs='?')
     parser.add_argument("-u", "--indiv-upper-cutoffs", type=int, nargs='+')

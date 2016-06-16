@@ -63,9 +63,9 @@ Use `-e / --indiv-error-cutoffs` to specify one error cutoff per input file.
 
 ##### The Repeat Cutoff
 
-Use `-C / --single-repeat-cutoff` to specify one repeat cutoff to be applied to all files.
+Use `-R / --single-repeat-cutoff` to specify one repeat cutoff to be applied to all files.
 
-Use `-c / --indiv-repeat-cutoffs` to specify one repeat cutoff per input file.
+Use `-r / --indiv-repeat-cutoffs` to specify one repeat cutoff per input file.
 
 ##### The Upper Cutoff
 
@@ -87,19 +87,19 @@ input files.
 Using the individual flags for each cutoff:
 
 ```
-grin -e 4 9 -c 36 49 -u 400 500 -f file1.hist file2.hist
+grin -e 4 9 -r 36 49 -u 400 500 -f file1.hist file2.hist
 ```
 
 Using the single cutoff flag for each:
 
 ```
-grin -E 5 -C 51 -U 740 -f file1.hist file2.hist
+grin -E 5 -R 51 -U 740 -f file1.hist file2.hist
 ```
 
 Note: The above command is equivalent to:
 
 ```
-grin -e 5 5 -c 51 51 -u 740 740 -f file1.hist file2.hist
+grin -e 5 5 -r 51 51 -u 740 740 -f file1.hist file2.hist
 ```
 
 Finally, running GRIn without any manual cutoffs set (i.e. they will all be set
@@ -116,7 +116,7 @@ Upper Cutoff is not specified at all, and therefore will be automatically
 computed by GRIn:
 
 ```
-grin -E 10 -c 36 72 -f file1.hist file2.hist
+grin -E 10 -r 36 72 -f file1.hist file2.hist
 ```
 
 #### How to use Jellyfish to generate k-mer spectra
