@@ -230,10 +230,10 @@ def error_check_user_cutoffs(args):
 def any_cutoff_set(args):
 
     """Return True if any cutoff has been set by the user."""
-    
+
     return any([args.indiv_error_cutoffs, args.single_error_cutoff,
-               args.indiv_repeat_cutoffs, args.single_repeat_cutoff,
-               args.indiv_upper_cutoffs, args.single_upper_cutoff])
+                args.indiv_repeat_cutoffs, args.single_repeat_cutoff,
+                args.indiv_upper_cutoffs, args.single_upper_cutoff])
 
 
 def error_check_user_input(args):
@@ -467,12 +467,14 @@ def construct_all_cutoff_lists(args):
 
         # Construct cutoff lists
         error_cutoffs = construct_cutoff_list(args.indiv_error_cutoffs,
-                                              args.single_error_cutoff, num_files)
+                                              args.single_error_cutoff,
+                                              num_files)
         repeat_cutoffs = construct_cutoff_list(args.indiv_repeat_cutoffs,
                                                args.single_repeat_cutoff,
                                                num_files)
         upper_cutoffs = construct_cutoff_list(args.indiv_upper_cutoffs,
-                                              args.single_upper_cutoff, num_files)
+                                              args.single_upper_cutoff,
+                                              num_files)
 
     else:
         # User has passed in fast{a,q} file
