@@ -31,10 +31,10 @@ anything to do with this program, contact George Hall (gh10@sanger.ac.uk).
 
 from __future__ import print_function, division
 import sys
+import subprocess as sp
 
 import scipy.signal as sig
 import numpy as np
-import subprocess as sp
 
 import custom_argument_parser
 
