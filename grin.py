@@ -454,27 +454,16 @@ def run_jellyfish(file_paths, verbose):
     return
 
 
-def main():
-
-    """
-    This is the main function for the program. It just calls the argument
-    parser, calls the cutoff list constructors, and then iterates over the
-    input files, calculating and printing their GRIs.
-    """
-
-    args = custom_argument_parser.parser_main()
-    file_paths = args.file
-    num_files = len(file_paths)
-    verbose = args.verbose
-
-    if verbose:
-        print("Command ran:", " ".join(sys.argv))
-
-    error_check_user_input(args)
+def construct_all_cutoff_lists(args):
 
     if not args.full_auto:
+
+        # User has passed in histogram
+
         # Check user has not set illegal cutoffs
         error_check_user_cutoffs(args)
+
+        num_files = len(args.file)
 
         # Construct cutoff lists
         error_cutoffs = construct_cutoff_list(args.indiv_error_cutoffs,
@@ -486,12 +475,38 @@ def main():
                                               args.single_upper_cutoff, num_files)
 
     else:
-        # Jellyfish needs to be run first in order to generate histogram file
-        run_jellyfish(file_paths, verbose)
-        file_paths = [generate_hist_file_name(file_paths)]
+        # User has passed in fast{a,q} file
         error_cutoffs = [0]
         repeat_cutoffs = [0]
         upper_cutoffs = [0]
+
+    return (error_cutoffs, repeat_cutoffs, upper_cutoffs)
+
+def main():
+
+    """
+    This is the main function for the program. It just calls the argument
+    parser, calls the cutoff list constructors, and then iterates over the
+    input files, calculating and printing their GRIs.
+    """
+
+    args = custom_argument_parser.parser_main()
+    file_paths = args.file
+    verbose = args.verbose
+
+    if verbose:
+        print("Command ran:", " ".join(sys.argv))
+
+    error_check_user_input(args)
+
+    if args.full_auto:
+        # Jellyfish needs to be run first in order to generate histogram file
+        run_jellyfish(file_paths, verbose)
+        file_paths = [generate_hist_file_name(file_paths)]
+
+    (error_cutoffs,
+     repeat_cutoffs,
+     upper_cutoffs) = construct_all_cutoff_lists(args)
 
     for (file_name, repeat_cutoff, error_cutoff, upper_cutoff) in \
     zip(file_paths, repeat_cutoffs, error_cutoffs, upper_cutoffs):
