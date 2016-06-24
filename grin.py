@@ -34,6 +34,7 @@ import sys
 
 import scipy.signal as sig
 import numpy as np
+import subprocess as sp
 
 import custom_argument_parser
 
@@ -226,6 +227,25 @@ def error_check_user_cutoffs(args):
     return
 
 
+def any_cutoff_set(args):
+
+    """Return True if any cutoff has been set by the user."""
+    
+    return any([args.indiv_error_cutoffs, args.single_error_cutoff,
+               args.indiv_repeat_cutoffs, args.single_repeat_cutoff,
+               args.indiv_upper_cutoffs, args.single_upper_cutoff])
+
+
+def error_check_user_input(args):
+
+    if args.full_auto and any_cutoff_set(args):
+        print("ERROR: Cannot set both --full-auto and any manual cutoff",
+              file=sys.stderr)
+        sys.exit(1)
+
+    return
+
+
 def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files):
 
     """
@@ -402,6 +422,38 @@ def process_histogram_file(file_name, initial_error_cutoff,
     return
 
 
+def generate_hist_file_name(file_names):
+
+    return "_".join(file_names) + ".hist"
+
+
+def run_jellyfish(file_paths, verbose):
+
+    """Generate histogram using Jellyfish"""
+
+    # Options used for Jellyfish. Change them here if you want:
+    JELLYFISH_BIN = "jellyfish"
+    K_MER_SIZE = "31"
+    HASH_TABLE_SIZE = "100M" # Can use S.I. units M & G,
+    NUM_THREADS = "25"
+
+    if verbose:
+        print("Counting k-mers with Jellyfish...")
+
+    sp.call([JELLYFISH_BIN, "count", "-m", K_MER_SIZE, "-s", HASH_TABLE_SIZE,
+             "-t", NUM_THREADS, "-C"] + file_paths)
+
+    hist_name = generate_hist_file_name(file_paths)
+
+    if verbose:
+        print("Storing histogram in file '", hist_name, "'", sep='')
+
+    with open(hist_name, 'w') as hist_file:
+        sp.call([JELLYFISH_BIN, "histo", "mer_counts.jf"], stdout=hist_file)
+
+    return
+
+
 def main():
 
     """
@@ -418,17 +470,28 @@ def main():
     if verbose:
         print("Command ran:", " ".join(sys.argv))
 
-    # Check user has not set illegal cutoffs
-    error_check_user_cutoffs(args)
+    error_check_user_input(args)
 
-    # Construct cutoff lists
-    error_cutoffs = construct_cutoff_list(args.indiv_error_cutoffs,
-                                          args.single_error_cutoff, num_files)
-    repeat_cutoffs = construct_cutoff_list(args.indiv_repeat_cutoffs,
-                                           args.single_repeat_cutoff,
-                                           num_files)
-    upper_cutoffs = construct_cutoff_list(args.indiv_upper_cutoffs,
-                                          args.single_upper_cutoff, num_files)
+    if not args.full_auto:
+        # Check user has not set illegal cutoffs
+        error_check_user_cutoffs(args)
+
+        # Construct cutoff lists
+        error_cutoffs = construct_cutoff_list(args.indiv_error_cutoffs,
+                                              args.single_error_cutoff, num_files)
+        repeat_cutoffs = construct_cutoff_list(args.indiv_repeat_cutoffs,
+                                               args.single_repeat_cutoff,
+                                               num_files)
+        upper_cutoffs = construct_cutoff_list(args.indiv_upper_cutoffs,
+                                              args.single_upper_cutoff, num_files)
+
+    else:
+        # Jellyfish needs to be run first in order to generate histogram file
+        run_jellyfish(file_paths, verbose)
+        file_paths = [generate_hist_file_name(file_paths)]
+        error_cutoffs = [0]
+        repeat_cutoffs = [0]
+        upper_cutoffs = [0]
 
     for (file_name, repeat_cutoff, error_cutoff, upper_cutoff) in \
     zip(file_paths, repeat_cutoffs, error_cutoffs, upper_cutoffs):

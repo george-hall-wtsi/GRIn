@@ -70,6 +70,13 @@ class CustomParser(argparse.ArgumentParser):
         store_str += "repetitive k-mer counts\n"
         store_str += "\t-U, --single-upper-cutoff    "
         store_str += "single upper cutoff to be applied to all files\n\n"
+        store_str += "\t-a, --full-auto              "
+        store_str += "takes fastq files as input, then calculates\n"
+        store_str += "\t                             histograms and "
+        store_str += "automatically computes the GRI\n"
+        store_str += "\t                             for these files. The "
+        store_str += "GRI is calculated for all\n"
+        store_str += "\t                             files together\n\n"
 
         store_str += "other arguments:\n"
         store_str += "\t-h, --help                   print this message\n\n"
@@ -134,6 +141,7 @@ def create_parser():
     parser.add_argument("-E", "--single-error-cutoff", type=int, nargs='?')
     parser.add_argument("-u", "--indiv-upper-cutoffs", type=int, nargs='+')
     parser.add_argument("-U", "--single-upper-cutoff", type=int, nargs='?')
+    parser.add_argument("-a", "--full-auto", action="store_true")
     parser.add_argument("-f", "--file", type=str, nargs='+', required=True)
 
     return parser
