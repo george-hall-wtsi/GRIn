@@ -43,13 +43,34 @@ grin.py` and then execute it as `./grin.py`
 
 ## Using GRIn
 
-First, it is important to note that GRIn requires extra cutoffs to be set in
-order to work properly on real data. There are three cutoffs: the Error Cutoff;
-the Repeat Cutoff; and the Upper Cutoff. In fact, these cutoffs are so
-important that if they are not set by the user then GRIn will estimate them
-itself and use those estimations in its calculation of the GRI. 
+GRIn can be run in two modes: Fast{a,q} Mode and Histogram Mode.
 
-#### Setting the cutoffs yourself
+### Fast{a,q} Mode
+
+Fast{a,q} Mode takes fast{a,q} files as input, carries out the k-mer counting,
+and then automatically computes the GRI for the dataset. It groups together all
+input files, computing only one GRI no matter how many input files are passed
+to it. To invoke this mode, use the `-a / --full-auto` flag.
+
+##### NOTE
+Settings for Jellyfish can be altered in the `run_jellyfish` function in grin.py.
+
+#### Fast{a,q} Mode Example
+
+In the following example, `file_1.fasta` and `file_2.fasta` could be replaced
+with any number of fasta or fastq files.
+
+```
+grin -a -f file_1.fasta file_2.fasta
+```
+
+### Histogram Mode
+
+First, it is important to note that Histogram Mode requires extra cutoffs to be
+set in order to work properly on real data. There are three cutoffs: the Error
+Cutoff; the Repeat Cutoff; and the Upper Cutoff. In fact, these cutoffs are so
+important that if they are not set by the user then GRIn will estimate them
+itself and use those estimations in its calculation of the GRI.
 
 For each cutoff, you can specify a single cutoff to be used for all input
 files, or you can specify individual cutoffs for each file. Single cutoffs
@@ -79,7 +100,7 @@ Use `-u / --indiv-upper-cutoffs` to specify one upper cutoff per input file.
 
 The user must not use both the single and individual flags for the same cutoff.
 
-#### Examples
+#### Histogram Mode Examples
 
 In the following examples, I am using GRIn with two input files (`file1.hist`
 and `file2.hist`) in order to demonstrate the different ways in which the user
@@ -133,7 +154,7 @@ jellyfish count -t **NUMBER OF THREADS** -C -s **SIZE OF HASH TABLE** -m **K-MER
 
 Where 'SIZE OF HASH TABLE' is the number of cells in a hash table (I normally
 use 100 million). This command will store the hash table as a file named
-`mer\_counts.jf`. To generate the k-mer spectrum, run
+`mer_counts.jf`. To generate the k-mer spectrum, run
 
 ```
 jellyfish histo mer_counts.jf > **WHERE TO STORE SPECTRUM**
