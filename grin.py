@@ -238,6 +238,13 @@ def any_cutoff_set(args):
 
 def error_check_user_input(args):
 
+    """
+    Perform the following checks on the command line options given by the user:
+
+        * Check that --full-auto has not been set if any manual cutoff has also
+          been set
+    """
+
     if args.full_auto and any_cutoff_set(args):
         print("ERROR: Cannot set both --full-auto and any manual cutoff",
               file=sys.stderr)
@@ -424,6 +431,11 @@ def process_histogram_file(file_name, initial_error_cutoff,
 
 def generate_hist_file_name(file_names):
 
+    """
+    Return the name of the histogram file, computed by concatenating all input
+    file names together using underscores
+    """
+
     return "_".join(file_names) + ".hist"
 
 
@@ -455,6 +467,10 @@ def run_jellyfish(file_paths, verbose):
 
 
 def construct_all_cutoff_lists(args):
+
+    """
+    Return a tuple containing a cutoff list for each of the three cutoffs
+    """
 
     if not args.full_auto:
 
