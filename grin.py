@@ -415,6 +415,9 @@ def main():
     num_files = len(file_paths)
     verbose = args.verbose
 
+    if verbose:
+        print("Command ran:", " ".join(sys.argv))
+
     # Check user has not set illegal cutoffs
     error_check_user_cutoffs(args)
 
