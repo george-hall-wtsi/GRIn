@@ -33,9 +33,6 @@ from __future__ import print_function, division
 import sys
 import subprocess as sp
 
-import scipy.signal as sig
-import numpy as np
-
 import custom_argument_parser
 
 
@@ -49,6 +46,9 @@ def generate_min_list(hist_dict):
     Returns a list of the occurrence values corresponding to the minima in the
     k-mer spectra represented by hist_dict.
     """
+
+    import numpy as np
+    import scipy.signal as sig
 
     # hist_keys is a list containing the keys of hist_dict
     # hist_vals is a list containing the values of hist_dict
@@ -65,6 +65,9 @@ def generate_max_list(hist_dict):
     Returns a list of the occurrence values corresponding to the maxima in the
     k-mer spectra represented by hist_dict.
     """
+
+    import numpy as np
+    import scipy.signal as sig
 
     # hist_keys is a list containing the keys of hist_dict
     # hist_vals is a list containing the values of hist_dict
