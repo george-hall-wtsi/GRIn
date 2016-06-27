@@ -360,6 +360,38 @@ def set_repeat_cutoff(hist_dict, initial_repeat_cutoff, error_cutoff, verbose):
         return initial_repeat_cutoff
 
 
+def create_window_generator(hist_dict, window_size):
+
+    """
+    Create a generator which generates all windows of size window_size in
+    hist_dict. These are generated in a sorted manner: the smallest number of
+    occurrences in an (occ, freq) pair in window 'n' will be less than the
+    smallest number of occurrences in an (occ, freq) pair in window 'n+1'.
+    """
+
+    sorted_items = sorted(hist_dict.items(), key=lambda item: item[0])
+
+    for i in range(0, len(sorted_items)):
+        next_window = sorted_items[i:i + window_size]
+        if len(next_window) == window_size:
+            yield next_window
+
+
+def mean_diff(window):
+
+    """
+    Return the mean difference between one frequency number in the window and
+    its predecessor.
+    """
+
+    diff_list = []
+
+    for (_, freq1), (_, freq2) in zip(window, window[1:]):
+        diff_list.append(abs(freq1 - freq2))
+
+    return (sum(diff_list) / len(diff_list))
+
+
 def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbose):
 
     """
@@ -370,11 +402,38 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbose):
     """
 
     if initial_upper_cutoff == 0:
-        upper_cutoff = 20 * find_kmer_depth(hist_dict)
-        if verbose:
-            print("Estimated upper cutoff as", upper_cutoff)
 
-        return upper_cutoff
+        # Upper Cutoff needs to be estimated:
+        # Return the number of occurrences which is corresponds to the midpoint
+        # the first window of size window_size in which the mean difference
+        # between a point's frequency and its neighbouring point's frequency is
+        # less than difference_cutoff.
+
+        kmer_depth = find_kmer_depth(hist_dict)
+        window_size = 6
+        difference_cutoff = 1
+
+        # A window is a list of length window_size which consists of
+        # (occ, freq) pairs in hist_dict
+
+        for window in create_window_generator(hist_dict, window_size):
+            midpoint_occ_num = window[int(window_size/2)][0]
+
+            if midpoint_occ_num <= kmer_depth:
+                continue
+
+            if mean_diff(window) < difference_cutoff:
+                upper_cutoff = midpoint_occ_num
+                if verbose:
+                    print("Estimated upper cutoff as", upper_cutoff)
+
+                return upper_cutoff
+
+        # Failed to estimate an upper cutoff
+        print("WARNING: Failed to estimate the upper cutoff. Will use an " +\
+              "upper cutoff of 20 * the k-mer depth.")
+
+        return (20 * kmer_depth)
 
     else:
         if verbose:
