@@ -106,7 +106,8 @@ class CustomParser(argparse.ArgumentParser):
         store_str += "the GNU GPL (see COPYING).\n\n"
 
         store_str += "See https://github.com/george-hall/GRIn for more "
-        store_str += "information.\n\n"
+        store_str += "information.\n"
+        store_str += "Contact me at gh10@sanger.ac.uk\n\n"
 
         return store_str
 
