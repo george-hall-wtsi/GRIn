@@ -239,21 +239,39 @@ def any_cutoff_set(args):
                 args.indiv_upper_cutoffs, args.single_upper_cutoff])
 
 
-def error_check_user_input(args):
+def construct_all_cutoff_lists(args):
 
     """
-    Perform the following checks on the command line options given by the user:
-
-        * Check that --full-auto has not been set if any manual cutoff has also
-          been set
+    Return a tuple containing a cutoff list for each of the three cutoffs
     """
 
-    if args.full_auto and any_cutoff_set(args):
-        print("ERROR: Cannot set both --full-auto and any manual cutoff",
-              file=sys.stderr)
-        sys.exit(1)
+    if not args.full_auto:
 
-    return
+        # User has passed in histogram
+
+        # Check user has not set illegal cutoffs
+        error_check_user_cutoffs(args)
+
+        num_files = len(args.file)
+
+        # Construct cutoff lists
+        error_cutoffs = construct_cutoff_list(args.indiv_error_cutoffs,
+                                              args.single_error_cutoff,
+                                              num_files)
+        repeat_cutoffs = construct_cutoff_list(args.indiv_repeat_cutoffs,
+                                               args.single_repeat_cutoff,
+                                               num_files)
+        upper_cutoffs = construct_cutoff_list(args.indiv_upper_cutoffs,
+                                              args.single_upper_cutoff,
+                                              num_files)
+
+    else:
+        # User has passed in fast{a,q} file
+        error_cutoffs = [0]
+        repeat_cutoffs = [0]
+        upper_cutoffs = [0]
+
+    return (error_cutoffs, repeat_cutoffs, upper_cutoffs)
 
 
 def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files):
@@ -386,6 +404,43 @@ def check_cutoff_consistency(error_cutoff, repeat_cutoff, upper_cutoff):
     return 0
 
 
+def run_jellyfish(file_paths, verbose):
+
+    """Generate histogram using Jellyfish"""
+
+    # Options used for Jellyfish. Change them here if you want:
+    JELLYFISH_BIN = "jellyfish"
+    K_MER_SIZE = "31"
+    HASH_TABLE_SIZE = "100M" # Can use S.I. units M & G,
+    NUM_THREADS = "25"
+
+    if verbose:
+        print("Counting k-mers with Jellyfish...")
+
+    sp.call([JELLYFISH_BIN, "count", "-m", K_MER_SIZE, "-s", HASH_TABLE_SIZE,
+             "-t", NUM_THREADS, "-C"] + file_paths)
+
+    hist_name = generate_hist_file_name(file_paths)
+
+    if verbose:
+        print("Storing histogram in file '", hist_name, "'", sep='')
+
+    with open(hist_name, 'w') as hist_file:
+        sp.call([JELLYFISH_BIN, "histo", "mer_counts.jf"], stdout=hist_file)
+
+    return
+
+
+def generate_hist_file_name(file_names):
+
+    """
+    Return the name of the histogram file, computed by concatenating all input
+    file names together using underscores
+    """
+
+    return "_".join(file_names) + ".hist"
+
+
 def process_histogram_file(file_name, initial_error_cutoff,
                            initial_repeat_cutoff, initial_upper_cutoff,
                            verbose):
@@ -432,76 +487,22 @@ def process_histogram_file(file_name, initial_error_cutoff,
     return
 
 
-def generate_hist_file_name(file_names):
+def error_check_user_input(args):
 
     """
-    Return the name of the histogram file, computed by concatenating all input
-    file names together using underscores
+    Perform the following checks on the command line options given by the user:
+
+        * Check that --full-auto has not been set if any manual cutoff has also
+          been set
     """
 
-    return "_".join(file_names) + ".hist"
-
-
-def run_jellyfish(file_paths, verbose):
-
-    """Generate histogram using Jellyfish"""
-
-    # Options used for Jellyfish. Change them here if you want:
-    JELLYFISH_BIN = "jellyfish"
-    K_MER_SIZE = "31"
-    HASH_TABLE_SIZE = "100M" # Can use S.I. units M & G,
-    NUM_THREADS = "25"
-
-    if verbose:
-        print("Counting k-mers with Jellyfish...")
-
-    sp.call([JELLYFISH_BIN, "count", "-m", K_MER_SIZE, "-s", HASH_TABLE_SIZE,
-             "-t", NUM_THREADS, "-C"] + file_paths)
-
-    hist_name = generate_hist_file_name(file_paths)
-
-    if verbose:
-        print("Storing histogram in file '", hist_name, "'", sep='')
-
-    with open(hist_name, 'w') as hist_file:
-        sp.call([JELLYFISH_BIN, "histo", "mer_counts.jf"], stdout=hist_file)
+    if args.full_auto and any_cutoff_set(args):
+        print("ERROR: Cannot set both --full-auto and any manual cutoff",
+              file=sys.stderr)
+        sys.exit(1)
 
     return
 
-
-def construct_all_cutoff_lists(args):
-
-    """
-    Return a tuple containing a cutoff list for each of the three cutoffs
-    """
-
-    if not args.full_auto:
-
-        # User has passed in histogram
-
-        # Check user has not set illegal cutoffs
-        error_check_user_cutoffs(args)
-
-        num_files = len(args.file)
-
-        # Construct cutoff lists
-        error_cutoffs = construct_cutoff_list(args.indiv_error_cutoffs,
-                                              args.single_error_cutoff,
-                                              num_files)
-        repeat_cutoffs = construct_cutoff_list(args.indiv_repeat_cutoffs,
-                                               args.single_repeat_cutoff,
-                                               num_files)
-        upper_cutoffs = construct_cutoff_list(args.indiv_upper_cutoffs,
-                                              args.single_upper_cutoff,
-                                              num_files)
-
-    else:
-        # User has passed in fast{a,q} file
-        error_cutoffs = [0]
-        repeat_cutoffs = [0]
-        upper_cutoffs = [0]
-
-    return (error_cutoffs, repeat_cutoffs, upper_cutoffs)
 
 def main():
 
