@@ -24,8 +24,8 @@
 GRIn is a program which computed a set of read's Genome Repeat Index (GRI). The
 GRI is defined as being the proportion of k-mers in a set of read's k-mer
 spectrum which are repetitive. All of this is explained in much more detail in
-the paper accompanying this program (still being written as of 16/5/16). For
-anything to do with this program, contact George Hall (gh10@sanger.ac.uk).
+the paper accompanying this program (still being written as of this commit).
+For anything to do with this program, contact George Hall (gh10@sanger.ac.uk).
 """
 
 
