@@ -641,11 +641,17 @@ def error_check_user_input(args):
 
         * Check that --full-auto has not been set if any manual cutoff has also
           been set
+        * Check that --verbosity is no greater than 2
     """
 
     if args.full_auto and any_cutoff_set(args):
         print("ERROR: Cannot set both --full-auto and any manual cutoff",
               file=sys.stderr)
+        sys.exit(1)
+
+    if args.verbosity > 2:
+        print("ERROR: --verbosity cannot be greater than 2 (either -v or -vv",
+              "must be used)", file=sys.stdout)
         sys.exit(1)
 
     return
