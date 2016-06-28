@@ -447,8 +447,8 @@ def create_window_generator(hist_dict, window_size):
 def mean_diff(window):
 
     """
-    Return the mean difference between one frequency number in the window and
-    its predecessor.
+    Return the mean difference between each number in the window and its
+    predecessor.
     """
 
     diff_list = []
