@@ -37,9 +37,74 @@ import subprocess as sp
 
 import custom_argument_parser
 
+# Non-breaking imports:
+
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    MATPLOTLIB_PRESENT = False
+else:
+    MATPLOTLIB_PRESENT = True
+
+try:
+    import numpy as np
+except ImportError:
+    NUMPY_PRESENT = False
+else:
+    NUMPY_PRESENT = True
+
+try:
+    import scipy.signal as sig
+except ImportError:
+    SCIPY_PRESENT = False
+else:
+    SCIPY_PRESENT = True
+
 
 # For use in some more serious error messages
 MY_EMAIL = "gh10@sanger.ac.uk"
+
+
+def check_scipy_present():
+
+    """
+    Print error message and exit if Scipy was not successfully imported.
+    """
+
+    if not SCIPY_PRESENT:
+        print("ERROR: Could not find Scipy installation. Exiting.",
+              file=sys.stderr)
+        sys.exit(1)
+    else:
+        return
+
+
+def check_numpy_present():
+
+    """
+    Print error message and exit if Numpy was not successfully imported.
+    """
+
+    if not NUMPY_PRESENT:
+        print("ERROR: Could not find Numpy installation. Exiting.",
+              file=sys.stderr)
+        sys.exit(1)
+    else:
+        return
+
+
+def check_matplotlib_present():
+
+    """
+    Print error message and exit if Numpy was not successfully imported.
+    """
+
+    if not MATPLOTLIB_PRESENT:
+        print("ERROR: Could not find Matplotlib installation. Exiting.",
+              file=sys.stderr)
+        sys.exit(1)
+    else:
+        return
 
 
 def generate_min_list(hist_dict):
@@ -49,8 +114,8 @@ def generate_min_list(hist_dict):
     k-mer spectra represented by hist_dict.
     """
 
-    import numpy as np
-    import scipy.signal as sig
+    check_scipy_present()
+    check_numpy_present()
 
     # hist_keys is a list containing the keys of hist_dict
     # hist_vals is a list containing the values of hist_dict
@@ -68,8 +133,8 @@ def generate_max_list(hist_dict):
     k-mer spectra represented by hist_dict.
     """
 
-    import numpy as np
-    import scipy.signal as sig
+    check_scipy_present()
+    check_numpy_present()
 
     # hist_keys is a list containing the keys of hist_dict
     # hist_vals is a list containing the values of hist_dict
@@ -506,8 +571,6 @@ def plot_histogram(hist_dict, error_cutoff, repeat_cutoff, upper_cutoff):
 
     """Plot histogram using hist_dict"""
 
-    import matplotlib.pyplot as plt
-
     data = [[], []]
     data[0] = list(hist_dict.keys())
     data[1] = list(hist_dict.values())
@@ -595,8 +658,6 @@ def generate_subplot_thunk(num_subplots):
     time except the value x needs to be incremented by 1.
     """
 
-    import matplotlib.pyplot as plt
-
     return lambda x: plt.subplot(num_subplots, num_subplots, x,
                                  xlabel="Number of Occurrences",
                                  ylabel="Distinct k-mers with Occurence",
@@ -620,6 +681,7 @@ def main():
 
         # num_subplots is the required number of subplots per row and column
         # to accomodate all files
+        check_matplotlib_present()
         num_subplots = math.ceil(math.sqrt(len(args.file)))
         file_counter = 1
         subplot_func = generate_subplot_thunk(num_subplots)
@@ -650,7 +712,6 @@ def main():
                   "Skipping...", file=sys.stderr)
 
     if verbose:
-        import matplotlib.pyplot as plt
         plt.show()
 
 
