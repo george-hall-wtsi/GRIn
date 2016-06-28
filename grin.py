@@ -30,6 +30,8 @@ For anything to do with this program, contact George Hall (gh10@sanger.ac.uk).
 
 
 from __future__ import print_function, division
+
+import math
 import sys
 import subprocess as sp
 
@@ -500,6 +502,25 @@ def generate_hist_file_name(file_names):
     return "_".join(file_names) + ".hist"
 
 
+def plot_histogram(hist_dict, error_cutoff, repeat_cutoff, upper_cutoff):
+
+    """Plot histogram using hist_dict"""
+
+    import matplotlib.pyplot as plt
+
+    data = [[], []]
+    data[0] = list(hist_dict.keys())
+    data[1] = list(hist_dict.values())
+
+    plt.plot(data[0], data[1])
+
+    plt.axvline(error_cutoff)
+    plt.axvline(repeat_cutoff)
+    plt.axvline(upper_cutoff)
+
+    return
+
+
 def process_histogram_file(file_name, initial_error_cutoff,
                            initial_repeat_cutoff, initial_upper_cutoff,
                            verbose):
@@ -538,6 +559,9 @@ def process_histogram_file(file_name, initial_error_cutoff,
             print("Total number of k-mers", total_number_kmers)
             print("Number of repetitive k-mers", number_repetitive_kmers)
 
+            plot_histogram(hist_dict, error_cutoff, repeat_cutoff,
+                           upper_cutoff)
+
         gri = calculate_gri(number_repetitive_kmers, total_number_kmers)
 
         if gri != -1:
@@ -563,6 +587,22 @@ def error_check_user_input(args):
     return
 
 
+def generate_subplot_thunk(num_subplots):
+
+    """
+    Returns a function which can be called to generate the next subplot. I've
+    made it work like this because the same function needs to be called every
+    time except the value x needs to be incremented by 1.
+    """
+
+    import matplotlib.pyplot as plt
+
+    return lambda x: plt.subplot(num_subplots, num_subplots, x,
+                                 xlabel="Number of Occurrences",
+                                 ylabel="Distinct k-mers with Occurence",
+                                 yscale="log", xlim=(1, 1001), ylim=(1, 10**7))
+
+
 def main():
 
     """
@@ -577,6 +617,12 @@ def main():
 
     if verbose:
         print("Command ran:", " ".join(sys.argv))
+
+        # num_subplots is the required number of subplots per row and column
+        # to accomodate all files
+        num_subplots = math.ceil(math.sqrt(len(args.file)))
+        file_counter = 1
+        subplot_func = generate_subplot_thunk(num_subplots)
 
     error_check_user_input(args)
 
@@ -593,11 +639,19 @@ def main():
     zip(file_paths, repeat_cutoffs, error_cutoffs, upper_cutoffs):
 
         try:
+            if verbose:
+                subplot_func(file_counter)
+                file_counter += 1
             process_histogram_file(file_name, error_cutoff, repeat_cutoff,
                                    upper_cutoff, verbose)
+
         except IOError:
             print("ERROR: Could not open file \"" + file_name + "\".",
                   "Skipping...", file=sys.stderr)
+
+    if verbose:
+        import matplotlib.pyplot as plt
+        plt.show()
 
 
 if __name__ == "__main__":
