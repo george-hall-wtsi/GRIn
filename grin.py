@@ -676,10 +676,6 @@ def main():
     file_paths = args.file
     verbosity = args.verbosity
 
-    # I know this isn't really necessary, but it annoys me that, if it's unset,
-    # verbosity will be None rather than 0
-    verbosity = 0 if verbosity is None else verbosity
-
     if verbosity > 0:
         print("Command ran:", " ".join(sys.argv))
 

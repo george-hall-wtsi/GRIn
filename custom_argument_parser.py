@@ -173,6 +173,7 @@ def parser_main():
 
     parser = create_parser()
     args = parser.parse_args()
+    args.verbosity = 0 if args.verbosity is None else args.verbosity
 
     return args
 
