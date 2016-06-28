@@ -679,10 +679,12 @@ def main():
     if verbose:
         print("Command ran:", " ".join(sys.argv))
 
-        # num_subplots is the required number of subplots per row and column
-        # to accomodate all files
         check_matplotlib_present()
+
+        # num_subplots is the required number of subplots per row and column
+        # in the window in order to accomodate all files
         num_subplots = math.ceil(math.sqrt(len(args.file)))
+        # file_counter keeps track of which file we are on
         file_counter = 1
         subplot_func = generate_subplot_thunk(num_subplots)
 
