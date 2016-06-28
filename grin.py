@@ -724,7 +724,7 @@ def main():
             print("ERROR: Could not open file \"" + file_name + "\".",
                   "Skipping...", file=sys.stderr)
 
-    if verbosity > 0:
+    if verbosity == 2:
         plt.show()
 
 
