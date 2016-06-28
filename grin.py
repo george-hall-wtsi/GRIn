@@ -622,6 +622,7 @@ def process_histogram_file(file_name, initial_error_cutoff,
             print("Total number of k-mers", total_number_kmers)
             print("Number of repetitive k-mers", number_repetitive_kmers)
 
+        if verbosity == 2:
             plot_histogram(hist_dict, error_cutoff, repeat_cutoff,
                            upper_cutoff)
 
@@ -679,6 +680,8 @@ def main():
     if verbosity > 0:
         print("Command ran:", " ".join(sys.argv))
 
+    if verbosity == 2:
+
         check_matplotlib_present()
 
         # num_subplots is the required number of subplots per row and column
@@ -703,7 +706,7 @@ def main():
     zip(file_paths, repeat_cutoffs, error_cutoffs, upper_cutoffs):
 
         try:
-            if verbosity > 0:
+            if verbosity == 2:
                 subplot_func(file_counter)
                 file_counter += 1
             process_histogram_file(file_name, error_cutoff, repeat_cutoff,
