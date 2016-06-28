@@ -96,7 +96,7 @@ def check_numpy_present():
 def check_matplotlib_present():
 
     """
-    Print error message and exit if Numpy was not successfully imported.
+    Print error message and exit if Matplotlib was not successfully imported.
     """
 
     if not MATPLOTLIB_PRESENT:
