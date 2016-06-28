@@ -421,7 +421,7 @@ def set_repeat_cutoff(hist_dict, initial_repeat_cutoff, error_cutoff, verbose):
 
     else:
         if verbose:
-            print("Using user specified start of reptitive k-mers as",
+            print("Using user specified start of repetitive k-mers as",
                   initial_repeat_cutoff)
 
         return initial_repeat_cutoff
