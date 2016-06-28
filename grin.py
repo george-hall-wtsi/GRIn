@@ -74,6 +74,10 @@ def check_scipy_present():
     if not SCIPY_PRESENT:
         print("ERROR: Could not find Scipy installation. Exiting.",
               file=sys.stderr)
+        print("If you were trying to estimate cutoffs, you need this package",
+              "installed.", file=sys.stderr)
+        print("You can run GRIn with manually specified cutoffs without Scipy",
+              "being installed.", file=sys.stderr)
         sys.exit(1)
     else:
         return
@@ -88,6 +92,10 @@ def check_numpy_present():
     if not NUMPY_PRESENT:
         print("ERROR: Could not find Numpy installation. Exiting.",
               file=sys.stderr)
+        print("If you were trying to estimate cutoffs, you need this package",
+              "installed.", file=sys.stderr)
+        print("You can run GRIn with manually specified cutoffs without Numpy",
+              "being installed", file=sys.stderr)
         sys.exit(1)
     else:
         return
