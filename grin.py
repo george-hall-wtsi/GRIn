@@ -618,7 +618,9 @@ def process_histogram_file(file_name, initial_error_cutoff,
                                                   upper_cutoff)
 
         if verbosity > 0:
-            print("K-mer depth =", find_kmer_depth(hist_dict))
+            # Don't exit if not able to calculate k-mer depth
+            if SCIPY_PRESENT and NUMPY_PRESENT:
+                print("K-mer depth =", find_kmer_depth(hist_dict))
             print("Total number of k-mers", total_number_kmers)
             print("Number of repetitive k-mers", number_repetitive_kmers)
 
