@@ -52,8 +52,15 @@ class CustomParser(argparse.ArgumentParser):
         store_str += "Jellyfish)\n\n"
 
         store_str += "optional arguments:\n"
-        store_str += "\t-v, --verbose                "
-        store_str += "print more output\n\n"
+        store_str += "\t-v, --verbosity              "
+        store_str += "more '-v's => more output:\n"
+        store_str += "\t\t                             1 '-v'  : print more "
+        store_str += "text output\n"
+        store_str += "\t\t                             2 '-v's : same as "
+        store_str += "above, and also print\n"
+        store_str += "\t\t                                       graphs of "
+        store_str += "k-mer spectra and\n"
+        store_str += "\t\t                                       cutoffs\n\n"
         store_str += "\t-e, --indiv-error-cutoffs    "
         store_str += "list of error cutoffs for specifying the end of\n"
         store_str += "\t                             the error curve\n"
@@ -145,7 +152,7 @@ def create_parser():
     """
 
     parser = CustomParser()
-    parser.add_argument("-v", "--verbose", action="store_true")
+    parser.add_argument("-v", "--verbosity", action="count")
     parser.add_argument("-r", "--indiv-repeat-cutoffs", type=int, nargs='+')
     parser.add_argument("-R", "--single-repeat-cutoff", type=int, nargs='?')
     parser.add_argument("-e", "--indiv-error-cutoffs", type=int, nargs='+')

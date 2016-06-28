@@ -183,14 +183,14 @@ def find_start_main_peak(hist_dict):
     return min(generate_min_list(hist_dict))
 
 
-def find_start_repeat_kmers(hist_dict, error_cutoff, verbose):
+def find_start_repeat_kmers(hist_dict, error_cutoff, verbosity):
 
     """
     Returns a point 'a' such that the x co-ordinate of the k-mer depth is
     equidistant between the start of the main peak and 'a'.
     """
 
-    if verbose:
+    if verbosity > 0:
         print("Using error cutoff of", error_cutoff, "in repeat cutoff",
               "in repeat cutoff estimation")
 
@@ -379,7 +379,7 @@ def construct_cutoff_list(indiv_cutoffs, single_cutoff, num_files):
         return [0 for _ in range(num_files)]
 
 
-def set_error_cutoff(hist_dict, initial_error_cutoff, verbose):
+def set_error_cutoff(hist_dict, initial_error_cutoff, verbosity):
 
     """
     Determine whether it is necessary to estimate the error cutoff, or if the
@@ -390,19 +390,19 @@ def set_error_cutoff(hist_dict, initial_error_cutoff, verbose):
 
     if initial_error_cutoff == 0:
         error_cutoff = find_start_main_peak(hist_dict)
-        if verbose:
+        if verbosity > 0:
             print("Estimated error cutoff as", error_cutoff)
 
         return error_cutoff
 
     else:
-        if verbose:
+        if verbosity > 0:
             print("Using user specified error cutoff of", initial_error_cutoff)
 
         return initial_error_cutoff
 
 
-def set_repeat_cutoff(hist_dict, initial_repeat_cutoff, error_cutoff, verbose):
+def set_repeat_cutoff(hist_dict, initial_repeat_cutoff, error_cutoff, verbosity):
 
     """
     Determine whether it is necessary to estimate the repeat cutoff, or if the
@@ -413,14 +413,14 @@ def set_repeat_cutoff(hist_dict, initial_repeat_cutoff, error_cutoff, verbose):
 
     if initial_repeat_cutoff == 0:
         repeat_cutoff = find_start_repeat_kmers(hist_dict, error_cutoff,
-                                                verbose)
-        if verbose:
+                                                verbosity)
+        if verbosity > 0:
             print("Estimated start of repetitive k-mers as", repeat_cutoff)
 
         return repeat_cutoff
 
     else:
-        if verbose:
+        if verbosity > 0:
             print("Using user specified start of repetitive k-mers as",
                   initial_repeat_cutoff)
 
@@ -459,7 +459,7 @@ def mean_diff(window):
     return (sum(diff_list) / len(diff_list))
 
 
-def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbose):
+def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
 
     """
     Determine whether it is necessary to estimate the upper cutoff, or if the
@@ -491,7 +491,7 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbose):
 
             if mean_diff(window) < difference_cutoff:
                 upper_cutoff = midpoint_occ_num
-                if verbose:
+                if verbosity > 0:
                     print("Estimated upper cutoff as", upper_cutoff)
 
                 return upper_cutoff
@@ -503,7 +503,7 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbose):
         return (20 * kmer_depth)
 
     else:
-        if verbose:
+        if verbosity > 0:
             print("Using user specified upper bound of", initial_upper_cutoff)
 
         return initial_upper_cutoff
@@ -530,7 +530,7 @@ def check_cutoff_consistency(error_cutoff, repeat_cutoff, upper_cutoff):
     return 0
 
 
-def run_jellyfish(file_paths, verbose):
+def run_jellyfish(file_paths, verbosity):
 
     """Generate histogram using Jellyfish"""
 
@@ -540,7 +540,7 @@ def run_jellyfish(file_paths, verbose):
     HASH_TABLE_SIZE = "100M" # Can use S.I. units M & G,
     NUM_THREADS = "25"
 
-    if verbose:
+    if verbosity > 0:
         print("Counting k-mers with Jellyfish...")
 
     sp.call([JELLYFISH_BIN, "count", "-m", K_MER_SIZE, "-s", HASH_TABLE_SIZE,
@@ -548,7 +548,7 @@ def run_jellyfish(file_paths, verbose):
 
     hist_name = generate_hist_file_name(file_paths)
 
-    if verbose:
+    if verbosity > 0:
         print("Storing histogram in file '", hist_name, "'", sep='')
 
     with open(hist_name, 'w') as hist_file:
@@ -586,7 +586,7 @@ def plot_histogram(hist_dict, error_cutoff, repeat_cutoff, upper_cutoff):
 
 def process_histogram_file(file_name, initial_error_cutoff,
                            initial_repeat_cutoff, initial_upper_cutoff,
-                           verbose):
+                           verbosity):
 
     """
     Main function for interacting with an individual histogram file. This
@@ -601,12 +601,12 @@ def process_histogram_file(file_name, initial_error_cutoff,
         hist_dict = create_hist_dict(hist_file)
 
         error_cutoff = set_error_cutoff(hist_dict, initial_error_cutoff,
-                                        verbose)
+                                        verbosity)
         repeat_cutoff = set_repeat_cutoff(hist_dict,
                                           initial_repeat_cutoff, error_cutoff,
-                                          verbose)
+                                          verbosity)
         upper_cutoff = set_upper_cutoff(hist_dict, initial_upper_cutoff,
-                                        verbose)
+                                        verbosity)
 
         if check_cutoff_consistency(error_cutoff, repeat_cutoff,
                                     upper_cutoff) == -1:
@@ -617,7 +617,7 @@ def process_histogram_file(file_name, initial_error_cutoff,
         number_repetitive_kmers = count_num_kmers(hist_dict, repeat_cutoff,
                                                   upper_cutoff)
 
-        if verbose:
+        if verbosity > 0:
             print("K-mer depth =", find_kmer_depth(hist_dict))
             print("Total number of k-mers", total_number_kmers)
             print("Number of repetitive k-mers", number_repetitive_kmers)
@@ -674,9 +674,13 @@ def main():
 
     args = custom_argument_parser.parser_main()
     file_paths = args.file
-    verbose = args.verbose
+    verbosity = args.verbosity
 
-    if verbose:
+    # I know this isn't really necessary, but it annoys me that, if it's unset,
+    # verbosity will be None rather than 0
+    verbosity = 0 if verbosity is None else verbosity
+
+    if verbosity > 0:
         print("Command ran:", " ".join(sys.argv))
 
         check_matplotlib_present()
@@ -692,7 +696,7 @@ def main():
 
     if args.full_auto:
         # Jellyfish needs to be run first in order to generate histogram file
-        run_jellyfish(file_paths, verbose)
+        run_jellyfish(file_paths, verbosity)
         file_paths = [generate_hist_file_name(file_paths)]
 
     (error_cutoffs,
@@ -703,17 +707,17 @@ def main():
     zip(file_paths, repeat_cutoffs, error_cutoffs, upper_cutoffs):
 
         try:
-            if verbose:
+            if verbosity > 0:
                 subplot_func(file_counter)
                 file_counter += 1
             process_histogram_file(file_name, error_cutoff, repeat_cutoff,
-                                   upper_cutoff, verbose)
+                                   upper_cutoff, verbosity)
 
         except IOError:
             print("ERROR: Could not open file \"" + file_name + "\".",
                   "Skipping...", file=sys.stderr)
 
-    if verbose:
+    if verbosity > 0:
         plt.show()
 
 
