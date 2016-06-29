@@ -410,7 +410,8 @@ def set_error_cutoff(hist_dict, initial_error_cutoff, verbosity):
         return initial_error_cutoff
 
 
-def set_repeat_cutoff(hist_dict, initial_repeat_cutoff, error_cutoff, verbosity):
+def set_repeat_cutoff(hist_dict, initial_repeat_cutoff, error_cutoff,
+                      verbosity):
 
     """
     Determine whether it is necessary to estimate the repeat cutoff, or if the
