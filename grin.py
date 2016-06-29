@@ -595,6 +595,9 @@ def plot_histogram(hist_dict, error_cutoff, repeat_cutoff, upper_cutoff):
     plt.axvline(repeat_cutoff)
     plt.axvline(upper_cutoff)
 
+    plt.xlim(0, upper_cutoff * 1.05)
+    plt.ylim(1, max(hist_dict.values()) * 1.1)
+
     return
 
 
@@ -684,7 +687,7 @@ def generate_subplot_func(num_subplots):
     return lambda x: plt.subplot(num_subplots, num_subplots, x,
                                  xlabel="Number of Occurrences",
                                  ylabel="Distinct k-mers with Occurence",
-                                 yscale="log", xlim=(1, 1001), ylim=(1, 10**7))
+                                 yscale="log")
 
 
 def main():
