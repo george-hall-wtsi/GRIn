@@ -644,6 +644,7 @@ def process_histogram_file(file_name, initial_error_cutoff,
         if verbosity == 2:
             plot_histogram(hist_dict, error_cutoff, repeat_cutoff,
                            upper_cutoff)
+            plt.title(file_name)
 
         gri = calculate_gri(number_repetitive_kmers, total_number_kmers)
 
