@@ -483,27 +483,30 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
         # Return the number of occurrences which is corresponds to the midpoint
         # the first window of size window_size in which the mean difference
         # between a point's frequency and its neighbouring point's frequency is
-        # less than difference_cutoff.
+        # less than difference_cutoff. Increase difference cutoff if no Upper
+        # Cutoff could be calculated using the current difference cutoff
 
         kmer_depth = find_kmer_depth(hist_dict)
         window_size = 6
-        difference_cutoff = 1
 
         # A window is a list of length window_size which consists of
         # (occ, freq) pairs in hist_dict
 
-        for window in create_window_generator(hist_dict, window_size):
-            midpoint_occ_num = window[int(window_size/2)][0]
+        for difference_cutoff in [0, 0.1, 0.5, 1, 2, 5]:
 
-            if midpoint_occ_num <= kmer_depth:
-                continue
+            for window in create_window_generator(hist_dict, window_size):
+                midpoint_occ_num = window[int(window_size/2)][0]
 
-            if mean_diff(window) < difference_cutoff:
-                upper_cutoff = midpoint_occ_num
-                if verbosity > 0:
-                    print("Estimated upper cutoff as", upper_cutoff)
+                if midpoint_occ_num <= kmer_depth:
+                    continue
 
-                return upper_cutoff
+                if mean_diff(window) <= difference_cutoff:
+                    upper_cutoff = midpoint_occ_num
+                    if verbosity > 0:
+                        print("Estimated upper cutoff as", upper_cutoff,
+                              "using difference cutoff of", difference_cutoff)
+
+                    return upper_cutoff
 
         # Failed to estimate an upper cutoff
         print("WARNING: Failed to estimate the upper cutoff. Will use an " +\
