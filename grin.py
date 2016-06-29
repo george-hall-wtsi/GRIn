@@ -485,12 +485,11 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
         # between a point's frequency and its neighbouring point's frequency is
         # less than difference_cutoff. Increase difference cutoff if no Upper
         # Cutoff could be calculated using the current difference cutoff
+        # A window is a list of length window_size which consists of
+        # (occ, freq) pairs from hist_dict
 
         kmer_depth = find_kmer_depth(hist_dict)
         window_size = 6
-
-        # A window is a list of length window_size which consists of
-        # (occ, freq) pairs in hist_dict
 
         for difference_cutoff in [0, 0.1, 0.5, 1, 2, 5]:
 
