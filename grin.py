@@ -667,7 +667,7 @@ def error_check_user_input(args):
     return
 
 
-def generate_subplot_thunk(num_subplots):
+def generate_subplot_func(num_subplots):
 
     """
     Returns a function which can be called to generate the next subplot. I've
@@ -705,7 +705,7 @@ def main():
         num_subplots = math.ceil(math.sqrt(len(args.file)))
         # file_counter keeps track of which file we are on
         file_counter = 1
-        subplot_func = generate_subplot_thunk(num_subplots)
+        subplot_func = generate_subplot_func(num_subplots)
 
     error_check_user_input(args)
 
