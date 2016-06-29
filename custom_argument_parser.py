@@ -43,7 +43,7 @@ class CustomParser(argparse.ArgumentParser):
 
         """Custom help message"""
 
-        store_str = "\nGRIn version 2.1.1\n\n"
+        store_str = "\nGRIn version 2.2.0\n\n"
         store_str += self.generate_usage_message()
         store_str += "\nrequired arguments:\n"
         store_str += "\t-f, --file                   "
