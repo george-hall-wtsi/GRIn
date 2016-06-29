@@ -595,7 +595,33 @@ def plot_histogram(hist_dict, error_cutoff, repeat_cutoff, upper_cutoff):
     plt.axvline(repeat_cutoff)
     plt.axvline(upper_cutoff)
 
-    plt.xlim(0, upper_cutoff * 1.05)
+    x_vals_array = np.array(data[0])
+    y_vals_array = np.array(data[1])
+
+    boundary_func = lambda lower, upper: np.logical_and(x_vals_array >= lower,
+                                                        x_vals_array <= upper)
+
+    # Shade error curve
+    plt.fill_between(x_vals_array, y_vals_array,
+                     where=(boundary_func(1, error_cutoff)), interpolate=True,
+                     alpha=0.5, color="red")
+
+    # Shade main peak
+    plt.fill_between(x_vals_array, y_vals_array,
+                     where=(boundary_func(error_cutoff, repeat_cutoff)),
+                     interpolate=True, alpha=0.5, color="blue")
+
+    # Shade repetitive k-mers
+    plt.fill_between(x_vals_array, y_vals_array,
+                     where=(boundary_func(repeat_cutoff, upper_cutoff)),
+                     interpolate=True, alpha=0.5, color="green")
+
+    # Shade abundant k-mers
+    plt.fill_between(x_vals_array, y_vals_array,
+                     where=(x_vals_array > upper_cutoff), interpolate=True,
+                     alpha=0.5, color="black")
+
+    plt.xlim(1, upper_cutoff * 1.05)
     plt.ylim(1, max(hist_dict.values()) * 1.1)
 
     return
