@@ -193,15 +193,16 @@ If unset, GRIn sets the Repeat Cutoff to this value.
 ##### The Upper Cutoff
 
 We use the upper cutoff to exclude k-mers which are probably due to PCR
-duplication or other sequencing biases. It is set to the mid point of the first
-6-datapoint window after the k-mer depth in which the mean difference between
-neighbouring points is less than a 'difference cutoff'. This difference cutoff
-is initially set to 0. If the entire histogram is examined and no Upper Cutoff
-can be determined using this method, the difference cutoff is increased to 0.1,
-and the process repeats.  This happens four more times if the Upper Cutoff
-setting procedure is unsuccessful, with the difference cutoff taking the values
-0.5, 1, 2, and 5. At this point, if the setting of the Upper Cutoff as still
-not been successful, it is set to 20 * the k-mer depth.
+duplication or other sequencing biases. It is set to the mid point of the
+second 6-datapoint window after the k-mer depth in which the mean difference
+between neighbouring points is less than a 'difference cutoff'. This difference
+cutoff is initially set to 0. If the entire histogram is examined and no Upper
+Cutoff can be determined using this method, the difference cutoff is increased
+to 0.1, and the process repeats.  This happens up to four more times if the
+Upper Cutoff setting procedure is unsuccessful, with the values of the
+difference cutoff following the sequence 0.5 -> 1 -> 2 -> 5. At this point, if
+the setting of the Upper Cutoff as still not been successful, it is set to 20 *
+the k-mer depth.
 
 ##### Diagram with cutoffs labelled
 
