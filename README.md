@@ -219,7 +219,8 @@ We are currently writing a paper on the GRI and its uses.
 ## Licensing
 
 GRIn is copyright Genome Research Limited 2016. It is licensed under the GNU
-GPL, which is contained in [COPYING](COPYING).
+General Public License version 3, a copy of which is located at
+[COPYING](COPYING).
 
 ## Contact me
 
