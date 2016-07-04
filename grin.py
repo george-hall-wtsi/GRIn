@@ -507,8 +507,14 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
 
         kmer_depth = find_kmer_depth(padded_hist_dict)
         window_size = 6
+        plateau_cutoff = 2
 
         for difference_cutoff in [0, 0.1, 0.5, 1, 2, 5]:
+
+            # Keep track of how many plateaus we have found thus far. Once we
+            # have found plateau_cutoff many plateaus, return the most recently
+            # found one as the Upper Cutoff.
+            plateaus_found = 0
 
             for window in create_window_generator(padded_hist_dict,
                                                   window_size):
@@ -518,12 +524,21 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
                     continue
 
                 if mean_diff(window) <= difference_cutoff:
-                    upper_cutoff = midpoint_occ_num
-                    if verbosity > 0:
-                        print("Estimated upper cutoff as", upper_cutoff,
-                              "using difference cutoff of", difference_cutoff)
+                    if plateaus_found < plateau_cutoff:
+                        plateaus_found += 1
+                        if verbosity > 0:
+                            print("Found plateau number", plateaus_found, "of",
+                                  plateau_cutoff, "required")
+                        continue
 
-                    return upper_cutoff
+                    else:
+                        upper_cutoff = midpoint_occ_num
+                        if verbosity > 0:
+                            print("Estimated upper cutoff as", upper_cutoff,
+                                  "using difference cutoff of",
+                                  difference_cutoff)
+
+                        return upper_cutoff
 
         # Failed to estimate an upper cutoff
         print("WARNING: Failed to estimate the upper cutoff. Will use an " +\
