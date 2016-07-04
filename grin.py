@@ -468,6 +468,21 @@ def mean_diff(window):
     return (sum(diff_list) / len(diff_list))
 
 
+def pad_hist_dict(hist_dict):
+
+    """
+    'Pad' hist_dict with zeroes when an occurrence value is missing. For
+    example, if there is no frequency value recorded for k-mers occurring 10
+    times in the set of reads, then add the pair (occ = 10, freq = 0) to
+    hist_dict.
+    """
+
+    for occ in range(1, sorted(list(hist_dict.keys()))[-1]):
+        hist_dict.setdefault(occ, 0)
+
+    return hist_dict
+
+
 def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
 
     """
@@ -476,6 +491,8 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
     carry out this estimation, and return the resulting cutoff. Otherwise,
     simply return the cutoff which the user has specified.
     """
+
+    padded_hist_dict = pad_hist_dict(hist_dict)
 
     if initial_upper_cutoff == 0:
 
@@ -486,14 +503,15 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
         # less than difference_cutoff. Increase difference cutoff if no Upper
         # Cutoff could be calculated using the current difference cutoff
         # A window is a list of length window_size which consists of
-        # (occ, freq) pairs from hist_dict
+        # (occ, freq) pairs from padded_hist_dict
 
-        kmer_depth = find_kmer_depth(hist_dict)
+        kmer_depth = find_kmer_depth(padded_hist_dict)
         window_size = 6
 
         for difference_cutoff in [0, 0.1, 0.5, 1, 2, 5]:
 
-            for window in create_window_generator(hist_dict, window_size):
+            for window in create_window_generator(padded_hist_dict,
+                                                  window_size):
                 midpoint_occ_num = window[int(window_size/2)][0]
 
                 if midpoint_occ_num <= kmer_depth:
