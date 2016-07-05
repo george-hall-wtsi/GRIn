@@ -676,17 +676,6 @@ def plot_histogram(hist_dict, error_cutoff, repeat_cutoff, upper_cutoff):
     return
 
 
-def calculate_genome_size(hist_dict, kmer_depth, error_cutoff, upper_cutoff):
-
-    """
-    Return an estimation of the genome size.
-    """
-
-    total_num_kmers = count_num_kmers(hist_dict, error_cutoff, upper_cutoff)
-
-    return int(total_num_kmers / kmer_depth)
-
-
 def process_histogram_file(file_name, initial_error_cutoff,
                            initial_repeat_cutoff, initial_upper_cutoff,
                            verbosity):
@@ -728,9 +717,8 @@ def process_histogram_file(file_name, initial_error_cutoff,
             if SCIPY_PRESENT and NUMPY_PRESENT:
                 kmer_depth = find_kmer_depth(hist_dict)
                 print("K-mer depth =", kmer_depth)
-                genome_size_est = calculate_genome_size(hist_dict, kmer_depth,
-                                                        error_cutoff,
-                                                        upper_cutoff)
+
+                genome_size_est = int(total_num_kmers_used / kmer_depth)
                 print("Genome size estmination =", genome_size_est)
 
         if verbosity == 2:
@@ -765,7 +753,6 @@ def error_check_user_input(args):
         print("ERROR: --verbosity cannot be greater than 2 (either -v or -vv",
               "must be used)", file=sys.stdout)
         sys.exit(1)
-
     return
 
 
