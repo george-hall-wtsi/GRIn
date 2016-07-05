@@ -688,13 +688,13 @@ def process_histogram_file(file_name, initial_error_cutoff,
                                     upper_cutoff) == -1:
             return
 
-        total_number_kmers = count_num_kmers(hist_dict, error_cutoff,
+        total_num_kmers_used = count_num_kmers(hist_dict, error_cutoff,
                                              upper_cutoff)
         number_repetitive_kmers = count_num_kmers(hist_dict, repeat_cutoff,
                                                   upper_cutoff)
 
         if verbosity > 0:
-            print("Total number of k-mers", total_number_kmers)
+            print("Total number of k-mers", total_num_kmers_used)
             print("Number of repetitive k-mers", number_repetitive_kmers)
 
             # Don't exit if not able to import Scipy and Numpy
@@ -713,7 +713,7 @@ def process_histogram_file(file_name, initial_error_cutoff,
                            upper_cutoff)
             plt.title(file_name)
 
-        gri = calculate_gri(number_repetitive_kmers, total_number_kmers)
+        gri = calculate_gri(number_repetitive_kmers, total_num_kmers_used)
 
         if gri != -1:
             print("GRI = %0.4f" %(gri))
