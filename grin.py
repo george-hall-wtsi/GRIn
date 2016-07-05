@@ -676,17 +676,13 @@ def plot_histogram(hist_dict, error_cutoff, repeat_cutoff, upper_cutoff):
     return
 
 
-def calculate_genome_size(hist_dict, kmer_depth):
+def calculate_genome_size(hist_dict, kmer_depth, error_cutoff, upper_cutoff):
 
     """
     Return an estimation of the genome size.
     """
 
-    minimum_occurrence = min(hist_dict.keys())
-    maximum_occurrence = max(hist_dict.keys())
-
-    total_num_kmers = count_num_kmers(hist_dict, minimum_occurrence,
-                                      maximum_occurrence)
+    total_num_kmers = count_num_kmers(hist_dict, error_cutoff, upper_cutoff)
 
     return int(total_num_kmers / kmer_depth)
 
@@ -732,7 +728,9 @@ def process_histogram_file(file_name, initial_error_cutoff,
             if SCIPY_PRESENT and NUMPY_PRESENT:
                 kmer_depth = find_kmer_depth(hist_dict)
                 print("K-mer depth =", kmer_depth)
-                genome_size_est = calculate_genome_size(hist_dict, kmer_depth)
+                genome_size_est = calculate_genome_size(hist_dict, kmer_depth,
+                                                        error_cutoff,
+                                                        upper_cutoff)
                 print("Genome size estmination =", genome_size_est)
 
         if verbosity == 2:
