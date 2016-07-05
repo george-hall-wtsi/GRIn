@@ -483,6 +483,57 @@ def pad_hist_dict(hist_dict):
     return hist_dict
 
 
+def fluctuation_method(hist_dict, kmer_depth, verbosity):
+
+    """
+    Return the number of occurrences which corresponds to the midpoint of the
+    first window of size window_size in which the mean difference between a
+    point's frequency and its neighbouring point's frequency is less than
+    difference_cutoff. Increase the difference cutoff if no Upper Cutoff could
+    be calculated using the current difference cutoff A window is a list of
+    length window_size which consists of (occ, freq) pairs from hist_dict.
+    """
+
+    window_size = 6
+    plateau_cutoff = 2
+    padded_hist_dict = pad_hist_dict(hist_dict)
+
+    for difference_cutoff in [0, 0.1, 0.5, 1, 2, 5]:
+
+        # Keep track of how many plateaus we have found thus far. Once we
+        # have found a number of plateaus equal to plateau_cutoff, return the
+        # most recently found one as the Upper Cutoff.
+        plateaus_found = 0
+
+        window_generator = create_window_generator(padded_hist_dict,
+                                                   window_size)
+
+        for window in window_generator:
+            midpoint_occ_num = window[int(window_size/2)][0]
+
+            if midpoint_occ_num <= kmer_depth:
+                continue
+
+            if mean_diff(window) <= difference_cutoff:
+                if plateaus_found < plateau_cutoff:
+                    plateaus_found += 1
+                    if verbosity > 0:
+                        print("Found plateau number", plateaus_found, "of",
+                              plateau_cutoff, "required")
+                    continue
+
+                else:
+                    upper_cutoff = midpoint_occ_num
+                    if verbosity > 0:
+                        print("Estimated upper cutoff as", upper_cutoff,
+                              "using difference cutoff of",
+                              difference_cutoff)
+
+                    return upper_cutoff
+
+    return -1
+
+
 def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
 
     """
@@ -492,58 +543,22 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
     simply return the cutoff which the user has specified.
     """
 
-    padded_hist_dict = pad_hist_dict(hist_dict)
-
     if initial_upper_cutoff == 0:
 
-        # Upper Cutoff needs to be estimated:
-        # Return the number of occurrences which is corresponds to the midpoint
-        # the first window of size window_size in which the mean difference
-        # between a point's frequency and its neighbouring point's frequency is
-        # less than difference_cutoff. Increase difference cutoff if no Upper
-        # Cutoff could be calculated using the current difference cutoff
-        # A window is a list of length window_size which consists of
-        # (occ, freq) pairs from padded_hist_dict
+        # Upper Cutoff needs to be estimated
 
-        kmer_depth = find_kmer_depth(padded_hist_dict)
-        window_size = 6
-        plateau_cutoff = 2
+        kmer_depth = find_kmer_depth(hist_dict)
 
-        for difference_cutoff in [0, 0.1, 0.5, 1, 2, 5]:
+        upper_cutoff_est = fluctuation_method(hist_dict, kmer_depth, verbosity)
 
-            # Keep track of how many plateaus we have found thus far. Once we
-            # have found plateau_cutoff many plateaus, return the most recently
-            # found one as the Upper Cutoff.
-            plateaus_found = 0
+        if upper_cutoff_est != -1:
+            # Fluctuation estimation method was successful
+            return upper_cutoff_est
 
-            window_generator = create_window_generator(padded_hist_dict,
-                                                  window_size)
-            for window in window_generator:
-                midpoint_occ_num = window[int(window_size/2)][0]
-
-                if midpoint_occ_num <= kmer_depth:
-                    continue
-
-                if mean_diff(window) <= difference_cutoff:
-                    if plateaus_found < plateau_cutoff:
-                        plateaus_found += 1
-                        if verbosity > 0:
-                            print("Found plateau number", plateaus_found, "of",
-                                  plateau_cutoff, "required")
-                        continue
-
-                    else:
-                        upper_cutoff = midpoint_occ_num
-                        if verbosity > 0:
-                            print("Estimated upper cutoff as", upper_cutoff,
-                                  "using difference cutoff of",
-                                  difference_cutoff)
-
-                        return upper_cutoff
-
-        # Failed to estimate an upper cutoff
-        print("WARNING: Failed to estimate the upper cutoff. Will use an",
-              "upper cutoff of 20 * the k-mer depth.")
+        # Fluctuation estimation method was unsuccessful
+        print("WARNING: Failed to estimate the upper cutoff using the",
+              "fluctuation method.")
+        print("Will use an upper cutoff of 20 * the k-mer depth.")
 
         fallback_estimate = 20 * kmer_depth
         print("Estimated upper cutoff as", fallback_estimate)
