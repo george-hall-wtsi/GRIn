@@ -683,6 +683,31 @@ def plot_histogram(hist_dict, error_cutoff, repeat_cutoff, upper_cutoff):
     return
 
 
+def convert_bp_to_SI(num_bp):
+
+    """
+    Returns a string with the number of base pairs num_bp expressed in 'SI'
+    units (i.e. Mbp) with the correct suffix attached.
+    """
+
+    thousands_power = math.log(num_bp, 1000)
+
+    if thousands_power < 1:
+        return str(num_bp) + "bp"
+
+    elif 1 <= thousands_power < 2:
+        num_kbp = num_bp / 1000
+        return "{0:.1f}Kbp".format(num_kbp)
+
+    elif 2 <= thousands_power < 3:
+        num_mbp = num_bp / 1000000
+        return "{0:.1f}Mbp".format(num_mbp)
+
+    else:
+        num_gbp = num_bp / 1000000000
+        return "{0:.1f}Gbp".format(num_gbp)
+
+
 def process_histogram_file(file_name, initial_error_cutoff,
                            initial_repeat_cutoff, initial_upper_cutoff,
                            verbosity):
@@ -726,7 +751,8 @@ def process_histogram_file(file_name, initial_error_cutoff,
                 print("K-mer depth =", kmer_depth)
 
                 genome_size_est = int(total_num_kmers_used / kmer_depth)
-                print("Genome size estmination =", genome_size_est)
+                print("Genome size estmination =", genome_size_est,
+                      "(" + convert_bp_to_SI(genome_size_est) + ")")
 
         if verbosity == 2:
             plot_histogram(hist_dict, error_cutoff, repeat_cutoff,
