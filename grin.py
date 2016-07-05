@@ -694,11 +694,19 @@ def process_histogram_file(file_name, initial_error_cutoff,
                                                   upper_cutoff)
 
         if verbosity > 0:
-            # Don't exit if not able to calculate k-mer depth
-            if SCIPY_PRESENT and NUMPY_PRESENT:
-                print("K-mer depth =", find_kmer_depth(hist_dict))
             print("Total number of k-mers", total_number_kmers)
             print("Number of repetitive k-mers", number_repetitive_kmers)
+
+            # Don't exit if not able to import Scipy and Numpy
+            if SCIPY_PRESENT and NUMPY_PRESENT:
+                kmer_depth = find_kmer_depth(hist_dict)
+                print("K-mer depth =", kmer_depth)
+                minimum_occurrence = min(hist_dict.keys())
+                maximum_occurrence = max(hist_dict.keys())
+
+                genome_size = int(count_num_kmers(hist_dict, minimum_occurrence,
+                                              maximum_occurrence) / kmer_depth)
+                print("Genome size estmination =", genome_size)
 
         if verbosity == 2:
             plot_histogram(hist_dict, error_cutoff, repeat_cutoff,
