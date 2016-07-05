@@ -855,6 +855,7 @@ def main():
                   "Skipping...", file=sys.stderr)
 
     if verbosity == 2:
+        plt.gcf().canvas.set_window_title("GRIn Histogram plot")
         plt.show()
 
 
