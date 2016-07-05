@@ -516,8 +516,9 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
             # found one as the Upper Cutoff.
             plateaus_found = 0
 
-            for window in create_window_generator(padded_hist_dict,
-                                                  window_size):
+            window_generator = create_window_generator(padded_hist_dict,
+                                                  window_size)
+            for window in window_generator:
                 midpoint_occ_num = window[int(window_size/2)][0]
 
                 if midpoint_occ_num <= kmer_depth:
