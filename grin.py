@@ -153,7 +153,7 @@ def generate_max_list(hist_dict):
     return [hist_keys[x] for x in max_list]
 
 
-def find_kmer_depth(hist_dict, min_list=None):
+def find_kmer_depth(hist_dict):
 
     """
     Returns the x value of the maximum of the main peak in hist_dict. The main
