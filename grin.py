@@ -162,9 +162,8 @@ def find_kmer_depth(hist_dict, min_list=None):
     spectrum, which is due to base errors in the reads.
     """
 
-    min_list = generate_min_list(hist_dict)
     max_list = generate_max_list(hist_dict)
-    min_list_minimum = min(min_list)
+    start_main_peak = find_start_main_peak(hist_dict)
 
     max_y_vals = [hist_dict[x] for x in max_list if x in hist_dict.keys()]
 
@@ -173,7 +172,7 @@ def find_kmer_depth(hist_dict, min_list=None):
         # shouldn't have to do it more than twice (hopefully just once)
         # and I can't quickly think of a better way to do it
         for (key, value) in hist_dict.items():
-            if value == maximum and key > min_list_minimum and key > 10:
+            if value == maximum and key > start_main_peak and key > 10:
                 return key
 
     print("ERROR: Could not find the maximum of the main peak",
