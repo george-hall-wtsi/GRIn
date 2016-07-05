@@ -498,7 +498,15 @@ def fluctuation_method(hist_dict, kmer_depth, verbosity):
     plateau_cutoff = 2
     padded_hist_dict = pad_hist_dict(hist_dict)
 
+    if verbosity > 0:
+        print("Number of plateaus required for successful estimation:",
+              plateau_cutoff)
+
     for difference_cutoff in [0, 0.1, 0.5, 1, 2, 5]:
+
+        if verbosity > 0:
+            print("Looking for plateaus using difference cutoff of",
+                  difference_cutoff)
 
         # Keep track of how many plateaus we have found thus far. Once we
         # have found a number of plateaus equal to plateau_cutoff, return the
@@ -518,8 +526,8 @@ def fluctuation_method(hist_dict, kmer_depth, verbosity):
                 if plateaus_found < plateau_cutoff:
                     plateaus_found += 1
                     if verbosity > 0:
-                        print("Found plateau number", plateaus_found, "of",
-                              plateau_cutoff, "required")
+                        print("Found plateau",
+                              str(plateaus_found) + "/" + str(plateau_cutoff))
                     continue
 
                 else:
