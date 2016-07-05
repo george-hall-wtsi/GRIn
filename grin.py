@@ -542,7 +542,7 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
                         return upper_cutoff
 
         # Failed to estimate an upper cutoff
-        print("WARNING: Failed to estimate the upper cutoff. Will use an " +\
+        print("WARNING: Failed to estimate the upper cutoff. Will use an",
               "upper cutoff of 20 * the k-mer depth.")
 
         fallback_estimate = 20 * kmer_depth
