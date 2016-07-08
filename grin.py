@@ -165,6 +165,9 @@ def find_kmer_depth(hist_dict):
     max_list = generate_max_list(hist_dict)
     start_main_peak = find_start_main_peak(hist_dict)
 
+    if start_main_peak == -1:
+        return -1
+
     max_y_vals = [hist_dict[x] for x in max_list if x in hist_dict.keys()]
 
     for maximum in sorted(max_y_vals)[::-1]:
@@ -187,7 +190,14 @@ def find_start_main_peak(hist_dict):
     the beginning of the main peak.
     """
 
-    return min(generate_min_list(hist_dict))
+    min_list = generate_min_list(hist_dict)
+
+    if not min_list:
+        print("ERROR: Could not generate a list of minima for this file.",
+              "Skipping...")
+        return -1
+
+    return min(min_list)
 
 
 def find_start_repeat_kmers(hist_dict, error_cutoff, verbosity):
@@ -201,7 +211,12 @@ def find_start_repeat_kmers(hist_dict, error_cutoff, verbosity):
         print("Using error cutoff of", error_cutoff, "in repeat cutoff",
               "in repeat cutoff estimation")
 
-    return (2 * find_kmer_depth(hist_dict)) - error_cutoff
+    kmer_depth = find_kmer_depth(hist_dict)
+
+    if kmer_depth == -1:
+        return -1
+
+    return (2 * kmer_depth) - error_cutoff
 
 
 def create_hist_dict(in_file):
@@ -397,6 +412,10 @@ def set_error_cutoff(hist_dict, initial_error_cutoff, verbosity):
 
     if initial_error_cutoff == 0:
         error_cutoff = find_start_main_peak(hist_dict)
+
+        if error_cutoff == -1:
+            return -1
+
         if verbosity > 0:
             print("Estimated error cutoff as", error_cutoff)
 
@@ -422,6 +441,10 @@ def set_repeat_cutoff(hist_dict, initial_repeat_cutoff, error_cutoff,
     if initial_repeat_cutoff == 0:
         repeat_cutoff = find_start_repeat_kmers(hist_dict, error_cutoff,
                                                 verbosity)
+
+        if repeat_cutoff == -1:
+            return -1
+
         if verbosity > 0:
             print("Estimated start of repetitive k-mers as", repeat_cutoff)
 
@@ -555,6 +578,9 @@ def set_upper_cutoff(hist_dict, initial_upper_cutoff, verbosity):
         # Upper Cutoff needs to be estimated
 
         kmer_depth = find_kmer_depth(hist_dict)
+
+        if kmer_depth == -1:
+            return -1
 
         upper_cutoff_est = fluctuation_method(hist_dict, kmer_depth, verbosity)
 
@@ -726,11 +752,18 @@ def process_histogram_file(file_name, initial_error_cutoff,
 
         error_cutoff = set_error_cutoff(hist_dict, initial_error_cutoff,
                                         verbosity)
+        if error_cutoff == -1:
+            return -1
         repeat_cutoff = set_repeat_cutoff(hist_dict,
                                           initial_repeat_cutoff, error_cutoff,
                                           verbosity)
+        if repeat_cutoff == -1:
+            return -1
+
         upper_cutoff = set_upper_cutoff(hist_dict, initial_upper_cutoff,
                                         verbosity)
+        if upper_cutoff == -1:
+            return -1
 
         if check_cutoff_consistency(error_cutoff, repeat_cutoff,
                                     upper_cutoff) == -1:
