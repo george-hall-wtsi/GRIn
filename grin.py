@@ -754,6 +754,7 @@ def process_histogram_file(file_name, initial_error_cutoff,
                                         verbosity)
         if error_cutoff == -1:
             return -1
+
         repeat_cutoff = set_repeat_cutoff(hist_dict,
                                           initial_repeat_cutoff, error_cutoff,
                                           verbosity)
