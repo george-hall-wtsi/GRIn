@@ -767,7 +767,7 @@ def process_histogram_file(file_name, initial_error_cutoff,
 
         if check_cutoff_consistency(error_cutoff, repeat_cutoff,
                                     upper_cutoff) == -1:
-            return
+            return -1
 
         total_num_kmers_used = count_num_kmers(hist_dict, error_cutoff,
                                                upper_cutoff)
